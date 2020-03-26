@@ -7,12 +7,16 @@ import Machines from './pages/Machines.js'
 import Models from './pages/Models.js'
 import Issues from './pages/Issues.js'
 import Toolbar from './pages/Toolbar.js'
+import Form from './pages/Form.js'
 
 import './App.css';
 
 class App extends React.Component {
   state = { 
-    machines: []
+    machines: [],
+    moldes: [],
+    models: [],
+    issues: []
   };
 
 
@@ -44,8 +48,8 @@ class App extends React.Component {
     };
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log(data.data.machines)
-    this.setState({ machines: data.data.machines })
+    console.log(data.data)
+    this.setState({ machines: data.data.machines, moldes: data.data.moldes, models: data.data.parts, issues: data.data.issues })
   }
 
 
@@ -57,11 +61,14 @@ class App extends React.Component {
         <div className="App">
             <Toolbar></Toolbar>
           <div className="Content">
-            <Route path="/" exact component={Home} />
-            <Route path="/Moldes" exact component={Moldes} /> 
-            <Route path="/Machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
-            <Route path="/Models" exact component={Models} /> 
-            <Route path="/Issues" exact component={Issues} /> 
+            <Switch>
+              <Route path="/" exact component={Home} />
+              <Route path="/Moldes" exact component={ props => ( <Moldes {...props} moldes={this.state.moldes}/> )} /> 
+              <Route path="/Machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
+              <Route path="/Models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
+              <Route path="/Issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
+              <Route path="/Form" exact component={ props => ( <Form {...props}/> )} />
+            </Switch> 
           </div>
         </div>
       </BrowserRouter>
