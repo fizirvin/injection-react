@@ -1,6 +1,5 @@
 import React from 'react';
-
-
+import { Link } from 'react-router-dom';
 
 class Models extends React.Component {
 
@@ -17,11 +16,15 @@ class Models extends React.Component {
       <div className="Models">
         <h2 className="section_header">Injection Model List:</h2>
         <table className="table_list">
+          <thead>
           <tr>
             <th className="table_header">Part Number</th>
-            <th className="table_header">add Model</th>
+            <th className="table_header"><Link to="/Models/Add"><button>Add Model</button></Link></th>
           </tr>
-          {this.renderList()}
+          </thead>
+          <tbody>
+            {this.renderList()}
+          </tbody>
         </table>
       </div>
     )

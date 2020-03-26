@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 
 class Moldes extends React.Component {
@@ -18,12 +18,16 @@ class Moldes extends React.Component {
       <div className="Moldes">
         <h2 className="section_header">Injection Mold List:</h2>
         <table className="table_list">
+          <thead>
           <tr>
             <th className="table_header">Mold Number</th>
             <th className="table_header">Mold Serial</th>
-            <th className="table_header">add Mold</th>
+            <th className="table_header"><Link to="/Molds/Add"><button>Add Mold</button></Link></th>
           </tr>
+          </thead>
+          <tbody>
           {this.renderList()}
+          </tbody>
         </table>
       </div>
     )

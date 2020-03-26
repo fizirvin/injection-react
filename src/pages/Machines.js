@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 
 class Machines extends React.Component {
@@ -20,12 +20,16 @@ class Machines extends React.Component {
       <div className="Moldes">
         <h2 className="section_header">Injection Machine List:</h2>
         <table className="table_list">
-          <tr>
-            <th className="table_header">Machine Number</th>
-            <th className="table_header">Machine Serial</th>
-            <th className="table_header">add Machine</th>
-          </tr>
+        <thead> 
+            <tr>
+              <th className="table_header">Machine Number</th>
+              <th className="table_header">Machine Serial</th>
+              <th className="table_header"><Link to="/Machines/Add"><button>Add Machine</button></Link></th>
+            </tr>
+          </thead>
+          <tbody>
           {this.renderList()}
+          </tbody>
         </table>
       </div>
     )
