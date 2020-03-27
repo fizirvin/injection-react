@@ -8,8 +8,8 @@ class AddMachine extends Component {
       machineSerial: ''
   }
 
-    close(){
-      console.log('close')
+    onClose = () =>{
+      this.props.close('machineMessage')
     }
 
     onInputChange = e => {
@@ -71,7 +71,15 @@ class AddMachine extends Component {
       return ReactDOM.createPortal(
         <div className="Modal">
           <div className="modal-content">
-            Something goes Wrong, Try again later <Link to="/Machines"><button>Cancel</button></Link>
+            Something goes Wrong, Try again later <Link to="/Machines"><button onClick={this.onClose}>Close</button></Link>
+          </div>
+        </div>,document.querySelector('#modal')
+      );
+    } else if(this.props.message === 'sucess'){
+      return ReactDOM.createPortal(
+        <div className="Modal">
+          <div className="modal-content">
+            New Injection Machine added correctly <Link to="/Machines"><button onClick={this.onClose}>Close</button></Link>
           </div>
         </div>,document.querySelector('#modal')
       );
