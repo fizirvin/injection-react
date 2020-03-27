@@ -3,24 +3,31 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
 class AddMachine extends Component {
-
+  state= {
+      machineNumber:'',
+      machineSerial: ''
+  }
 
     close(){
       console.log('close')
     }
 
-    onSubmit(e){
+    onInputChange = e => {
+      this.setState({ [e.target.name]: e.target.value });
+    };
+
+    onSubmit = e =>{
       e.preventDefault();
-      console.log('submit')
+      this.props.addMachine(this.state);
     }
 
 
   render() {
 
 
-
-    return ReactDOM.createPortal(
-    <div className="Modal">
+    if(this.props.message === 'new'){
+      return ReactDOM.createPortal(
+        <div className="Modal">
         <div className="modal-content">
           <h2>Add New Machine:</h2>
           <form onSubmit={this.onSubmit}>
@@ -28,11 +35,18 @@ class AddMachine extends Component {
           <tbody> 
             <tr>
               <td><label>Machine Number: </label></td>
-              <td><input type="text"></input></td>
+              <td><input type="text" 
+              name='machineNumber' 
+              value={this.state.machineNumber}
+              onChange={this.onInputChange}></input></td>
             </tr>
             <tr>
             <td><label>Machine Serial: </label></td>
-            <td><input type="text"></input></td>
+            <td><input type="text"
+              name='machineSerial' 
+              value={this.state.machineSerial}
+              onChange={this.onInputChange}>
+                </input></td>
             </tr>
             <tr>
             <td></td>
@@ -49,9 +63,19 @@ class AddMachine extends Component {
 
         </div>
       
-      </div>,
-      document.querySelector('#modal')
-    );
+        </div>,
+        document.querySelector('#modal')
+      );
+    } 
+    else if(this.props.message === 'error'){
+      return ReactDOM.createPortal(
+        <div className="Modal">
+          <div className="modal-content">
+            Something goes Wrong, Try again later <Link to="/Machines"><button>Cancel</button></Link>
+          </div>
+        </div>,document.querySelector('#modal')
+      );
+    }
   }
 };
 

@@ -18,9 +18,11 @@ import './App.css';
 class App extends React.Component {
   state = { 
     machines: [],
+    machineMessage: 'new',
     moldes: [],
     models: [],
-    issues: []
+    issues: [],
+    server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
 
@@ -44,7 +46,7 @@ class App extends React.Component {
       }
     }`
 
-    const url = "https://injection.irvinfiz.now.sh/injection";
+    const url = this.state.server;
     const opts = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -54,6 +56,40 @@ class App extends React.Component {
     const data = await res.json();
     console.log(data.data)
     this.setState({ machines: data.data.machines, moldes: data.data.moldes, models: data.data.parts, issues: data.data.issues })
+  }
+
+
+  addMachine = async (newMachine)=>{
+
+    const query = `mutation{newMachine(input:{
+      machineNumber: "${newMachine.machineNumber}"
+      
+    }) {
+      _id
+      machineNumber
+      machineSerial
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    console.log(data.errors)
+    this.setState({machineMessage: 'error'})
+    } else{
+      console.log('chingon')
+    }
+
+    // let machines = [...this.state.machines];
+    // machines.push(data.data.newMachine);
+    // this.setState({machines: machines});
   }
 
 
@@ -71,7 +107,8 @@ class App extends React.Component {
               <Route path="/Machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
               <Route path="/Models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
               <Route path="/Issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
-              <Route path="/Machines/Add" exact component={ props => ( <AddMachine {...props}/> )} />
+              <Route path="/Machines/Add" exact component={ props => ( <AddMachine {...props} 
+                message={this.state.machineMessage} addMachine={this.addMachine}/> )} />
               <Route path="/Molds/Add" exact component={ props => ( <AddMold {...props}/> )} />
               <Route path="/Models/Add" exact component={ props => ( <AddModel {...props}/> )} />
               <Route path="/Issues/Add" exact component={ props => ( <AddIssue {...props}/> )} />
