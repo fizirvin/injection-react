@@ -9,9 +9,13 @@ import Issues from './pages/Issues.js'
 import Toolbar from './pages/Toolbar.js'
 
 import AddMachine from './pages/forms/AddMachine.js'
+import UpdateMachine from './pages/forms/UpdateMachine.js'
 import AddMold from './pages/forms/AddMold.js'
+import UpdateMold from './pages/forms/UpdateMold.js'
 import AddModel from './pages/forms/AddModel.js'
+import UpdateModel from './pages/forms/UpdateModel.js'
 import AddIssue from './pages/forms/AddIssue.js'
+import UpdateIssue from './pages/forms/UpdateIssue.js'
 
 import './App.css';
 
@@ -57,7 +61,7 @@ class App extends React.Component {
     };
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log(data.data)
+    
     this.setState({ machines: data.data.machines, moldes: data.data.moldes, models: data.data.parts, issues: data.data.issues })
   }
 
@@ -87,11 +91,45 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data.errors)
+    
     this.setState({machineMessage: 'error'})
     } else{
       let machines = [...this.state.machines];
       machines.push(data.data.newMachine);
+      this.setState({machines: machines, machineMessage: 'sucess'});
+    }
+
+  }
+
+  updateMachine = async (updateMachine)=>{
+
+    const query = `mutation{updateMachine(_id: "${updateMachine._id}", input:{
+      machineNumber: "${updateMachine.machineNumber}"
+      machineSerial: "${updateMachine.machineSerial}"
+    }) {
+      _id
+      machineNumber
+      machineSerial
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({machineMessage: 'error'})
+    } else{
+
+    let machine = data.data.updateMachine;
+    let machines = [...this.state.machines];
+    machines[machines.findIndex(el => el._id === machine._id)] = machine;
       this.setState({machines: machines, machineMessage: 'sucess'});
     }
 
@@ -119,11 +157,45 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data.errors)
+   
     this.setState({moldeMessage: 'error'})
     } else{
       let moldes = [...this.state.moldes];
+
       moldes.push(data.data.newMolde);
+      this.setState({moldes: moldes, moldeMessage: 'sucess'});
+    }
+
+  }
+
+  updateMolde = async (updateMolde)=>{
+
+    const query = `mutation{updateMolde(_id: "${updateMolde._id}", input:{
+      moldeNumber: "${updateMolde.moldeNumber}"
+      moldeSerial: "${updateMolde.moldeSerial}"
+    }) {
+      _id
+      moldeNumber
+      moldeSerial
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({moldeMessage: 'error'})
+    } else{
+      let molde = data.data.updateMolde;
+      let moldes = [...this.state.moldes];
+      moldes[moldes.findIndex(el => el._id === molde._id)] = molde;
       this.setState({moldes: moldes, moldeMessage: 'sucess'});
     }
 
@@ -149,11 +221,42 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data.errors)
+    
     this.setState({modelMessage: 'error'})
     } else{
       let models = [...this.state.models];
       models.push(data.data.newPartNumber);
+      this.setState({models: models, modelMessage: 'sucess'});
+    }
+
+  }
+
+  updateModel = async (updateModel)=>{
+
+    const query = `mutation{updatePartNumber(_id: "${updateModel._id}",input:{
+      partNumber: "${updateModel.partNumber}"
+    }) {
+      _id
+      partNumber
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({modelMessage: 'error'})
+    } else{
+      let model = data.data.updatePartNumber;
+      let models = [...this.state.models];
+      models[models.findIndex(el => el._id === model._id)] = model;
       this.setState({models: models, modelMessage: 'sucess'});
     }
 
@@ -179,7 +282,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data.errors)
+    
     this.setState({issueMessage: 'error'})
     } else{
       let issues = [...this.state.issues];
@@ -189,10 +292,41 @@ class App extends React.Component {
 
   }
 
+  updateIssue = async (updateIssue)=>{
+
+    const query = `mutation{updateIssue(_id: "${updateIssue._id}", input:{
+      issueName: "${updateIssue.issueName}"
+    }) {
+      _id
+      issueName
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({issueMessage: 'error'})
+    } else{
+      let issue = data.data.updateIssue;
+      let issues = [...this.state.issues];
+      issues[issues.findIndex(el => el._id === issue._id)] = issue;
+      this.setState({issues: issues, issueMessage: 'sucess'});
+    }
+
+  }
+
 
   render(){
 
-
+   
     return (
       <BrowserRouter>
         <div className="App">
@@ -200,21 +334,33 @@ class App extends React.Component {
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/Molds" exact component={ props => ( <Moldes {...props} moldes={this.state.moldes}/> )} /> 
-              <Route path="/Machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
-              <Route path="/Models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
-              <Route path="/Issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
-              <Route path="/Machines/Add" exact component={ props => ( <AddMachine {...props} 
+              <Route path="/molds" exact component={ props => ( <Moldes {...props} moldes={this.state.moldes}/> )} /> 
+              <Route path="/machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
+              <Route path="/models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
+              <Route path="/issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
+              <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
                 message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
               />
-              <Route path="/Molds/Add" exact component={ props => ( <AddMold {...props} 
+              <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props} 
+                machines={this.state.machines} message={this.state.machineMessage} close={this.close} updateMachine={this.updateMachine}/> )} 
+              />
+              <Route path="/molds/add" exact component={ props => ( <AddMold {...props} 
                 message={this.state.moldeMessage} close={this.close} addMolde={this.addMolde}/> )} 
               />
-              <Route path="/Models/Add" exact component={ props => ( <AddModel {...props}
+              <Route path="/molds/update/:id" exact component={ props => ( <UpdateMold {...props} 
+                moldes={this.state.moldes} message={this.state.moldeMessage} close={this.close} updateMolde={this.updateMolde}/> )} 
+              />
+              <Route path="/models/add" exact component={ props => ( <AddModel {...props}
                 message={this.state.modelMessage} close={this.close} addModel={this.addModel}/> )} 
               />
-              <Route path="/Issues/Add" exact component={ props => ( <AddIssue {...props} 
+              <Route path="/models/update/:id" exact component={ props => ( <UpdateModel {...props}
+                models={this.state.models} message={this.state.modelMessage} close={this.close} updateModel={this.updateModel}/> )} 
+              />
+              <Route path="/issues/add" exact component={ props => ( <AddIssue {...props} 
                 message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
+              />
+              <Route path="/issues/update/:id" exact component={ props => ( <UpdateIssue {...props} 
+                issues={this.state.issues} message={this.state.issueMessage} close={this.close} updateIssue={this.updateIssue}/> )} 
               />
             </Switch> 
           </div>

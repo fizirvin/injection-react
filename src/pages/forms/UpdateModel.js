@@ -2,10 +2,19 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class AddModel extends Component {
+class UpdateModel extends Component {
   state= {
+    _id:'',
     partNumber: ''
   }
+
+  componentDidMount(){
+      
+    const getModel = this.props.models.find( model => model._id === this.props.match.params.id);
+    
+    this.setState({...getModel})
+
+}
 
   onClose = () =>{
     this.props.close('modelMessage')
@@ -17,7 +26,7 @@ class AddModel extends Component {
 
   onSubmit = e =>{
     e.preventDefault();
-    this.props.addModel(this.state);
+    this.props.updateModel(this.state);
   }
 
 
@@ -28,7 +37,7 @@ class AddModel extends Component {
     return ReactDOM.createPortal(
     <div className="Modal">
         <div className="modal-content">
-          <h2>Add New Model:</h2>
+          <h2>Update Model:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
           <tbody> 
@@ -36,7 +45,7 @@ class AddModel extends Component {
               <td><label>Part Number: </label></td>
               <td><input type="text"
                 name='partNumber' 
-                value={this.state.partNumber}
+                defaultValue={this.state.partNumber}
                 onChange={this.onInputChange}></input></td>
             </tr>
             
@@ -70,7 +79,7 @@ class AddModel extends Component {
       return ReactDOM.createPortal(
         <div className="Modal">
           <div className="modal-content">
-            New Injection Model added correctly <Link to="/models"><button onClick={this.onClose}>Close</button></Link>
+            Model updated correctly <Link to="/models"><button onClick={this.onClose}>Close</button></Link>
           </div>
         </div>,document.querySelector('#modal')
       );
@@ -78,4 +87,4 @@ class AddModel extends Component {
   }
 };
 
-export default AddModel;
+export default UpdateModel;

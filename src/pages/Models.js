@@ -7,7 +7,7 @@ class Models extends React.Component {
     return this.props.models.map( model => 
     <tr key={model._id}>
       <td className="table_data">{model.partNumber}</td>
-      <td className="table_data">Update</td>
+      <td className="table_data"><Link to={`/models/update/${model._id}`}><button>Update</button></Link></td>
     </tr>)
   }
 
@@ -19,7 +19,7 @@ class Models extends React.Component {
           <thead>
           <tr>
             <th className="table_header">Part Number</th>
-            <th className="table_header"><Link to="/Models/Add"><button>Add Model</button></Link></th>
+            <th className="table_header"><Link to="/models/add"><button>Add Model</button></Link></th>
           </tr>
           </thead>
           <tbody>

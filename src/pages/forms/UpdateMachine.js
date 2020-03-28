@@ -2,11 +2,26 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class AddMachine extends Component {
+class UpdateMachine extends Component {
+  
   state= {
-      machineNumber:'',
-      machineSerial: ''
+      _id: '',
+      machineNumber: '',
+      machineSerial:''
   }
+
+  
+    
+    
+    
+    componentDidMount(){
+      
+        const getMachine = this.props.machines.find( machine => machine._id === this.props.match.params.id);
+        
+        this.setState({...getMachine})
+    
+    }
+  
 
     onClose = () =>{
       this.props.close('machineMessage')
@@ -18,18 +33,18 @@ class AddMachine extends Component {
 
     onSubmit = e =>{
       e.preventDefault();
-      this.props.addMachine(this.state);
+      this.props.updateMachine(this.state);
     }
 
+    
 
   render() {
-
-
+    console.log(this.state)
     if(this.props.message === 'new'){
       return ReactDOM.createPortal(
         <div className="Modal">
         <div className="modal-content">
-          <h2>Add New Machine:</h2>
+          <h2>Update Machine:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
           <tbody> 
@@ -37,14 +52,15 @@ class AddMachine extends Component {
               <td><label>Machine Number: </label></td>
               <td><input type="text" 
               name='machineNumber' 
-              value={this.state.machineNumber}
+              defaultValue={this.state.machineNumber}
               onChange={this.onInputChange}></input></td>
             </tr>
             <tr>
             <td><label>Machine Serial: </label></td>
             <td><input type="text"
-              name='machineSerial' 
-              value={this.state.machineSerial}
+              name='machineSerial'
+              defaultValue={this.state.machineSerial}
+              
               onChange={this.onInputChange}>
                 </input></td>
             </tr>
@@ -79,12 +95,13 @@ class AddMachine extends Component {
       return ReactDOM.createPortal(
         <div className="Modal">
           <div className="modal-content">
-            New Injection Machine added correctly <Link to="/machines"><button onClick={this.onClose}>Close</button></Link>
+            Machine updated correctly <Link to="/machines"><button onClick={this.onClose}>Close</button></Link>
           </div>
         </div>,document.querySelector('#modal')
       );
     }
+     
   }
 };
 
-export default AddMachine;
+export default UpdateMachine;

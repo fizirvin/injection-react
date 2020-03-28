@@ -2,14 +2,21 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class AddMold extends Component {
+class UpdateIssue extends Component {
   state= {
-    moldeNumber:'',
-    moldeSerial: ''
+    _id:'',
+    issueName: ''
   }
 
+  componentDidMount(){
+      
+    const getIssue = this.props.issues.find( issue => issue._id === this.props.match.params.id);
+    
+    this.setState({...getIssue})
+
+}
   onClose = () =>{
-    this.props.close('moldeMessage')
+    this.props.close('issueMessage')
   }
 
   onInputChange = e => {
@@ -18,9 +25,8 @@ class AddMold extends Component {
 
   onSubmit = e =>{
     e.preventDefault();
-    this.props.addMolde(this.state);
+    this.props.updateIssue(this.state);
   }
-
 
   render() {
 
@@ -29,27 +35,21 @@ class AddMold extends Component {
     return ReactDOM.createPortal(
     <div className="Modal">
         <div className="modal-content">
-          <h2>Add New Injection Mold:</h2>
+          <h2>Update Issue:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
           <tbody> 
             <tr>
-              <td><label>Mold Number: </label></td>
+              <td><label>Issue Name: </label></td>
               <td><input type="text"
-                name='moldeNumber' 
-                value={this.state.moldeNumber}
-                onChange={this.onInputChange}></input></td>
-            </tr>
-            <tr>
-            <td><label>Mold Serial: </label></td>
-            <td><input type="text"
-              name='moldeSerial' 
-              value={this.state.moldeSerial }
+              name='issueName' 
+              defaultValue={this.state.issueName}
               onChange={this.onInputChange}></input></td>
             </tr>
+            
             <tr>
             <td></td>
-            <td><Link to="/molds"><button>Cancel</button></Link>
+            <td><Link to="/issues"><button>Cancel</button></Link>
             <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
             </tr>
 
@@ -65,11 +65,11 @@ class AddMold extends Component {
       </div>,
       document.querySelector('#modal')
     );
-  }else if(this.props.message === 'error'){
+  } else if(this.props.message === 'error'){
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          Something goes Wrong, Try again later <Link to="/molds"><button onClick={this.onClose}>Close</button></Link>
+          Something goes Wrong, Try again later <Link to="/issues"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -77,7 +77,7 @@ class AddMold extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          New Injection Mold added correctly <Link to="/molds"><button onClick={this.onClose}>Close</button></Link>
+          Issue updated correctly <Link to="/issues"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -85,4 +85,4 @@ class AddMold extends Component {
   }
 };
 
-export default AddMold;
+export default UpdateIssue;

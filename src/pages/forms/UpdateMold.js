@@ -2,11 +2,20 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class AddMold extends Component {
+class UpdateMold extends Component {
   state= {
+    _id:'',
     moldeNumber:'',
     moldeSerial: ''
   }
+
+  componentDidMount(){
+      
+    const getMolde = this.props.moldes.find( molde => molde._id === this.props.match.params.id);
+    
+    this.setState({...getMolde})
+
+}
 
   onClose = () =>{
     this.props.close('moldeMessage')
@@ -18,7 +27,7 @@ class AddMold extends Component {
 
   onSubmit = e =>{
     e.preventDefault();
-    this.props.addMolde(this.state);
+    this.props.updateMolde(this.state);
   }
 
 
@@ -29,7 +38,7 @@ class AddMold extends Component {
     return ReactDOM.createPortal(
     <div className="Modal">
         <div className="modal-content">
-          <h2>Add New Injection Mold:</h2>
+          <h2>Update Injection Mold:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
           <tbody> 
@@ -37,14 +46,14 @@ class AddMold extends Component {
               <td><label>Mold Number: </label></td>
               <td><input type="text"
                 name='moldeNumber' 
-                value={this.state.moldeNumber}
+                defaultValue={this.state.moldeNumber}
                 onChange={this.onInputChange}></input></td>
             </tr>
             <tr>
             <td><label>Mold Serial: </label></td>
             <td><input type="text"
               name='moldeSerial' 
-              value={this.state.moldeSerial }
+              defaultValue={this.state.moldeSerial}
               onChange={this.onInputChange}></input></td>
             </tr>
             <tr>
@@ -77,7 +86,7 @@ class AddMold extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          New Injection Mold added correctly <Link to="/molds"><button onClick={this.onClose}>Close</button></Link>
+          Injection Mold updated correctly <Link to="/molds"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -85,4 +94,4 @@ class AddMold extends Component {
   }
 };
 
-export default AddMold;
+export default UpdateMold;

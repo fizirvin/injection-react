@@ -41,7 +41,7 @@ class AddIssue extends Component {
             
             <tr>
             <td></td>
-            <td><Link to="/Issues"><button>Cancel</button></Link>
+            <td><Link to="/issues"><button>Cancel</button></Link>
             <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
             </tr>
 
@@ -61,7 +61,7 @@ class AddIssue extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          Something goes Wrong, Try again later <Link to="/Issues"><button onClick={this.onClose}>Close</button></Link>
+          Something goes Wrong, Try again later <Link to="/issues"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -69,7 +69,7 @@ class AddIssue extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          New Injection Issue added correctly <Link to="/Issues"><button onClick={this.onClose}>Close</button></Link>
+          New Injection Issue added correctly <Link to="/issues"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );

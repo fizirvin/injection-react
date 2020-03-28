@@ -9,7 +9,7 @@ class Moldes extends React.Component {
     <tr key={molde._id}>
       <td className="table_data">{molde.moldeNumber}</td>
       <td className="table_data">{molde.moldeSerial}</td>
-      <td className="table_data">Update</td>
+      <td className="table_data"><Link to={`/molds/update/${molde._id}`}><button>Update</button></Link></td>
     </tr>)
     }
 
@@ -22,7 +22,7 @@ class Moldes extends React.Component {
           <tr>
             <th className="table_header">Mold Number</th>
             <th className="table_header">Mold Serial</th>
-            <th className="table_header"><Link to="/Molds/Add"><button>Add Mold</button></Link></th>
+            <th className="table_header"><Link to="/molds/add"><button>Add Mold</button></Link></th>
           </tr>
           </thead>
           <tbody>
