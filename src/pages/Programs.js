@@ -5,13 +5,17 @@ import { Link } from 'react-router-dom';
 
 class Programs extends React.Component {
 
-  // renderList() {
-  //   return this.props.issues.map( issue => 
-  //   <tr key={issue._id}>
-  //     <td className="table_data">{ issue.issueName}</td>
-  //     <td className="table_data"><Link to={`/issues/update/${issue._id}`}><button>Update</button></Link></td>
-  //   </tr>)
-  // }
+  renderList() {
+    return this.props.programs.map( program => 
+    <tr key={program._id}>
+      <td className="table_data">{ program.machineNumber.machineNumber}</td>
+      <td className="table_data">{ program.moldeNumber.moldeNumber}</td>
+      <td className="table_data">{ program.partNumber.partNumber}</td>
+      <td className="table_data">{ program.cycles}</td>
+      <td className="table_data">{ program.capacity}</td>
+      <td className="table_data"><Link to={`/programs/update/${program._id}`}><button>Update</button></Link></td>
+    </tr>)
+  }
 
   render(){
     return (
@@ -29,7 +33,7 @@ class Programs extends React.Component {
           </tr>
           </thead> 
           <tbody>
-          {/* {this.renderList()} */}
+          {this.renderList()}
           </tbody>
         </table>
       </div>

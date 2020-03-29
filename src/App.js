@@ -28,9 +28,11 @@ class App extends React.Component {
     moldeMessage: 'new',
     modelMessage: 'new',
     issueMessage: 'new',
+    programMessage: 'new',
     moldes: [],
     models: [],
     issues: [],
+    programs: [],
     server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
@@ -53,6 +55,25 @@ class App extends React.Component {
         _id
         issueName
       }
+      programs{
+        _id
+        machineNumber{
+          _id
+          machineNumber
+          machineSerial
+        }
+        moldeNumber{
+          _id
+          moldeNumber
+          moldeSerial
+        }
+        partNumber{
+          _id
+          partNumber
+        }
+        cycles
+        capacity
+      }
     }`
 
     const url = this.state.server;
@@ -64,7 +85,13 @@ class App extends React.Component {
     const res = await fetch(url, opts);
     const data = await res.json();
     
-    this.setState({ machines: data.data.machines, moldes: data.data.moldes, models: data.data.parts, issues: data.data.issues })
+    this.setState({ 
+      machines: data.data.machines, 
+      moldes: data.data.moldes, 
+      models: data.data.parts, 
+      issues: data.data.issues,
+      programs: data.data.programs 
+    })
   }
 
   close = (message) =>{
@@ -368,7 +395,7 @@ class App extends React.Component {
                 issues={this.state.issues} message={this.state.issueMessage} close={this.close} updateIssue={this.updateIssue}/> )} 
               />
               
-              <Route path="/programs" exact component={ props => ( <Programs {...props} /> )} />
+              <Route path="/programs" exact component={ props => ( <Programs {...props} programs={this.state.programs}/> )} />
               <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
                 message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
               />
