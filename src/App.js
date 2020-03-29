@@ -3,19 +3,21 @@ import {BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import Home from './pages/Home.js'
 import Moldes from './pages/Moldes.js'
-import Machines from './pages/Machines.js'
-import Models from './pages/Models.js'
-import Issues from './pages/Issues.js'
-import Toolbar from './pages/Toolbar.js'
-
-import AddMachine from './pages/forms/AddMachine.js'
-import UpdateMachine from './pages/forms/UpdateMachine.js'
 import AddMold from './pages/forms/AddMold.js'
 import UpdateMold from './pages/forms/UpdateMold.js'
+import Machines from './pages/Machines.js'
+import AddMachine from './pages/forms/AddMachine.js'
+import UpdateMachine from './pages/forms/UpdateMachine.js'
+import Models from './pages/Models.js'
 import AddModel from './pages/forms/AddModel.js'
 import UpdateModel from './pages/forms/UpdateModel.js'
+import Issues from './pages/Issues.js'
 import AddIssue from './pages/forms/AddIssue.js'
 import UpdateIssue from './pages/forms/UpdateIssue.js'
+import Programs from './pages/Programs.js'
+import AddProgram from './pages/forms/AddProgram.js'
+import Toolbar from './pages/Toolbar.js'
+
 
 import './App.css';
 
@@ -335,33 +337,42 @@ class App extends React.Component {
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/molds" exact component={ props => ( <Moldes {...props} moldes={this.state.moldes}/> )} /> 
-              <Route path="/machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
-              <Route path="/models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
-              <Route path="/issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
-              <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
-                message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
-              />
-              <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props} 
-                machines={this.state.machines} message={this.state.machineMessage} close={this.close} updateMachine={this.updateMachine}/> )} 
-              />
               <Route path="/molds/add" exact component={ props => ( <AddMold {...props} 
                 message={this.state.moldeMessage} close={this.close} addMolde={this.addMolde}/> )} 
               />
               <Route path="/molds/update/:id" exact component={ props => ( <UpdateMold {...props} 
                 moldes={this.state.moldes} message={this.state.moldeMessage} close={this.close} updateMolde={this.updateMolde}/> )} 
               />
+
+              <Route path="/machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
+              <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
+                message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
+              />
+              <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props} 
+                machines={this.state.machines} message={this.state.machineMessage} close={this.close} updateMachine={this.updateMachine}/> )} 
+              />
+              
+              <Route path="/models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
               <Route path="/models/add" exact component={ props => ( <AddModel {...props}
                 message={this.state.modelMessage} close={this.close} addModel={this.addModel}/> )} 
               />
               <Route path="/models/update/:id" exact component={ props => ( <UpdateModel {...props}
                 models={this.state.models} message={this.state.modelMessage} close={this.close} updateModel={this.updateModel}/> )} 
               />
+              
+              <Route path="/issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
               <Route path="/issues/add" exact component={ props => ( <AddIssue {...props} 
                 message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
               />
               <Route path="/issues/update/:id" exact component={ props => ( <UpdateIssue {...props} 
                 issues={this.state.issues} message={this.state.issueMessage} close={this.close} updateIssue={this.updateIssue}/> )} 
               />
+              
+              <Route path="/programs" exact component={ props => ( <Programs {...props} /> )} />
+              <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
+                message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
+              />
+              
             </Switch> 
           </div>
         </div>
