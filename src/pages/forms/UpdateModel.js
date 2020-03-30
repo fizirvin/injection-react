@@ -46,7 +46,7 @@ class UpdateModel extends Component {
               <td><input type="text"
                 name='partNumber' 
                 defaultValue={this.state.partNumber}
-                onChange={this.onInputChange}></input></td>
+                onChange={this.onInputChange} required></input></td>
             </tr>
             
             <tr>

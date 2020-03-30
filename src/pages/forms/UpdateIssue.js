@@ -44,7 +44,7 @@ class UpdateIssue extends Component {
               <td><input type="text"
               name='issueName' 
               defaultValue={this.state.issueName}
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             
             <tr>

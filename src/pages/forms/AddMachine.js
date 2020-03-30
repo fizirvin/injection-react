@@ -38,14 +38,14 @@ class AddMachine extends Component {
               <td><input type="text" 
               name='machineNumber' 
               value={this.state.machineNumber}
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td><label>Machine Serial: </label></td>
             <td><input type="text"
               name='machineSerial' 
               value={this.state.machineSerial}
-              onChange={this.onInputChange}>
+              onChange={this.onInputChange} required>
                 </input></td>
             </tr>
             <tr>

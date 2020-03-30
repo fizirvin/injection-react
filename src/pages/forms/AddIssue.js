@@ -36,7 +36,7 @@ class AddIssue extends Component {
               <td><input type="text"
               name='issueName' 
               value={this.state.issueName}
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             
             <tr>

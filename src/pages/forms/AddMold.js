@@ -38,14 +38,14 @@ class AddMold extends Component {
               <td><input type="text"
                 name='moldeNumber' 
                 value={this.state.moldeNumber}
-                onChange={this.onInputChange}></input></td>
+                onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td><label>Mold Serial: </label></td>
             <td><input type="text"
               name='moldeSerial' 
               value={this.state.moldeSerial }
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td></td>

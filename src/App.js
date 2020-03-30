@@ -16,6 +16,7 @@ import AddIssue from './pages/forms/AddIssue.js'
 import UpdateIssue from './pages/forms/UpdateIssue.js'
 import Programs from './pages/Programs.js'
 import AddProgram from './pages/forms/AddProgram.js'
+import UpdateProgram from './pages/forms/UpdateProgram.js'
 import Toolbar from './pages/Toolbar.js'
 
 
@@ -352,6 +353,108 @@ class App extends React.Component {
 
   }
 
+  addProgram = async (program)=>{
+
+    const query = `mutation{newProgram(input:{
+      machineNumber: "${program.machine}"
+      moldeNumber: "${program.molde}"
+      partNumber: "${program.model}"
+      cycles: ${program.cycles}
+      capacity: ${program.capacity}
+    }) {
+      _id
+    machineNumber {
+      _id
+      machineNumber
+      machineSerial
+    }
+    moldeNumber {
+      _id
+      moldeNumber
+      moldeSerial
+    }
+    partNumber {
+      _id
+      partNumber
+
+    }
+    cycles
+    capacity
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    console.log(data)
+
+    if(data.errors){
+    
+    this.setState({programMessage: 'error'})
+    } else{
+      let programs = [...this.state.programs];
+      programs.push(data.data.newProgram);
+      this.setState({programs: programs, programMessage: 'sucess'});
+    }
+
+  }
+
+  updateProgram = async (program)=>{
+
+    const query = `mutation{updateProgram(_id: "${program._id}", input:{
+      machineNumber: "${program.machine}"
+      moldeNumber: "${program.molde}"
+      partNumber: "${program.model}"
+      cycles: ${program.cycles}
+      capacity: ${program.capacity}
+    }) {
+      _id
+    machineNumber {
+      _id
+      machineNumber
+      machineSerial
+    }
+    moldeNumber {
+      _id
+      moldeNumber
+      moldeSerial
+    }
+    partNumber {
+      _id
+      partNumber
+
+    }
+    cycles
+    capacity
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    console.log(data)
+    this.setState({programMessage: 'error'})
+    } else{
+      let program = data.data.updateProgram;
+      let programs = [...this.state.programs];
+      programs[programs.findIndex(el => el._id === program._id)] = program;
+      this.setState({programs: programs, programMessage: 'sucess'});
+    }
+
+  }
+
 
   render(){
 
@@ -397,7 +500,16 @@ class App extends React.Component {
               
               <Route path="/programs" exact component={ props => ( <Programs {...props} programs={this.state.programs}/> )} />
               <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
-                message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
+                machines={this.state.machines} 
+                moldes={this.state.moldes} 
+                models={this.state.models}
+                message={this.state.programMessage} close={this.close} addProgram={this.addProgram}/> )} 
+              />
+              <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} 
+                programs={this.state.programs}
+                machines={this.state.machines} 
+                moldes={this.state.moldes} 
+                models={this.state.models} message={this.state.programMessage} close={this.close} updateProgram={this.updateProgram}/> )} 
               />
               
             </Switch> 

@@ -47,14 +47,14 @@ class UpdateMold extends Component {
               <td><input type="text"
                 name='moldeNumber' 
                 defaultValue={this.state.moldeNumber}
-                onChange={this.onInputChange}></input></td>
+                onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td><label>Mold Serial: </label></td>
             <td><input type="text"
               name='moldeSerial' 
               defaultValue={this.state.moldeSerial}
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td></td>

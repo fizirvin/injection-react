@@ -53,15 +53,14 @@ class UpdateMachine extends Component {
               <td><input type="text" 
               name='machineNumber' 
               defaultValue={this.state.machineNumber}
-              onChange={this.onInputChange}></input></td>
+              onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
             <td><label>Machine Serial: </label></td>
             <td><input type="text"
               name='machineSerial'
               defaultValue={this.state.machineSerial}
-              
-              onChange={this.onInputChange}>
+              onChange={this.onInputChange} required>
                 </input></td>
             </tr>
             <tr>
