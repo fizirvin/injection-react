@@ -17,6 +17,8 @@ import UpdateIssue from './pages/forms/UpdateIssue.js'
 import Programs from './pages/Programs.js'
 import AddProgram from './pages/forms/AddProgram.js'
 import UpdateProgram from './pages/forms/UpdateProgram.js'
+import Reports from './pages/Reports.js'
+import AddReport from './pages/forms/AddReport.js'
 import Toolbar from './pages/Toolbar.js'
 
 
@@ -34,6 +36,7 @@ class App extends React.Component {
     models: [],
     issues: [],
     programs: [],
+    reports: [],
     server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
@@ -75,6 +78,20 @@ class App extends React.Component {
         cycles
         capacity
       }
+      reports{
+        _id
+        reportDate
+        shift
+        machine{
+          _id
+          machineNumber
+          machineSerial}
+        totalOK
+        totalNG
+        downtime
+        efficiency
+    }
+      
     }`
 
     const url = this.state.server;
@@ -91,7 +108,8 @@ class App extends React.Component {
       moldes: data.data.moldes, 
       models: data.data.parts, 
       issues: data.data.issues,
-      programs: data.data.programs 
+      programs: data.data.programs,
+      reports: data.data.reports 
     })
   }
 
@@ -511,7 +529,13 @@ class App extends React.Component {
                 moldes={this.state.moldes} 
                 models={this.state.models} message={this.state.programMessage} close={this.close} updateProgram={this.updateProgram}/> )} 
               />
-              
+              <Route path="/reports" exact component={ props => ( <Reports {...props} reports={this.state.reports}/> )} />
+              <Route path="/reports/add" exact component={ props => ( <AddReport {...props} 
+                machines={this.state.machines} 
+                moldes={this.state.moldes} 
+                models={this.state.models}
+                message={this.state.programMessage} close={this.close} addProgram={this.addProgram}/> )} 
+              />
             </Switch> 
           </div>
         </div>

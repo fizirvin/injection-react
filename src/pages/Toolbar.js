@@ -14,6 +14,7 @@ class Toolbar extends React.Component {
          <Link to="/models"><button className="Button">Models</button></Link>
          <Link to="/issues"><button className="Button">Issues</button></Link>
          <Link to="/programs"><button className="Button">Programs</button></Link>
+         <Link to="/reports"><button className="Button">Reports</button></Link>
       
       </div>
     )
