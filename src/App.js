@@ -175,10 +175,37 @@ class App extends React.Component {
     this.setState({machineMessage: 'error'})
     } else{
 
-    let machine = data.data.updateMachine;
-    let machines = [...this.state.machines];
-    machines[machines.findIndex(el => el._id === machine._id)] = machine;
-      this.setState({machines: machines, machineMessage: 'sucess'});
+      let machine = data.data.updateMachine;
+      let machines = [...this.state.machines];
+      machines[machines.findIndex(el => el._id === machine._id)] = machine;
+
+      let programs = [...this.state.programs]
+      let reports = [...this.state.reports]
+
+      const updateProgramMachine = (programs, machine) => {
+        return programs.map(item => {
+            var temp = Object.assign({}, item);
+            if (temp.machineNumber._id === machine._id) {
+                temp.machineNumber = machine;
+            }
+            return temp;
+        });
+      }
+
+      const updateReportMachine = (reports, machine) => {
+        return reports.map(item => {
+            var temp = Object.assign({}, item);
+            if (temp.machine._id === machine._id) {
+                temp.machine = machine;
+            }
+            return temp;
+        });
+      }
+    
+      const updatedPrograms = updateProgramMachine(programs, machine);
+      const updatedReports = updateReportMachine(reports, machine);
+
+      this.setState({machines: machines, programs: updatedPrograms, reports: updatedReports, machineMessage: 'sucess'});
     }
 
   }
@@ -244,7 +271,23 @@ class App extends React.Component {
       let molde = data.data.updateMolde;
       let moldes = [...this.state.moldes];
       moldes[moldes.findIndex(el => el._id === molde._id)] = molde;
-      this.setState({moldes: moldes, moldeMessage: 'sucess'});
+
+      let programs = [...this.state.programs]
+
+      const updateProgramMolde = (programs, molde) => {
+        return programs.map(item => {
+            var temp = Object.assign({}, item);
+            if (temp.moldeNumber._id === molde._id) {
+                temp.moldeNumber = molde;
+            }
+            return temp;
+        });
+      }
+    
+      const updatedPrograms = updateProgramMolde(programs, molde);
+    
+
+      this.setState({moldes: moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
     }
 
   }
@@ -305,7 +348,22 @@ class App extends React.Component {
       let model = data.data.updatePartNumber;
       let models = [...this.state.models];
       models[models.findIndex(el => el._id === model._id)] = model;
-      this.setState({models: models, modelMessage: 'sucess'});
+
+      let programs = [...this.state.programs]
+
+      const updateProgramModel = (programs, model) => {
+        return programs.map(item => {
+            var temp = Object.assign({}, item);
+            if (temp.partNumber._id === model._id) {
+                temp.partNumber = model;
+            }
+            return temp;
+        });
+      }
+    
+      const updatedPrograms = updateProgramModel(programs, model);
+
+      this.setState({models: models, programs: updatedPrograms, modelMessage: 'sucess'});
     }
 
   }
