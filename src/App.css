@@ -110,7 +110,7 @@ body{
 .program_list{
   margin: 0px;
   padding: 0px;
-  
+  display: inline-block;
   list-style: none;
 }
 
@@ -118,6 +118,14 @@ body{
   width: 55%;
 }
 
+.report_header{
+  background-color: aqua;
+  width: 25%;
+}
+.input_production{
+  background-color: blue;
+  width: 25%;
+}
 
 
 

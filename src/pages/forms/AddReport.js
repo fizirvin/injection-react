@@ -82,24 +82,41 @@ class AddReport extends Component {
   }
 
   renderPrograms = () =>{
-        return this.state.programs.map(( program ) => 
-        <li key={program._id}>
-          <input type='checkbox' onChange={this.onSelect} value={program._id} name={program._id}></input>
-          <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
-        </li>);
-     
-  }
-
-  renderProduction = () => {
-    if(this.state.selected.length === 0){ return null}
-      else {return this.state.selected.map(( production ) => 
-      <tr key={production._id}>
-        <td><label>Pieces OK: </label></td>
-        <input type='text' onChange={this.onInputChange} name={production._id}></input>
-    </tr>);
- 
+    if(this.state.programs.length === 0){
+      return null
+    } 
+    else{
+      return this.state.programs.map(( program ) => 
+      <tr key={program._id}>
+        <td>
+        <input type='checkbox' onChange={this.onSelect} value={program._id} name={program._id}></input>
+        <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
+        </td>
+        {this.renderProduction(program._id)}
+      </tr>);
     }
   }
+
+  renderProduction = (id) => {
+    const selected = this.state.selected.find( program => program._id === id);
+    if(!selected){ return null}
+      else{
+        return(
+          <>
+          <td className='input_production'>
+            <input type='text' className='input_production' onChange={this.onInputChange} name={id}></input>
+          </td>
+          <td className='input_production'>
+            <input type='text' onChange={this.onInputChange} name={id}></input>
+          </td>
+          <td className='input_production'>
+            <input type='text' onChange={this.onInputChange} name={id}></input>
+          </td>
+          </>
+      )
+    }
+  }
+  
 
   renderButton= ()=>{
     if(this.state.programs.length === 0){
@@ -122,16 +139,13 @@ class AddReport extends Component {
               </tr>
     }  else {
       return (
-          <tr>
-            <td>
-              <label>Choose Mold: </label>       
-            </td>
-            <td>
-              <ul className='program_list'>
-                {this.renderPrograms()}
-              </ul>                
-            </td>
-          </tr>
+      <tr>
+        <th>Mold</th>
+        <th>PartNumber</th>
+        <th>Total Pcs</th>
+        <th>Total NG</th>
+        <th>Total OK</th>
+      </tr>    
       )
     }
   }
@@ -149,36 +163,30 @@ class AddReport extends Component {
             <table>
           <tbody>
           <tr>
-              <td><label>Date: </label></td>
-              <td>
-              <input type="date" onChange={this.onInputChange}/>
-              </td>
-            </tr>
-            <tr>
-              <td><label>Shift: </label></td>
-              <td>
+            <th className="report_header"><label>Date: </label> 
+                <input type="date" onChange={this.onInputChange}/>
+            </th>
+            <th className="report_header"><label>Shift: </label> 
                 <select onChange={this.onInputChange} name="shift" defaultValue="" required>
                   <option disabled value="">select</option>
                   <option value='1'>1</option>
                   <option value='2'>2</option>
                 </select>
-              </td>
-            </tr> 
-            <tr>
-              <td><label>Machine Number: </label></td>
-              <td>
+            </th>
+            <th className="report_header"><label>Machine: </label>
                 <select onChange={this.onMachineChange} name="machine" defaultValue="" required>
                   <option disabled value="">select</option>
                   {this.renderMachines()}
                 </select>
-              </td>
-            </tr>
-                {this.renderChoose()}
-            <tr>
-              <td><label>Production: </label></td>
-            </tr>
+            </th>
+            <td className="report_header"></td>
+            <td className="report_header"></td>
+          </tr>
+          
+          {this.renderChoose()}
+          {this.renderPrograms()}
+  
             
-              {this.renderProduction()}
             
             <tr>
             <td></td>
