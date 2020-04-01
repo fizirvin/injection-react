@@ -44,7 +44,7 @@ class Reports extends React.Component {
             <th className="table_header">Total NG</th>
             <th className="table_header">Downtime</th>
             <th className="table_header">Efficiency</th>
-            <th className="table_header">Add Report</th>
+            <th className="table_header"><Link to="/reports/add"><button>Add Report</button></Link></th>
           </tr>
           </thead> 
           <tbody>
