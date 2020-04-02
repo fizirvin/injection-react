@@ -119,13 +119,85 @@ body{
 }
 
 .report_header{
-  background-color: aqua;
+  border: solid 1px;
   width: 25%;
 }
-.input_production{
-  background-color: blue;
+
+
+.checkbox-container{
+  display: flex;
+  flex-wrap: wrap;
+  border: solid 1px;
+  margin-bottom: 2px;  
+}
+
+.checkboxes{
+ 
+  
+  margin: 0px;
+  margin-right: 2%;
+  margin-bottom: 1%;
+  width: 22%;
+  padding: 0;
+  padding-left: 2%;
+  text-align: left;
+  border-radius: 9px;
+}
+
+.checkbox-input{
+ padding-left: 1%;
+ margin: 0;
+}
+
+.production_table-container{
+  border: solid 2px;
+  width: 100%;
+}
+
+.production_row{
+  border: solid 1px;
+}
+
+.production_table{
+  border: solid 1px;
+}
+
+.production_input{
+  background-color: gold;
+  width: 95%;
+}
+
+.time_input{
   width: 25%;
 }
+
+.date_input{
+  width: 70%;
+}
+
+.molde{
+  width: 20%;
+}
+
+.model{
+  width: 20%;
+}
+
+.pcs{
+  width: 10%;
+}
+.ng{
+  width: 10%;
+}
+.ok{
+  width: 10%;
+}
+
+.title_header{
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 
 
 

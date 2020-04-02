@@ -86,36 +86,49 @@ class AddReport extends Component {
       return null
     } 
     else{
-      return this.state.programs.map(( program ) => 
-      <tr key={program._id}>
-        <td>
-        <input type='checkbox' onChange={this.onSelect} value={program._id} name={program._id}></input>
+      return (this.state.programs.map(( program ) => 
+        <div key={program._id} className='checkboxes'>
+        <input type='checkbox' className='checkbox-input' onChange={this.onSelect} value={program._id} name={program._id}></input>
         <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
-        </td>
-        {this.renderProduction(program._id)}
-      </tr>);
+        </div>)
+      );
     }
   }
 
-  renderProduction = (id) => {
-    const selected = this.state.selected.find( program => program._id === id);
-    if(!selected){ return null}
-      else{
-        return(
-          <>
-          <td className='input_production'>
-            <input type='text' className='input_production' onChange={this.onInputChange} name={id}></input>
+  renderProduction = () =>{
+    const selected = this.state.selected;
+    if(!selected){ 
+      return null 
+    }
+    else{ 
+      return selected.map(( program ) =>
+        <tr key={program._id}>
+          <td className='production_row'>
+            <label>{program.moldeNumber.moldeNumber}</label>
           </td>
-          <td className='input_production'>
-            <input type='text' onChange={this.onInputChange} name={id}></input>
+          <td className='production_row'>
+          <label>{program.partNumber.partNumber}</label>
           </td>
-          <td className='input_production'>
-            <input type='text' onChange={this.onInputChange} name={id}></input>
+          <td className='production_row'>
+            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
           </td>
-          </>
-      )
+          <td className='production_row'>
+            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
+          </td>
+          <td className='production_row'>
+           
+          </td>
+          <td className='production_row'>
+            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
+          </td>
+          <td className='production_row'>
+           
+          </td>
+        </tr>  
+      );
     }
   }
+
   
 
   renderButton= ()=>{
@@ -139,13 +152,22 @@ class AddReport extends Component {
               </tr>
     }  else {
       return (
+        <table className='production_table-container'>
+          <thead>
       <tr>
-        <th>Mold</th>
-        <th>PartNumber</th>
-        <th>Total Pcs</th>
-        <th>Total NG</th>
-        <th>Total OK</th>
-      </tr>    
+        <th className='production_table molde'>Mold</th>
+        <th className='production_table model'>PartNumber</th>
+        <th className='production_table pcs'>Real (pcs)</th>
+        <th className='production_table ng'>NG (pcs)</th>
+        <th className='production_table ok'>OK (pcs)</th>
+        <th className='production_table ok'>Time (hrs)</th>
+        <th className='production_table ok'>OEE%</th>
+      </tr>
+      </thead>
+      <tbody>
+        {this.renderProduction()}
+      </tbody>
+      </table>    
       )
     }
   }
@@ -164,7 +186,7 @@ class AddReport extends Component {
           <tbody>
           <tr>
             <th className="report_header"><label>Date: </label> 
-                <input type="date" onChange={this.onInputChange}/>
+                <input type="date" className='date_input' onChange={this.onInputChange}/>
             </th>
             <th className="report_header"><label>Shift: </label> 
                 <select onChange={this.onInputChange} name="shift" defaultValue="" required>
@@ -179,12 +201,25 @@ class AddReport extends Component {
                   {this.renderMachines()}
                 </select>
             </th>
-            <td className="report_header"></td>
-            <td className="report_header"></td>
+            <th className="report_header">
+                <label>Time (hrs): </label>
+                <input type="number" className='time_input' onChange={this.onInputChange}/>
+            </th>
           </tr>
+          </tbody>
+          </table>         
+           
+           <div className='title_header'>
+            Injection Molds:
+
+           </div>
+
+          <div className='checkbox-container'>
+          {this.renderPrograms()}
+
+          </div>
           
           {this.renderChoose()}
-          {this.renderPrograms()}
   
             
             
@@ -193,8 +228,6 @@ class AddReport extends Component {
             <td><Link to="/reports"><button>Cancel</button></Link>
             {this.renderButton()}</td>
             </tr>
-          </tbody>
-          </table>         
           </form>
            
 
