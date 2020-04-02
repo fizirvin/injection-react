@@ -66,6 +66,42 @@ class AddReport extends Component {
     return oee
   }
 
+  totalReal = () =>{
+    let selected = [...this.state.selected];
+    const real = selected.reduce( (a, b) =>{
+      return a + b.production.real || 0
+    },0)
+
+    return real
+  }
+
+  totalNG = () =>{
+    let selected = [...this.state.selected];
+    const ng = selected.reduce( (a, b) =>{
+      return a + b.production.ng || 0
+    },0)
+
+    return ng
+  }
+
+  totalOK = () =>{
+    let selected = [...this.state.selected];
+    const ok = selected.reduce( (a, b) =>{
+      return a + b.production.ok || 0
+    },0)
+
+    return ok
+  }
+
+  totalTIME = () =>{
+    let selected = [...this.state.selected];
+    const time = selected.reduce( (a, b) =>{
+      return a + b.production.time || 0
+    },0)
+
+    return time
+  }
+
 
 
   onClose = () =>{
@@ -230,6 +266,17 @@ class AddReport extends Component {
       <tbody>
         {this.renderProduction()}
       </tbody>
+      <tfoot>
+      <tr>
+        <th></th>
+        <th className='production_table model'>Total</th>
+      <th className='production_table pcs'><input type='number' className='production_input' name='real' value={this.totalReal()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalNG()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOK()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalTIME()} disabled></input></th>
+        <th className='production_table ok'>OEE%</th>
+      </tr>
+      </tfoot>
       </table>    
       )
     }
