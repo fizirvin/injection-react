@@ -4,12 +4,69 @@ import { Link } from 'react-router-dom';
 
 class AddReport extends Component {
   state= {
+    date: '',
     shift: '',
     machine: '',
+    time: 10,
     programs: [],
     production: [],
     selected: []
   }
+
+
+  showState = () =>{
+    console.log(this.state)
+  }
+
+  onRealProduction = async (e) =>{
+
+    const value = parseInt(e.target.value);
+    let selected = [...this.state.selected];
+    const ok = value - selected[selected.findIndex(el => el._id === e.target.name)].production.ng;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.real = value;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
+    this.setState({selected});
+  }
+
+  onNGProduction = (e) =>{
+    const value = parseInt(e.target.value);
+    let selected = [...this.state.selected];
+
+    const ok = selected[selected.findIndex(el => el._id === e.target.name)].production.real - value;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.ng = value;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
+    this.setState({selected});
+  }
+
+  onTimeProduction = (e) =>{
+    const value = parseInt(e.target.value);
+    let selected = [...this.state.selected];
+
+    
+    selected[selected.findIndex(el => el._id === e.target.name)].production.time = value;
+   
+    this.setState({selected});
+
+  }
+
+  getOK = (id) =>{
+    let selected = [...this.state.selected];
+    const real = selected[selected.findIndex(el => el._id === id)].production.real
+    const ng = selected[selected.findIndex(el => el._id === id)].production.ng
+    return real - ng
+  }
+
+  getOEE = (id) =>{
+    let selected = [...this.state.selected];
+    const time = selected[selected.findIndex(el => el._id === id)].production.time
+    const capacity = selected[selected.findIndex(el => el._id === id)].capacity
+    const production = selected[selected.findIndex(el => el._id === id)].production.ok
+    const expected = capacity * time
+    const oee = parseInt((production/expected)*100)|0;
+    return oee
+  }
+
+
 
   onClose = () =>{
     this.props.close('programMessage')
@@ -40,7 +97,13 @@ class AddReport extends Component {
         partNumber: partNumber,
         moldeNumber: moldeNumber,
         cycles: cycles,
-        capacity: capacity
+        capacity: capacity,
+        production: {
+          real: 0,
+          ng: 0,
+          ok: 0,
+          time: 0
+        }
       }
 
       programs.push(item);
@@ -110,19 +173,19 @@ class AddReport extends Component {
           <label>{program.partNumber.partNumber}</label>
           </td>
           <td className='production_row'>
-            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
+            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
-            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
+            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
-           
+          <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' className='production_input' onChange={this.onInputChange} ></input>
+            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
           </td>
           <td className='production_row'>
-           
+          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
           </td>
         </tr>  
       );
@@ -186,9 +249,10 @@ class AddReport extends Component {
           <tbody>
           <tr>
             <th className="report_header"><label>Date: </label> 
-                <input type="date" className='date_input' onChange={this.onInputChange}/>
+                <input type="date" name='date' className='date_input' onChange={this.onInputChange} required/>
             </th>
-            <th className="report_header"><label>Shift: </label> 
+            <th className="report_header">
+                <label>Shift: </label> 
                 <select onChange={this.onInputChange} name="shift" defaultValue="" required>
                   <option disabled value="">select</option>
                   <option value='1'>1</option>
@@ -203,7 +267,10 @@ class AddReport extends Component {
             </th>
             <th className="report_header">
                 <label>Time (hrs): </label>
-                <input type="number" className='time_input' onChange={this.onInputChange}/>
+                <input type="number" 
+                className='time_input' 
+                name='time'
+                value={this.state.time} onChange={this.onInputChange} required/>
             </th>
           </tr>
           </tbody>
@@ -223,11 +290,10 @@ class AddReport extends Component {
   
             
             
-            <tr>
-            <td></td>
-            <td><Link to="/reports"><button>Cancel</button></Link>
-            {this.renderButton()}</td>
-            </tr>
+            
+            <button type='button' onClick={this.showState}>state</button>
+            <Link to="/reports"><button>Cancel</button></Link>
+            {this.renderButton()}
           </form>
            
 
