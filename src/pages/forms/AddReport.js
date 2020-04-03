@@ -10,7 +10,10 @@ class AddReport extends Component {
     time: 10,
     programs: [],
     production: [],
-    selected: []
+    selected: [],
+    real: 0,
+    oee: 0,
+    show: 'molds'
   }
 
 
@@ -20,32 +23,52 @@ class AddReport extends Component {
 
   onRealProduction = async (e) =>{
 
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value)|0;
     let selected = [...this.state.selected];
+    
     const ok = value - selected[selected.findIndex(el => el._id === e.target.name)].production.ng;
+    const time = selected[selected.findIndex(el => el._id === e.target.name)].production.time;
+    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity;
+    const production = ok;
+    const expected = capacity * time;
+    const oee = parseInt((production/expected)*100)|0;
     selected[selected.findIndex(el => el._id === e.target.name)].production.real = value;
     selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
-    this.setState({selected});
+    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
+    
+    
+    return this.setState({selected: selected});
   }
 
   onNGProduction = (e) =>{
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value)|0;
     let selected = [...this.state.selected];
 
     const ok = selected[selected.findIndex(el => el._id === e.target.name)].production.real - value;
+    const time = selected[selected.findIndex(el => el._id === e.target.name)].production.time;
+    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity;
+    
+    const expected = capacity * time;
+    const oee = parseInt((ok/expected)*100)|0;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
     selected[selected.findIndex(el => el._id === e.target.name)].production.ng = value;
     selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
-    this.setState({selected});
+    return this.setState({selected});
   }
 
   onTimeProduction = (e) =>{
-    const value = parseInt(e.target.value);
+    const value = parseInt(e.target.value)|0;
     let selected = [...this.state.selected];
 
     
     selected[selected.findIndex(el => el._id === e.target.name)].production.time = value;
-   
-    this.setState({selected});
+    const time = parseInt(e.target.value);
+    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity
+    const production = selected[selected.findIndex(el => el._id === e.target.name)].production.ok
+    const expected = capacity * time
+    const oee = parseInt((production/expected)*100)|0;
+    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
+    return this.setState({selected});
 
   }
 
@@ -53,7 +76,8 @@ class AddReport extends Component {
     let selected = [...this.state.selected];
     const real = selected[selected.findIndex(el => el._id === id)].production.real
     const ng = selected[selected.findIndex(el => el._id === id)].production.ng
-    return real - ng
+    const ok = real - ng
+    return isNaN(ok) ? 0 : ok;
   }
 
   getOEE = (id) =>{
@@ -62,8 +86,8 @@ class AddReport extends Component {
     const capacity = selected[selected.findIndex(el => el._id === id)].capacity
     const production = selected[selected.findIndex(el => el._id === id)].production.ok
     const expected = capacity * time
-    const oee = parseInt((production/expected)*100)|0;
-    return oee
+    const oee = parseInt((production/expected)*100);
+    return isNaN(oee) ? 0 : oee;
   }
 
   totalReal = () =>{
@@ -71,7 +95,7 @@ class AddReport extends Component {
     const real = selected.reduce( (a, b) =>{
       return a + b.production.real || 0
     },0)
-
+    
     return real
   }
 
@@ -81,7 +105,7 @@ class AddReport extends Component {
       return a + b.production.ng || 0
     },0)
 
-    return ng
+    return isNaN(ng) ? 0 : ng;
   }
 
   totalOK = () =>{
@@ -90,7 +114,7 @@ class AddReport extends Component {
       return a + b.production.ok || 0
     },0)
 
-    return ok
+    return isNaN(ok) ? 0 : ok;
   }
 
   totalTIME = () =>{
@@ -99,7 +123,18 @@ class AddReport extends Component {
       return a + b.production.time || 0
     },0)
 
-    return time
+    return isNaN(time) ? 0 : time;
+  }
+
+  totalOEE = () =>{
+    let selected = [...this.state.selected];
+    const length = selected.length;
+    const sum = selected.reduce( (a, b) =>{
+      return a + b.production.oee || 0
+    },0)
+    const oee = sum/length
+
+    return isNaN(oee) ? 0 : oee;
   }
 
 
@@ -110,7 +145,7 @@ class AddReport extends Component {
 
   onInputChange = e => {
     this.setState({ [e.target.name]: e.target.value });
-    console.log(e.target.value)
+    
   };
 
   onMachineChange = e =>{
@@ -138,17 +173,18 @@ class AddReport extends Component {
           real: 0,
           ng: 0,
           ok: 0,
-          time: 0
+          time: 0,
+          oee: 0
         }
       }
 
       programs.push(item);
       this.setState({selected: programs});
-      console.log('no esta', programs)
+      
     } else{
       const items = this.state.selected.filter(program => program._id !== id);
     this.setState({ selected: items });
-      console.log('si esta')
+      
     }
   }
 
@@ -185,12 +221,20 @@ class AddReport extends Component {
       return null
     } 
     else{
-      return (this.state.programs.map(( program ) => 
+      if(this.state.show === 'molds'){
+        return (this.state.programs.map(( program ) => 
         <div key={program._id} className='checkboxes'>
         <input type='checkbox' className='checkbox-input' onChange={this.onSelect} value={program._id} name={program._id}></input>
         <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
         </div>)
       );
+      } else{
+        return (this.props.issues.map(( issue ) => 
+        <div key={issue._id} className='checkboxes issuesboxes'>
+        <input type='checkbox' className='checkbox-input' onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
+        <label htmlFor={issue._id}>{issue.issueName}</label>
+        </div>))
+      }
     }
   }
 
@@ -228,7 +272,25 @@ class AddReport extends Component {
     }
   }
 
-  
+  showMolds = ( ) => {
+    return this.setState({show: 'molds'})
+  }
+
+  showIssues = ( ) => {
+    return this.setState({show: 'issues'})
+  }
+
+  renderTitle = () =>{
+    if(!this.state.machine){
+      return
+    } else { return(
+    <div className='title_header'>
+            <button type='button' onClick={this.showMolds}>Injection Molds</button>
+            <button type='button' onClick={this.showIssues}>Downtime</button>
+           </div>
+    )
+  }
+}
 
   renderButton= ()=>{
     if(this.state.programs.length === 0){
@@ -246,9 +308,9 @@ class AddReport extends Component {
     } else {
 
     if(this.state.programs.length === 0){
-      return <tr><td>program not found</td>
-      <td><Link to="/programs/add"><button>Add Program</button></Link></td>
-              </tr>
+      return <div>program not found <Link to="/programs/add"><button>Add Program</button></Link></div>
+  
+            
     }  else {
       return (
         <table className='production_table-container'>
@@ -274,7 +336,7 @@ class AddReport extends Component {
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalNG()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOK()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalTIME()} disabled></input></th>
-        <th className='production_table ok'>OEE%</th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
       </tr>
       </tfoot>
       </table>    
@@ -288,10 +350,10 @@ class AddReport extends Component {
   
   if(this.props.message === 'new'){
     return ReactDOM.createPortal(
-    <div className="Modal">
-        <div className="modal-content report_modal">
+    <div className="Modal-report">
+        <div className="modal-report-content report_modal">
           <h2>Injection Production Report:</h2>
-          <form onSubmit={this.onSubmit}>
+          <form onSubmit={this.onSubmit} className='report-form'>
             <table>
           <tbody>
           <tr>
@@ -323,10 +385,7 @@ class AddReport extends Component {
           </tbody>
           </table>         
            
-           <div className='title_header'>
-            Injection Molds:
-
-           </div>
+           {this.renderTitle()}
 
           <div className='checkbox-container'>
           {this.renderPrograms()}

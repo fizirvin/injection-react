@@ -593,6 +593,7 @@ class App extends React.Component {
                 machines={this.state.machines} 
                 moldes={this.state.moldes} 
                 models={this.state.models}
+                issues={this.state.issues}
                 message={this.state.programMessage} close={this.close} addProgram={this.addProgram}/> )} 
               />
             </Switch> 
