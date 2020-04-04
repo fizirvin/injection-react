@@ -156,6 +156,16 @@ class AddReport extends Component {
     
   }
 
+  findDowntime = (id) =>{
+    const select = this.state.downtime.find( downtime => downtime._id === id);
+    return select ? true : false
+  }
+
+  findMolde = (id) =>{
+    const select = this.state.selected.find( selected => selected._id === id);
+    return select ? true : false
+  }
+
   onSelectIssue = e =>{
     let downtime = [...this.state.downtime];
     const id = e.target.name 
@@ -257,7 +267,7 @@ class AddReport extends Component {
           return <div>program not found <Link to="/programs/add"><button>Add Program</button></Link></div>
         }else{return (this.state.programs.map(( program ) => 
           <div key={program._id} className='checkboxes'>
-          <input type='checkbox' className='checkbox-input' onChange={this.onSelect} value={program._id} name={program._id}></input>
+          <input type='checkbox' className='checkbox-input' checked={this.findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
           <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
           </div>)
         )}
@@ -265,13 +275,30 @@ class AddReport extends Component {
       } else{
         return (this.props.issues.map(( issue ) => 
         <div key={issue._id} className='checkboxes issuesboxes'>
-        <input type='checkbox' className='checkbox-input' onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
+        <input type='checkbox' className='checkbox-input' checked={this.findDowntime(issue._id)} onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
         <label htmlFor={issue._id}>{issue.issueName}</label>
         </div>))
     }
   }
 
-
+  renderTableDownTime = () =>{
+    const downtime = this.state.downtime;
+    if(!downtime){ 
+      return null 
+    }
+    else{ 
+      return downtime.map(( downtime ) =>
+        <tr key={downtime._id}>
+          <td className='production_row'>
+            <label>{downtime.issueName}</label>
+          </td>
+          <td className='production_row'>
+            <input type='number' defaultValue={0} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
+          </td>
+        </tr>  
+      );
+    }
+  }
   renderProduction = () =>{
     const selected = this.state.selected;
     if(!selected){ 
@@ -347,7 +374,7 @@ class AddReport extends Component {
       </tr>
       </thead>
       <tbody>
-        {/* {this.renderProduction()} */}
+        {this.renderTableDownTime()}
       </tbody>
       <tfoot>
       <tr>

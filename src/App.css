@@ -135,9 +135,11 @@ display: flex;
   margin-bottom: 2px;
   width: 60%;  
   overflow-y: scroll;
-  max-height: 150px;
-  min-height: 150px;
+  max-height: 168px;
+  min-height: 168px;
 }
+
+
 
 .downtime-table{
   
