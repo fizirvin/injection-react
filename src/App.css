@@ -125,12 +125,26 @@ body{
 }
 
 
+.section_two{
+display: flex;
+}
 .checkbox-container{
   display: flex;
   flex-wrap: wrap;
   border: solid 1px;
-  margin-bottom: 2px;  
+  margin-bottom: 2px;
+  width: 60%;  
+  overflow-y: scroll;
+  max-height: 150px;
+  min-height: 150px;
 }
+
+.downtime-table{
+  
+  width: 39%;
+  margin-bottom: 2px;
+  margin-left: 2px; 
+  }
 
 .checkboxes{
  
@@ -138,7 +152,7 @@ body{
   margin: 0px;
   margin-right: 2%;
   margin-bottom: 1%;
-  width: 22%;
+  width: 45%;
   padding: 0;
   padding-left: 2%;
   text-align: left;
@@ -146,8 +160,10 @@ body{
 }
 
 .issuesboxes{
-  width: 29%;
+  width: 45%;
 }
+
+
 
 .checkbox-input{
  padding-left: 1%;
@@ -168,10 +184,14 @@ body{
   background-color: gold;
 }
 
+
+
 .production_input{
   
   width: 95%;
 }
+
+
 
 
 .time_input{
@@ -233,6 +253,13 @@ body{
 
 .report_modal{
   width: 55%;
+}
+
+.issueName{
+  width: 75%;
+}
+.mins{
+  width: 25%;
 }
 
 

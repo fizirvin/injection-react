@@ -13,7 +13,8 @@ class AddReport extends Component {
     selected: [],
     real: 0,
     oee: 0,
-    show: 'molds'
+    show: 'molds',
+    downtime: []
   }
 
 
@@ -155,6 +156,30 @@ class AddReport extends Component {
     
   }
 
+  onSelectIssue = e =>{
+    let downtime = [...this.state.downtime];
+    const id = e.target.name 
+    //   machines.push(data.data.newMachine);
+    const select = this.state.downtime.find( downtime => downtime._id === id);
+    if(!select){
+      const getIssue = this.props.issues.find( issue => issue._id === id);
+      const { _id, issueName } = {...getIssue}
+      const item ={
+        _id: _id,
+        issueName: issueName,
+        mins: 0
+      }
+
+      downtime.push(item);
+      this.setState({downtime: downtime});
+      
+    } else{
+      const items = this.state.downtime.filter(downtime => downtime._id !== id);
+    this.setState({ downtime: items });
+      
+    }
+  }
+
   onSelect = e =>{
     let programs = [...this.state.selected];
     const id = e.target.name 
@@ -216,27 +241,36 @@ class AddReport extends Component {
     return programs
   }
 
+  renderContainer = () =>{
+    if(!this.state.machine){ return null } 
+     else {
+        return (<div className='checkbox-container'>
+        {this.renderPrograms()}
+  
+      </div>)
+    }
+  }
+
   renderPrograms = () =>{
-    if(this.state.programs.length === 0){
-      return null
-    } 
-    else{
       if(this.state.show === 'molds'){
-        return (this.state.programs.map(( program ) => 
-        <div key={program._id} className='checkboxes'>
-        <input type='checkbox' className='checkbox-input' onChange={this.onSelect} value={program._id} name={program._id}></input>
-        <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
-        </div>)
-      );
+        if(this.state.programs.length === 0){
+          return <div>program not found <Link to="/programs/add"><button>Add Program</button></Link></div>
+        }else{return (this.state.programs.map(( program ) => 
+          <div key={program._id} className='checkboxes'>
+          <input type='checkbox' className='checkbox-input' onChange={this.onSelect} value={program._id} name={program._id}></input>
+          <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
+          </div>)
+        )}
+        
       } else{
         return (this.props.issues.map(( issue ) => 
         <div key={issue._id} className='checkboxes issuesboxes'>
         <input type='checkbox' className='checkbox-input' onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
         <label htmlFor={issue._id}>{issue.issueName}</label>
         </div>))
-      }
     }
   }
+
 
   renderProduction = () =>{
     const selected = this.state.selected;
@@ -300,18 +334,38 @@ class AddReport extends Component {
     }
   }
 
+  renderDownTable = () =>{
+    if(!this.state.machine){
+      return
+    } else { 
+      return (
+        <table className='production_table-container'>
+          <thead>
+      <tr>
+        <th className='production_table issueName'>Down Time</th>
+        <th className='production_table mins'>Time (min)</th>
+      </tr>
+      </thead>
+      <tbody>
+        {/* {this.renderProduction()} */}
+      </tbody>
+      <tfoot>
+      <tr>
+        <th className='production_table'>Total</th>
+      <th className='production_table mins'><input type='number' className='production_input' name='real' value={this.totalReal()} disabled></input></th>
+
+      </tr>
+      </tfoot>
+      </table>    
+      )}
+  }
+
 
   renderChoose = () =>{
 
     if(!this.state.machine){
       return
     } else {
-
-    if(this.state.programs.length === 0){
-      return <div>program not found <Link to="/programs/add"><button>Add Program</button></Link></div>
-  
-            
-    }  else {
       return (
         <table className='production_table-container'>
           <thead>
@@ -342,7 +396,6 @@ class AddReport extends Component {
       </table>    
       )
     }
-  }
   }
 
   render() {
@@ -386,12 +439,12 @@ class AddReport extends Component {
           </table>         
            
            {this.renderTitle()}
-
-          <div className='checkbox-container'>
-          {this.renderPrograms()}
-
+          <div className='section_two'>
+            {this.renderContainer()}
+            <div className='downtime-table'>
+              {this.renderDownTable()}
+            </div>
           </div>
-          
           {this.renderChoose()}
   
             
