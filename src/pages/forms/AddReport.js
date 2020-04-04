@@ -22,6 +22,13 @@ class AddReport extends Component {
     console.log(this.state)
   }
 
+  onMins = (e) =>{
+    const value = parseInt(e.target.value)|0;
+    let downtime = [...this.state.downtime];
+    downtime[downtime.findIndex(el => el._id === e.target.name)].mins = value;
+    return this.setState({downtime});
+  }
+
   onRealProduction = async (e) =>{
 
     const value = parseInt(e.target.value)|0;
@@ -98,6 +105,15 @@ class AddReport extends Component {
     },0)
     
     return real
+  }
+
+  totalMins = () =>{
+    let downtime = [...this.state.downtime];
+    const mins = downtime.reduce( (a, b) =>{
+      return a + b.mins || 0
+    },0)
+    
+    return mins
   }
 
   totalNG = () =>{
@@ -379,7 +395,7 @@ class AddReport extends Component {
       <tfoot>
       <tr>
         <th className='production_table'>Total</th>
-      <th className='production_table mins'><input type='number' className='production_input' name='real' value={this.totalReal()} disabled></input></th>
+      <th className='production_table mins'><input type='number' className='production_input' name='mins' value={this.totalMins()} disabled></input></th>
 
       </tr>
       </tfoot>
