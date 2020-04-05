@@ -23,7 +23,7 @@ class Reports extends React.Component {
       <td className="table_data">{ report.totalOK}</td>
       <td className="table_data">{ report.totalNG}</td>
       <td className="table_data">{ report.downtime}</td>
-      <td className="table_data">{ report.efficiency}</td>
+      <td className="table_data">{ report.efficiency.$numberDecimal}</td>
       <td className="table_data">Update</td>
     </tr>)
   }
@@ -31,6 +31,7 @@ class Reports extends React.Component {
 
 
   render(){
+    
     return (
       <div className="Issues">
         <h2 className="section_header">Injection Production Reports:</h2>

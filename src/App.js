@@ -32,6 +32,7 @@ class App extends React.Component {
     modelMessage: 'new',
     issueMessage: 'new',
     programMessage: 'new',
+    reportMessage: 'new',
     moldes: [],
     models: [],
     issues: [],
@@ -103,6 +104,7 @@ class App extends React.Component {
     const res = await fetch(url, opts);
     const data = await res.json();
     
+    console.log(data.data.reports)
     this.setState({ 
       machines: data.data.machines, 
       moldes: data.data.moldes, 
@@ -531,6 +533,56 @@ class App extends React.Component {
 
   }
 
+  addReport = async (report)=>{
+
+
+    const query = `mutation{newInjectionReport(input:{
+      reportDate: "${report.date}"
+      shift: "${report.shift}"
+      machine: "${report.machine}"
+      totalReal: ${report.totalReal}
+      totalOK: ${report.totalOK}
+      totalNG: ${report.totalNG}
+      totalTime: ${report.totalTime}
+      downtime: ${report.totalMins}
+      efficiency: ${report.totalOEE}
+    }) {
+      _id
+      reportDate
+      shift
+      machine{
+        _id
+      }
+      totalReal
+      totalOK
+      totalNG
+      totalTime
+      downtime
+      efficiency
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    console.log(data)
+
+    if(data.errors){
+    
+    this.setState({programMessage: 'error'})
+    } else{
+      let reports = [...this.state.reports];
+      reports.push(data.data.newInjectionReport);
+      this.setState({reports: reports, reportMessage: 'sucess'});
+    }
+
+  }
+
 
   render(){
 
@@ -591,10 +643,8 @@ class App extends React.Component {
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
                 programs={this.state.programs} 
                 machines={this.state.machines} 
-                moldes={this.state.moldes} 
-                models={this.state.models}
                 issues={this.state.issues}
-                message={this.state.programMessage} close={this.close} addProgram={this.addProgram}/> )} 
+                message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
               />
             </Switch> 
           </div>

@@ -9,10 +9,7 @@ class AddReport extends Component {
     machine: '',
     time: 10,
     programs: [],
-    production: [],
     selected: [],
-    real: 0,
-    oee: 0,
     show: 'molds',
     downtime: []
   }
@@ -157,7 +154,7 @@ class AddReport extends Component {
 
 
   onClose = () =>{
-    this.props.close('programMessage')
+    this.props.close('reportMessage')
   }
 
   onInputChange = e => {
@@ -213,19 +210,21 @@ class AddReport extends Component {
     const selected = this.state.selected.find( program => program._id === id);
     if(!selected){
       const getProgram = this.state.programs.find( program => program._id === id);
-      const { _id, partNumber, moldeNumber, cycles, capacity } = {...getProgram}
+      const { _id, partNumber, moldeNumber, capacity } = {...getProgram}
       const item ={
         _id: _id,
-        partNumber: partNumber,
         moldeNumber: moldeNumber,
-        cycles: cycles,
+        partNumber: partNumber,
         capacity: capacity,
         production: {
+          partNumber: partNumber._id,
+          molde: moldeNumber._id,
           real: 0,
           ng: 0,
           ok: 0,
           time: 0,
-          oee: 0
+          oee: 0,
+          capacity: capacity
         }
       }
 
@@ -239,10 +238,34 @@ class AddReport extends Component {
     }
   }
 
-  onSubmit = e =>{
+  onSubmit = async (e) =>{
     e.preventDefault();
     // this.props.addProgram(this.state);
+    const totalReal= this.totalReal();
+    const totalOK = this.totalOK();
+    const totalNG = this.totalNG();
+    const totalTime = this.totalTIME();
+    const totalMins = this.totalMins();
+    const totalOEE = this.totalOEE();
     
+    const production = this.state.selected.map((item => item.production))
+    const date = this.state.date+'T00:00:00.000-06:00';
+    const report = {
+      date,
+      shift: this.state.shift,
+      machine: this.state.machine,
+      totalReal,
+      totalOK,
+      totalNG,
+      totalTime,
+      totalMins,
+      totalOEE,
+      production: production,
+      downtime: this.state.downtime
+    }
+    
+  
+    return this.props.addReport(report)
   }
 
 
@@ -251,14 +274,7 @@ class AddReport extends Component {
     <option key={machine._id} value={machine._id}>{machine.machineNumber}</option>);
   }
 
-  renderMoldes(){
-    return this.props.moldes.map(( molde ) => 
-    <option key={molde._id} value={molde._id}>{molde.moldeNumber}</option>);
-  }
-  renderModels(){
-    return this.props.models.map(( model ) => 
-    <option key={model._id} value={model._id}>{model.partNumber}</option>);
-  }
+ 
 
   filterPrograms = (value) =>{
      const programs =  this.props.programs.filter(program => {
@@ -508,7 +524,7 @@ class AddReport extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          Something goes Wrong, Try again later <Link to="/programs"><button onClick={this.onClose}>Close</button></Link>
+          Something goes Wrong, Try again later <Link to="/reports"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -516,7 +532,7 @@ class AddReport extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          New Injection Program added correctly <Link to="/programs"><button onClick={this.onClose}>Close</button></Link>
+          New Injection Report added correctly <Link to="/reports"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
