@@ -87,8 +87,11 @@ class App extends React.Component {
           _id
           machineNumber
           machineSerial}
+        totalReal
         totalOK
         totalNG
+        totalCapacity
+        totalTime
         downtime
         efficiency
     }
@@ -104,7 +107,6 @@ class App extends React.Component {
     const res = await fetch(url, opts);
     const data = await res.json();
     
-    console.log(data.data.reports)
     this.setState({ 
       machines: data.data.machines, 
       moldes: data.data.moldes, 
@@ -469,7 +471,7 @@ class App extends React.Component {
 
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log(data)
+    
 
     if(data.errors){
     
@@ -522,7 +524,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data)
+    
     this.setState({programMessage: 'error'})
     } else{
       let program = data.data.updateProgram;
@@ -543,6 +545,7 @@ class App extends React.Component {
       totalReal: ${report.totalReal}
       totalOK: ${report.totalOK}
       totalNG: ${report.totalNG}
+      totalCapacity: ${report.totalCapacity}
       totalTime: ${report.totalTime}
       downtime: ${report.totalMins}
       efficiency: ${report.totalOEE}
@@ -552,11 +555,14 @@ class App extends React.Component {
       shift
       machine{
         _id
+        machineNumber
+        machineSerial
       }
       totalReal
       totalOK
       totalNG
       totalTime
+      totalCapacity
       downtime
       efficiency
     }}`;
@@ -571,10 +577,9 @@ class App extends React.Component {
     const res = await fetch(url, opts);
     const data = await res.json();
     console.log(data)
-
     if(data.errors){
     
-    this.setState({programMessage: 'error'})
+    return this.setState({reportMessage: 'error'})
     } else{
       let reports = [...this.state.reports];
       reports.push(data.data.newInjectionReport);

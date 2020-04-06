@@ -80,6 +80,8 @@ body{
 }
 
 
+
+
 .Modal {
   
   position: fixed; /* Stay in place */
@@ -264,7 +266,75 @@ display: flex;
   width: 25%;
 }
 
+.report_list_table{
+ 
+  margin-bottom: 3px;
+  width: 70%;
+  margin-left: 2%;
+  border: solid;
+  border-radius: 3px;
+}
+
+.report_list_title{
+  margin-bottom: 10px;
+}
+
+.report_list_header{
+  background-color: rgba(42, 54, 216, 0.514);
+  border: solid 1px;
+  border-radius: 2px;
+  
+}
 
 
 
+.report_list{
+  border: solid 1px;
+  background-color: white;
+  border-radius: 2px;
+  text-align: left;
+  padding-left: 1%;
+  font-size: 90%;
+  height: 4vh;
+}
+
+.date_data{
+  width: 15%;
+}
+
+.shift_data{
+  width: 5%;
+}
+
+.machine_data{
+  width: 5%;
+}
+
+.treal_data{
+  width: 10%;
+}
+
+.ng_data{
+  width: 10%;
+}
+
+.ok_data{
+  width: 10%;
+}
+
+.capacity_data{
+  width: 10%;
+}
+.oee_data{
+  width: 10%;
+}
+
+.downtime_data{
+  width: 10%;
+  
+}
+
+.add_data{
+  width: 10%;
+}
 

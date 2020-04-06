@@ -151,6 +151,17 @@ class AddReport extends Component {
     return isNaN(oee) ? 0 : oee;
   }
 
+  totalCapacity = () =>{
+    let selected = [...this.state.selected];
+   
+    const capacity = selected.reduce( (a, b) =>{
+      return a + (b.production.capacity * b.production.time) || 0
+    },0)
+    
+
+    return isNaN(capacity) ? 0 : capacity;
+  }
+
 
 
   onClose = () =>{
@@ -164,8 +175,9 @@ class AddReport extends Component {
 
   onMachineChange = e =>{
 
+    const selected = [];
     const programs = this.filterPrograms(e.target.value)
-    this.setState({ [e.target.name]: e.target.value, programs: programs });
+    this.setState({ [e.target.name]: e.target.value, programs, selected });
     
   }
 
@@ -247,6 +259,7 @@ class AddReport extends Component {
     const totalTime = this.totalTIME();
     const totalMins = this.totalMins();
     const totalOEE = this.totalOEE();
+    const totalCapacity = this.totalCapacity();
     
     const production = this.state.selected.map((item => item.production))
     const date = this.state.date+'T00:00:00.000-06:00';
@@ -261,11 +274,13 @@ class AddReport extends Component {
       totalMins,
       totalOEE,
       production: production,
-      downtime: this.state.downtime
+      downtime: this.state.downtime,
+      totalCapacity: totalCapacity
     }
     
   
     return this.props.addReport(report)
+    
   }
 
 
@@ -387,9 +402,25 @@ class AddReport extends Component {
 
   renderButton= ()=>{
     if(this.state.programs.length === 0){
-      return null
-    } else {
-      return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+      return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
+    } 
+    else {
+      if(this.state.downtime.length === 0){
+        const totalReal = this.totalReal()
+        if(totalReal === 0){
+          return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
+        }
+        else {return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>}
+      }
+      else {
+        const totalMins = this.totalMins();
+        if(totalMins === 0){
+          return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
+        } 
+        else {
+          return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+        }
+      }
     }
   }
 

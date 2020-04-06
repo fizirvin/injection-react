@@ -17,14 +17,16 @@ class Reports extends React.Component {
   renderList() {
     return this.props.reports.map( report => 
     <tr key={report._id}>
-      <td className="table_data">{ this.formatDate(report.reportDate)}</td>
-      <td className="table_data">{ report.shift}</td>
-      <td className="table_data">{ report.machine.machineNumber}</td>
-      <td className="table_data">{ report.totalOK}</td>
-      <td className="table_data">{ report.totalNG}</td>
-      <td className="table_data">{ report.downtime}</td>
-      <td className="table_data">{ report.efficiency.$numberDecimal}</td>
-      <td className="table_data">Update</td>
+      <td className="report_list">{ this.formatDate(report.reportDate)}</td>
+      <td className="report_list">{ report.shift}</td>
+      <td className="report_list">{ report.machine.machineNumber}</td>
+      <td className="report_list">{ report.totalReal}</td>
+      <td className="report_list">{ report.totalNG}</td>
+      <td className="report_list">{ report.totalOK}</td>
+      <td className="report_list">{ report.totalCapacity}</td>
+      <td className="report_list">{ report.efficiency.$numberDecimal}</td>
+      <td className="report_list">{ report.downtime}</td>
+      <td className="report_list"><Link to="/reports/add"><button>Update</button></Link></td>
     </tr>)
   }
 
@@ -33,19 +35,21 @@ class Reports extends React.Component {
   render(){
     
     return (
-      <div className="Issues">
-        <h2 className="section_header">Injection Production Reports:</h2>
-        <table className="table_list table_programs">
+      <div className="Reports">
+        <h2 className="section_header report_list_title">Injection Production Reports:</h2>
+        <table className="report_list_table">
         <thead>
           <tr>
-            <th className="table_header">Date</th>
-            <th className="table_header">Shift</th>
-            <th className="table_header">Machine</th>
-            <th className="table_header">Total OK</th>
-            <th className="table_header">Total NG</th>
-            <th className="table_header">Downtime</th>
-            <th className="table_header">Efficiency</th>
-            <th className="table_header"><Link to="/reports/add"><button>Add Report</button></Link></th>
+            <th className="report_list_header date_data">Date</th>
+            <th className="report_list_header shift_data">Shift</th>
+            <th className="report_list_header machine_data">Machine</th>
+            <th className="report_list_header treal_data">Real (pcs)</th>
+            <th className="report_list_header ng_data">NG (pcs)</th>
+            <th className="report_list_header ok_data">OK (pcs)</th>
+            <th className="report_list_header capacity_data">Capacity (pcs)</th>
+            <th className="report_list_header oee_data">OEE (%)</th>
+            <th className="report_list_header downtime_data">Downtime (mins)</th>
+            <th className="report_list_header add_data"><Link to="/reports/add"><button>Add Report</button></Link></th>
           </tr>
           </thead> 
           <tbody>
