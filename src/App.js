@@ -537,19 +537,22 @@ class App extends React.Component {
 
   addReport = async (report)=>{
 
+      const reportDate = report.date
+      const shift = report.shift
+      const machine = report.machine
+      const totalReal = report.totalReal
+      const totalOK = report.totalOK
+      const totalNG = report.totalNG
+      const totalCapacity = report.totalCapacity
+      const totalTime = report.totalTime
+      const downtime = report.totalMins
+      const efficiency = report.totalOEE
+      const production = report.production
+      const downtimeDetail = report.downtimeDetail
 
-    const query = `mutation{newInjectionReport(input:{
-      reportDate: "${report.date}"
-      shift: "${report.shift}"
-      machine: "${report.machine}"
-      totalReal: ${report.totalReal}
-      totalOK: ${report.totalOK}
-      totalNG: ${report.totalNG}
-      totalCapacity: ${report.totalCapacity}
-      totalTime: ${report.totalTime}
-      downtime: ${report.totalMins}
-      efficiency: ${report.totalOEE}
-    }) {
+
+    const query = `mutation NewInjectionReport($input: NewInjectionReport ){
+      newInjectionReport(input: $input){
       _id
       reportDate
       shift
@@ -571,7 +574,22 @@ class App extends React.Component {
     const opts = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
+        body: JSON.stringify({ query, variables:{
+          input: {
+            reportDate,
+            shift,
+            machine,
+            totalReal,
+            totalOK, 
+            totalNG,
+            totalCapacity ,
+            totalTime, 
+            downtime ,
+            efficiency,
+            production,
+            downtimeDetail 
+          }
+        } })
     };
 
     const res = await fetch(url, opts);

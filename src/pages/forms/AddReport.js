@@ -11,7 +11,10 @@ class AddReport extends Component {
     programs: [],
     selected: [],
     show: 'molds',
-    downtime: []
+    downtime: [],
+    productionJoined: '',
+    downtimeJoined: '' 
+
   }
 
 
@@ -250,9 +253,15 @@ class AddReport extends Component {
     }
   }
 
+
   onSubmit = async (e) =>{
     e.preventDefault();
-    // this.props.addProgram(this.state);
+
+    const production = this.state.selected.map( item => item.production )
+    const downtime = this.state.downtime.map( item => {
+      return { issueId: item._id, mins: item.mins }
+    })
+    
     const totalReal= this.totalReal();
     const totalOK = this.totalOK();
     const totalNG = this.totalNG();
@@ -260,8 +269,6 @@ class AddReport extends Component {
     const totalMins = this.totalMins();
     const totalOEE = this.totalOEE();
     const totalCapacity = this.totalCapacity();
-    
-    const production = this.state.selected.map((item => item.production))
     const date = this.state.date+'T00:00:00.000-06:00';
     const report = {
       date,
@@ -273,14 +280,12 @@ class AddReport extends Component {
       totalTime,
       totalMins,
       totalOEE,
-      production: production,
-      downtime: this.state.downtime,
-      totalCapacity: totalCapacity
+      totalCapacity: totalCapacity,
+      production,
+      downtimeDetail: downtime
     }
     
-  
     return this.props.addReport(report)
-    
   }
 
 
