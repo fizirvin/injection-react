@@ -4,6 +4,12 @@ import { Link } from 'react-router-dom';
 
 
 class Reports extends React.Component {
+  state ={
+    _id: '',
+    production: [],
+    downtimeDetail: [],
+    target: ''
+  }
 
   formatDate(format){
     let formatDate
@@ -14,6 +20,95 @@ class Reports extends React.Component {
     formatDate = y + '-' + m +'-'+ d
     return formatDate
   }
+
+
+  closeDetail = () =>{
+    const state ={
+      _id: '',
+      production: [],
+      downtimeDetail: [],
+      target: ''
+    }
+    this.setState({
+      _id: state._id, 
+      production: state.production, 
+      downtimeDetail: state.downtimeDetail,
+      target: ''
+     })
+    
+  }
+
+  openDetail = async ( e ) =>{
+    const id = e.target.name
+
+    if(this.state._id === id){ return null}
+    else {
+      const getDetail = this.props.reports.find( report => report._id == e.target.name );
+      const { _id, production, downtimeDetail } = await getDetail
+      this.setState({
+        _id: _id, 
+        production: production,
+        downtimeDetail: downtimeDetail,
+        target: id
+      })
+    }
+  }
+
+  renderDetailTable = () =>{
+    const id = this.state._id;
+    if(id === ''){
+      return null
+    }
+    else{
+      return(<table className='detail_table'>
+      <thead>
+        <tr>
+          <th className="detail_mold">Mold</th>
+          <th className="detail_real">Real</th>
+          <th className="detail_ng">NG</th>
+          <th className="detail_ok">OK</th>
+          <th className="detail_hrs">Hrs</th>
+          <th className="detail_oee">OEE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {this.renderDetailProduction()}
+      </tbody>
+      <thead>
+        <tr>
+          <th className="detail_downtime" colSpan="3">Downtime</th>
+          <th className="detail_mins">Mins</th>
+          <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th>
+        </tr>
+      </thead>
+      <tbody>
+      {this.renderDetailDowntime()}
+      </tbody>
+    </table>)
+    }
+
+  }
+
+  renderDetailProduction = () => {
+    return this.state.production.map( production => 
+      <tr key={production._id}>
+        <td  className='row_detail_production'>{production.molde.moldeNumber}</td>
+        <td  className='row_detail_production'>{production.real}</td>
+        <td  className='row_detail_production'>{production.ng}</td>
+        <td  className='row_detail_production'>{production.ok}</td>
+        <td  className='row_detail_production'>{production.time}</td>
+        <td  className='row_detail_production'>{production.oee.$numberDecimal}</td>
+      </tr>)
+  }
+
+  renderDetailDowntime = () => {
+    return this.state.downtimeDetail.map( downtime => 
+      <tr key={downtime._id}>
+        <td  className='row_detail_production' colSpan="3">{ downtime.issueId.issueName}</td>
+        <td  className='row_detail_production'>{ downtime.mins}</td>
+      </tr>)
+  }
+
   renderList() {
     return this.props.reports.map( report => 
     <tr key={report._id}>
@@ -26,7 +121,8 @@ class Reports extends React.Component {
       <td className="report_list">{ report.totalCapacity}</td>
       <td className="report_list">{ report.efficiency.$numberDecimal}</td>
       <td className="report_list">{ report.downtime}</td>
-      <td className="report_list"><Link to="/reports/add"><button>Update</button></Link></td>
+      <td className="report_list"><Link to="/reports/add"><button>Update</button></Link>
+      <button name={report._id} onClick={this.openDetail}>Detail</button></td>
     </tr>)
   }
 
@@ -37,6 +133,7 @@ class Reports extends React.Component {
     return (
       <div className="Reports">
         <h2 className="section_header report_list_title">Injection Production Reports:</h2>
+        <div className='reports_container'>
         <table className="report_list_table">
         <thead>
           <tr>
@@ -49,13 +146,19 @@ class Reports extends React.Component {
             <th className="report_list_header capacity_data">Capacity (pcs)</th>
             <th className="report_list_header oee_data">OEE (%)</th>
             <th className="report_list_header downtime_data">Downtime (mins)</th>
-            <th className="report_list_header add_data"><Link to="/reports/add"><button>Add Report</button></Link></th>
+            <th className="report_list_header add_data">
+              <Link to="/reports/add"><button>Add Report</button></Link>
+              </th>
           </tr>
           </thead> 
           <tbody>
           {this.renderList()}
           </tbody>
         </table>
+        <div className='report_detail'>
+          {this.renderDetailTable()}
+        </div>
+        </div>
       </div>
     )
   }

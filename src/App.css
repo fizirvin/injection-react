@@ -270,7 +270,7 @@ display: flex;
  
   margin-bottom: 3px;
   width: 70%;
-  margin-left: 2%;
+  margin-left: 5px;
   border: solid;
   border-radius: 3px;
 }
@@ -335,6 +335,90 @@ display: flex;
 }
 
 .add_data{
-  width: 10%;
+  width: 20%;
 }
 
+.reports_container{
+  display: flex;
+}
+
+
+.report_detail{
+  width: 30%;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.detail_table{
+  border: solid;
+  width: 100%;
+  border-radius: 2px;
+}
+
+.detail_mold{
+  width: 35%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_real{
+  width: 12%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_ng{
+  width: 12%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_ok{
+  width: 12%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_hrs{
+  width: 12%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_oee{
+  width: 12%;
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_downtime{
+  
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.detail_mins{
+  
+  border: solid 1px;
+  background-color: tomato;
+  border-radius: 2px;
+}
+
+.row_detail_production{
+  background-color: white;
+  border: solid 1px;
+  border-radius: 2px;
+  font-size: 85%;
+  padding-left: 2px;
+}
+
+.detail_close_button {
+  background-color: white;
+}

@@ -94,6 +94,32 @@ class App extends React.Component {
         totalTime
         downtime
         efficiency
+        production{
+          _id
+          real
+          ng
+          ok
+          time
+          oee
+          capacity
+          partNumber {
+            _id
+            partNumber
+          }
+          molde{
+            _id
+            moldeNumber
+            moldeSerial
+          }
+        }
+        downtimeDetail {
+          _id
+          issueId{
+            _id
+            issueName
+          }
+          mins
+        }
     }
       
     }`
@@ -553,21 +579,46 @@ class App extends React.Component {
 
     const query = `mutation NewInjectionReport($input: NewInjectionReport ){
       newInjectionReport(input: $input){
-      _id
-      reportDate
-      shift
-      machine{
         _id
-        machineNumber
-        machineSerial
-      }
-      totalReal
-      totalOK
-      totalNG
-      totalTime
-      totalCapacity
-      downtime
-      efficiency
+        reportDate
+        shift
+        machine{
+          _id
+          machineNumber
+          machineSerial}
+        totalReal
+        totalOK
+        totalNG
+        totalCapacity
+        totalTime
+        downtime
+        efficiency
+        production{
+          _id
+          real
+          ng
+          ok
+          time
+          oee
+          capacity
+          partNumber {
+            _id
+            partNumber
+          }
+          molde{
+            _id
+            moldeNumber
+            moldeSerial
+          }
+        }
+        downtimeDetail {
+          _id
+          issueId{
+            _id
+            issueName
+          }
+          mins
+        }
     }}`;
 
     const url = this.state.server;
