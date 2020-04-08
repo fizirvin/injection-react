@@ -646,7 +646,7 @@ class App extends React.Component {
 
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log(data)
+    
     if(data.errors){
     
     return this.setState({reportMessage: 'error'})
@@ -657,6 +657,105 @@ class App extends React.Component {
     }
 
   }
+
+  updateReport = async (report)=>{
+    const _id = report._id
+    const reportDate = report.date
+    const shift = report.shift
+    const machine = report.machine
+    const totalReal = report.totalReal
+    const totalOK = report.totalOK
+    const totalNG = report.totalNG
+    const totalCapacity = report.totalCapacity
+    const totalTime = report.totalTime
+    const downtime = report.totalMins
+    const efficiency = report.totalOEE
+    const production = report.production
+    const downtimeDetail = report.downtimeDetail
+
+
+  const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
+    updateInjectionReport(_id: $_id, input: $input){
+      _id
+      reportDate
+      shift
+      machine{
+        _id
+        machineNumber
+        machineSerial}
+      totalReal
+      totalOK
+      totalNG
+      totalCapacity
+      totalTime
+      downtime
+      efficiency
+      production{
+        _id
+        real
+        ng
+        ok
+        time
+        oee
+        capacity
+        partNumber {
+          _id
+          partNumber
+        }
+        molde{
+          _id
+          moldeNumber
+          moldeSerial
+        }
+      }
+      downtimeDetail {
+        _id
+        issueId{
+          _id
+          issueName
+        }
+        mins
+      }
+  }}`;
+
+  const url = this.state.server;
+  const opts = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, variables:{
+        _id: _id,
+        input: {
+          reportDate,
+          shift,
+          machine,
+          totalReal,
+          totalOK, 
+          totalNG,
+          totalCapacity ,
+          totalTime, 
+          downtime ,
+          efficiency,
+          production,
+          downtimeDetail 
+        }
+      } })
+  };
+
+  const res = await fetch(url, opts);
+  const data = await res.json();
+ 
+  if(data.errors){
+  
+  return this.setState({reportMessage: 'error'})
+  } else{
+    let report = data.data.updateInjectionReport;
+    let reports = [...this.state.reports];
+    reports[reports.findIndex(el => el._id === report._id)] = report;
+    this.setState({reports: reports, reportMessage: 'sucess'});
+
+  }
+
+}
 
 
   render(){
@@ -726,7 +825,7 @@ class App extends React.Component {
                 programs={this.state.programs} 
                 machines={this.state.machines} 
                 issues={this.state.issues}
-                message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
+                message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
             </Switch> 
           </div>

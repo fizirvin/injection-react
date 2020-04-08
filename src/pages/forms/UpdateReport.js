@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 class UpdateReport extends Component {
   state= {
+    _id: this.props.match.params.id,
     date: '',
     shift: '',
     machine: '',
@@ -91,9 +92,6 @@ class UpdateReport extends Component {
     return formatDate
   }
 
-  showState = () =>{
-    console.log(this.state)
-  }
 
   onMins = (e) =>{
     const value = parseInt(e.target.value)|0;
@@ -361,7 +359,7 @@ class UpdateReport extends Component {
     const downtime = this.state.downtime.map( item => {
       return { issueId: item._id, mins: item.mins }
     })
-    
+    const _id = this.state._id;
     const totalReal= this.totalReal();
     const totalOK = this.totalOK();
     const totalNG = this.totalNG();
@@ -371,6 +369,7 @@ class UpdateReport extends Component {
     const totalCapacity = this.totalCapacity();
     const date = this.state.date+'T00:00:00.000-06:00';
     const report = {
+      _id: _id,
       date,
       shift: this.state.shift,
       machine: this.state.machine,
@@ -385,7 +384,7 @@ class UpdateReport extends Component {
       downtimeDetail: downtime
     }
     
-    return this.props.addReport(report)
+    return this.props.updateReport(report)
   }
 
 
@@ -445,7 +444,7 @@ class UpdateReport extends Component {
             <label>{downtime.issueName}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={this.getDefaultMins(downtime._id)} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
+            <input type='number' min="0" max="840" defaultValue={this.getDefaultMins(downtime._id)} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
           </td>
         </tr>  
       );
@@ -468,16 +467,16 @@ class UpdateReport extends Component {
           <label>{program.partNumber.partNumber}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
+            <input type='number' min="0" max="12000" defaultValue={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={this.getDefaultNG(program._id)} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
+            <input type='number' min="0" max="12000" defaultValue={this.getDefaultNG(program._id)} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' min="0" max="14" defaultValue={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
@@ -653,7 +652,7 @@ class UpdateReport extends Component {
             
             
             
-            <button type='button' onClick={this.showState}>state</button>
+           
             <Link to="/reports"><button>Cancel</button></Link>
             {this.renderButton()}
           </form>
@@ -676,7 +675,7 @@ class UpdateReport extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          New Injection Report added correctly <Link to="/reports"><button onClick={this.onClose}>Close</button></Link>
+          Injection Report updated correctly <Link to="/reports"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );

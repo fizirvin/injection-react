@@ -39,7 +39,7 @@ class UpdateMachine extends Component {
     
 
   render() {
-    console.log(this.state)
+    
     if(this.props.message === 'new'){
       return ReactDOM.createPortal(
         <div className="Modal">

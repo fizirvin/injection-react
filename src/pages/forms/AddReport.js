@@ -16,10 +16,6 @@ class AddReport extends Component {
   }
 
 
-  showState = () =>{
-    console.log(this.state)
-  }
-
   onMins = (e) =>{
     const value = parseInt(e.target.value)|0;
     let downtime = [...this.state.downtime];
@@ -343,7 +339,7 @@ class AddReport extends Component {
             <label>{downtime.issueName}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
+            <input type='number' min="0" max="840" defaultValue={0} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
           </td>
         </tr>  
       );
@@ -364,16 +360,16 @@ class AddReport extends Component {
           <label>{program.partNumber.partNumber}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
+            <input type='number' min="0" max="12000" defaultValue={0} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
+            <input type='number' min="0" max="12000" defaultValue={0} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' min="0" max="14" defaultValue={0} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
