@@ -422,3 +422,8 @@ display: flex;
 .detail_close_button {
   background-color: white;
 }
+
+.button_report_list{
+  font-size: 85%;
+}
+

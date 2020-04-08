@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class AddReport extends Component {
+
+class UpdateReport extends Component {
   state= {
     date: '',
     shift: '',
@@ -11,10 +12,84 @@ class AddReport extends Component {
     programs: [],
     selected: [],
     show: 'molds',
-    downtime: [], 
+    downtime: []
 
   }
 
+  async componentDidMount(){
+      
+    const getReport = await this.props.reports.find( report => report._id === this.props.match.params.id);
+
+    if(!getReport) {
+      return null
+    } else {
+      const { reportDate, shift, machine, production, downtimeDetail } = await getReport
+      
+      const date = this.formatDate(reportDate)
+      const programs = this.filterPrograms(machine._id)
+
+      const downtime = downtimeDetail.map( item => {
+        
+        const selection = {
+          _id: item.issueId._id,
+          issueName: item.issueId.issueName,
+          mins: item.mins
+        }
+        return selection
+      })
+
+      const selected = production.map( item => {
+        const getProgram = programs.find( program => program.moldeNumber._id === item.molde._id)
+        const selection = {
+          _id: getProgram._id,
+          moldeNumber: item.molde,
+          partNumber: item.partNumber,
+          capacity: item.capacity,
+          production: { 
+            partNumber: item.partNumber._id,
+	          molde: item.molde._id,
+            real: item.real,
+            ok: item.ok,
+	          ng: item.ng,
+	          time: item.time,
+	          oee: parseFloat(item.oee.$numberDecimal),
+	          capacity: item.capacity
+          }
+        }
+        return selection
+      })
+            
+        this.setState({
+          date: date,
+          shift: shift,
+          machine: machine._id,
+          time: 10,
+          programs: programs,
+          selected: selected,
+          show: 'molds',
+          downtime: downtime
+        })
+    }
+    
+  }
+
+  formatDate(format){
+    let formatDate
+    const date = new Date(format);
+    const y = date.getFullYear()
+    const d = date.getDate()
+    const m = date.getMonth()+1
+
+    function M(){
+      if(m < 10){
+      return '0'+ m
+    }
+  }
+
+  const formatM = M();
+    formatDate = y + '-'+ formatM + '-'+ d
+    return formatDate
+  }
 
   showState = () =>{
     console.log(this.state)
@@ -27,6 +102,9 @@ class AddReport extends Component {
     return this.setState({downtime});
   }
 
+  
+
+ 
   onRealProduction = async (e) =>{
 
     const value = parseInt(e.target.value)|0;
@@ -84,6 +162,30 @@ class AddReport extends Component {
     const ng = selected[selected.findIndex(el => el._id === id)].production.ng
     const ok = real - ng
     return isNaN(ok) ? 0 : ok;
+  }
+
+  getDefaultReal = (id) =>{
+    let selected = [...this.state.selected];
+    const real = selected[selected.findIndex(el => el._id === id)].production.real
+    return isNaN(real) ? 0 : real;
+  }
+
+  getDefaultNG = (id) =>{
+    let selected = [...this.state.selected];
+    const ng = selected[selected.findIndex(el => el._id === id)].production.ng
+    return isNaN(ng) ? 0 : ng;
+  }
+
+  getDefaultTime = (id) =>{
+    let selected = [...this.state.selected];
+    const time = selected[selected.findIndex(el => el._id === id)].production.time
+    return isNaN(time) ? 0 : time;
+  }
+
+  getDefaultMins = (id) =>{
+    let downtime = [...this.state.downtime];
+    const mins = downtime[downtime.findIndex(el => el._id === id)].mins
+    return isNaN(mins) ? 0 : mins;
   }
 
   getOEE = (id) =>{
@@ -225,7 +327,7 @@ class AddReport extends Component {
       const getProgram = this.state.programs.find( program => program._id === id);
       const { _id, partNumber, moldeNumber, capacity } = {...getProgram}
       const item ={
-        _id: _id, //id del programa
+        _id: _id,
         moldeNumber: moldeNumber,
         partNumber: partNumber,
         capacity: capacity,
@@ -343,20 +445,22 @@ class AddReport extends Component {
             <label>{downtime.issueName}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
+            <input type='number' defaultValue={this.getDefaultMins(downtime._id)} name={downtime._id} className='production_input' onChange={this.onMins} ></input>
           </td>
         </tr>  
       );
     }
   }
-  renderProduction = () =>{
+  renderProduction =  () =>{
     const selected = this.state.selected;
+    
     if(!selected){ 
       return null 
     }
     else{ 
-      return selected.map(( program ) =>
-        <tr key={program._id}>
+      return selected.map( program  => 
+        
+          <tr key={program._id}>
           <td className='production_row'>
             <label>{program.moldeNumber.moldeNumber}</label>
           </td>
@@ -364,21 +468,21 @@ class AddReport extends Component {
           <label>{program.partNumber.partNumber}</label>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
+            <input type='number' defaultValue={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
+            <input type='number' defaultValue={this.getDefaultNG(program._id)} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' defaultValue={0} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' defaultValue={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
           </td>
-        </tr>  
+      </tr> 
       );
     }
   }
@@ -491,6 +595,41 @@ class AddReport extends Component {
     }
   }
 
+  renderTable = () => {
+    if(!this.state.machine){ return null}else{
+      return (<table>
+        <tbody>
+        <tr>
+          <th className="report_header"><label>Date: </label> 
+              <input type="date" name='date' className='date_input' defaultValue={this.state.date} onChange={this.onInputChange} required/>
+          </th>
+          <th className="report_header">
+              <label>Shift: </label> 
+              <select onChange={this.onInputChange} name="shift" defaultValue={this.state.shift} required>
+                
+                <option value='1'>1</option>
+                <option value='2'>2</option>
+              </select>
+          </th>
+          <th className="report_header"><label>Machine: </label>
+              <select onChange={this.onMachineChange} name="machine" defaultValue={this.state.machine} required>
+                
+                {this.renderMachines()}
+              </select>
+          </th>
+          <th className="report_header">
+              <label>Time (hrs): </label>
+              <input type="number" 
+              className='time_input' 
+              name='time'
+              value={this.state.time} onChange={this.onInputChange} required/>
+          </th>
+        </tr>
+        </tbody>
+        </table>  )
+    }
+  }
+
   render() {
 
   
@@ -500,37 +639,8 @@ class AddReport extends Component {
         <div className="modal-report-content report_modal">
           <h2>Injection Production Report:</h2>
           <form onSubmit={this.onSubmit} className='report-form'>
-            <table>
-          <tbody>
-          <tr>
-            <th className="report_header"><label>Date: </label> 
-                <input type="date" name='date' className='date_input' onChange={this.onInputChange} required/>
-            </th>
-            <th className="report_header">
-                <label>Shift: </label> 
-                <select onChange={this.onInputChange} name="shift" defaultValue="" required>
-                  <option disabled value="">select</option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                </select>
-            </th>
-            <th className="report_header"><label>Machine: </label>
-                <select onChange={this.onMachineChange} name="machine" defaultValue="" required>
-                  <option disabled value="">select</option>
-                  {this.renderMachines()}
-                </select>
-            </th>
-            <th className="report_header">
-                <label>Time (hrs): </label>
-                <input type="number" 
-                className='time_input' 
-                name='time'
-                value={this.state.time} onChange={this.onInputChange} required/>
-            </th>
-          </tr>
-          </tbody>
-          </table>         
-           
+                   
+           {this.renderTable()}
            {this.renderTitle()}
           <div className='section_two'>
             {this.renderContainer()}
@@ -543,7 +653,7 @@ class AddReport extends Component {
             
             
             
-            
+            <button type='button' onClick={this.showState}>state</button>
             <Link to="/reports"><button>Cancel</button></Link>
             {this.renderButton()}
           </form>
@@ -574,4 +684,4 @@ class AddReport extends Component {
   }
 };
 
-export default AddReport;
+export default UpdateReport;

@@ -43,7 +43,7 @@ class Reports extends React.Component {
 
     if(this.state._id === id){ return null}
     else {
-      const getDetail = this.props.reports.find( report => report._id == e.target.name );
+      const getDetail = this.props.reports.find( report => report._id === e.target.name );
       const { _id, production, downtimeDetail } = await getDetail
       this.setState({
         _id: _id, 
@@ -121,8 +121,8 @@ class Reports extends React.Component {
       <td className="report_list">{ report.totalCapacity}</td>
       <td className="report_list">{ report.efficiency.$numberDecimal}</td>
       <td className="report_list">{ report.downtime}</td>
-      <td className="report_list"><Link to="/reports/add"><button>Update</button></Link>
-      <button name={report._id} onClick={this.openDetail}>Detail</button></td>
+      <td className="report_list"><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
+      <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
     </tr>)
   }
 

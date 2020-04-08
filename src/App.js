@@ -19,6 +19,7 @@ import AddProgram from './pages/forms/AddProgram.js'
 import UpdateProgram from './pages/forms/UpdateProgram.js'
 import Reports from './pages/Reports.js'
 import AddReport from './pages/forms/AddReport.js'
+import UpdateReport from './pages/forms/UpdateReport.js'
 import Toolbar from './pages/Toolbar.js'
 
 
@@ -715,6 +716,13 @@ class App extends React.Component {
               />
               <Route path="/reports" exact component={ props => ( <Reports {...props} reports={this.state.reports}/> )} />
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
+                programs={this.state.programs} 
+                machines={this.state.machines} 
+                issues={this.state.issues}
+                message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
+              />
+              <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}
+                reports={this.state.reports} 
                 programs={this.state.programs} 
                 machines={this.state.machines} 
                 issues={this.state.issues}
