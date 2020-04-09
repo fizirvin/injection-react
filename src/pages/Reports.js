@@ -17,8 +17,37 @@ class Reports extends React.Component {
     const y = date.getFullYear()
     const d = date.getDate()
     const m = date.getMonth()+1
-    formatDate = y + '-' + m +'-'+ d
+
+    function M(){
+      if(m < 10){
+      return '0'+ m
+    } else { return m}
+  }
+  function D(){
+    if(d < 10){
+      return '0'+ d
+    } else { return d}
+  }
+
+
+
+  const formatD = D();
+  const formatM = M();
+    formatDate = y + '-'+ formatM + '-'+ formatD
     return formatDate
+  }
+
+  formatRow = (id) => {
+    const normal = 'report_list';
+    const selected = 'report_selected_list'
+    const stateId = this.state._id
+    if(stateId === id){
+      return selected
+    } 
+    else {
+      return normal
+    }
+
   }
 
 
@@ -112,16 +141,16 @@ class Reports extends React.Component {
   renderList() {
     return this.props.reports.map( report => 
     <tr key={report._id}>
-      <td className="report_list">{ this.formatDate(report.reportDate)}</td>
-      <td className="report_list">{ report.shift}</td>
-      <td className="report_list">{ report.machine.machineNumber}</td>
-      <td className="report_list">{ report.totalReal}</td>
-      <td className="report_list">{ report.totalNG}</td>
-      <td className="report_list">{ report.totalOK}</td>
-      <td className="report_list">{ report.totalCapacity}</td>
-      <td className="report_list">{ report.efficiency.$numberDecimal}</td>
-      <td className="report_list">{ report.downtime}</td>
-      <td className="report_list"><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
+      <td className={this.formatRow(report._id)}>{ this.formatDate(report.reportDate)}</td>
+      <td className={this.formatRow(report._id)}>{ report.shift}</td>
+      <td className={this.formatRow(report._id)}>{ report.machine.machineNumber}</td>
+      <td className={this.formatRow(report._id)}>{ report.totalReal}</td>
+      <td className={this.formatRow(report._id)}>{ report.totalNG}</td>
+      <td className={this.formatRow(report._id)}>{ report.totalOK}</td>
+      <td className={this.formatRow(report._id)}>{ report.totalCapacity}</td>
+      <td className={this.formatRow(report._id)}>{ report.efficiency.$numberDecimal}</td>
+      <td className={this.formatRow(report._id)}>{ report.downtime}</td>
+      <td className={this.formatRow(report._id)}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
       <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
     </tr>)
   }

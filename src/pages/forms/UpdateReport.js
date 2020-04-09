@@ -84,11 +84,19 @@ class UpdateReport extends Component {
     function M(){
       if(m < 10){
       return '0'+ m
-    }
+    } else { return m}
+  }
+  function D(){
+    if(d < 10){
+      return '0'+ d
+    } else { return d}
   }
 
+
+
+  const formatD = D();
   const formatM = M();
-    formatDate = y + '-'+ formatM + '-'+ d
+    formatDate = y + '-'+ formatM + '-'+ formatD
     return formatDate
   }
 

@@ -21,6 +21,7 @@ import Reports from './pages/Reports.js'
 import AddReport from './pages/forms/AddReport.js'
 import UpdateReport from './pages/forms/UpdateReport.js'
 import Toolbar from './pages/Toolbar.js'
+import Production from './pages/Production.js'
 
 
 import './App.css';
@@ -827,6 +828,9 @@ class App extends React.Component {
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
+              <Route path="/production" exact component={ props => ( <Production {...props} 
+              models={this.state.models}
+              /> )} />
             </Switch> 
           </div>
         </div>
