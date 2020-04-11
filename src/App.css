@@ -476,6 +476,7 @@ display: flex;
 }
 
 .production_list_row{
+  width: 15%;
   background-color: rgba(5, 131, 53, 0.404);
   border: solid 1px;
   border-radius: 2px;
@@ -485,8 +486,9 @@ display: flex;
 }
 
 .production_normal_row{
+  width: 5%;
   background-color: white;
   border: solid 1px;
   border-radius: 2px;
-  padding-left: 5px;
+  padding-left: 3px;
 }

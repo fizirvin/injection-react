@@ -40,21 +40,67 @@ class App extends React.Component {
     issues: [],
     programs: [],
     reports: [],
+    reportsDate: [],
     server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
+  formatDate(format){
+    let formatDate
+    const date = new Date(format);
+    const y = date.getFullYear()
+    const d = date.getDate();
+    const m = date.getMonth()+1
+
+    function M(){
+      if(m < 10){
+        return '0'+ m
+      } else { return m } 
+    }
+    
+    function D(){
+      if(d < 10){
+        return '0'+ d
+      } else { return d }
+    }
+  
+    const formatD = D();
+    const formatM = M();
+    formatDate = y + '-'+ formatM + '-'+ formatD
+    return formatDate
+  }
+
+  
+
+  getDateofTable = (number)=>{
+    const today = new Date();
+    const dayOfWeek = today.getDay(); 
+    const dayOfMonth = today.getDate();
+    const difference = dayOfMonth - dayOfWeek;
+    const day = difference + number;
+    const date= today.setDate(day)
+    return this.formatDate(date)
+  }
+
 
   async componentDidMount(){
+
+    const initial = this.getDateofTable(1)
+    const end = this.getDateofTable(7)
+
+    
+
     const query = `query{
       machines{
         _id
         machineNumber
         machineSerial
-      } moldes{
+      } 
+      moldes{
         _id
         moldeNumber
         moldeSerial
-      } parts {
+      } 
+      parts {
         _id
         partNumber
       }
@@ -88,7 +134,8 @@ class App extends React.Component {
         machine{
           _id
           machineNumber
-          machineSerial}
+          machineSerial
+        }
         totalReal
         totalOK
         totalNG
@@ -122,8 +169,16 @@ class App extends React.Component {
           }
           mins
         }
-    }
-      
+      }
+      reportsDate(initial: "${initial}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+        date
+ 	      report
+        machine
+        part
+        molde
+        ok
+        ng
+      }
     }`
 
     const url = this.state.server;
@@ -134,14 +189,15 @@ class App extends React.Component {
     };
     const res = await fetch(url, opts);
     const data = await res.json();
-    
+    console.log('holalalala')
     this.setState({ 
       machines: data.data.machines, 
       moldes: data.data.moldes, 
       models: data.data.parts, 
       issues: data.data.issues,
       programs: data.data.programs,
-      reports: data.data.reports 
+      reports: data.data.reports,
+      reportsDate: data.data.reportsDate
     })
   }
 
@@ -829,7 +885,7 @@ class App extends React.Component {
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
               <Route path="/production" exact component={ props => ( <Production {...props} 
-              models={this.state.models}
+              models={this.state.models} reportsDate={this.state.reportsDate}
               /> )} />
             </Switch> 
           </div>
