@@ -16,42 +16,81 @@ class Production extends React.Component {
 
   async componentDidMount(){
     const date = new Date();
-    const today = this.formatDate(date)+'T00:00:00.000-06:00'
+    const today = this.formatDate(date)+'T01:00:00.000-06:00'
 
     const state = {
     today: today,  
-    monday: this.getFirstDateofTable(1),
-    tuesday: this.getFirstDateofTable(2),
-    wednesday: this.getFirstDateofTable(3),
-    thursday: this.getFirstDateofTable(4),
-    friday: this.getFirstDateofTable(5),
-    saturday: this.getFirstDateofTable(6),
-    sunday: this.getFirstDateofTable(7),
+    monday: this.getDateofTable(1, today),
+    tuesday: this.getDateofTable(2, today),
+    wednesday: this.getDateofTable(3, today),
+    thursday: this.getDateofTable(4, today),
+    friday: this.getDateofTable(5, today),
+    saturday: this.getDateofTable(6, today),
+    sunday: this.getDateofTable(7, today),
     }
    
     return this.setState({...state})
   }
 
+  todayIs(date){
+    const today = date
+    const dayOfWeek = today.getDay()
+    let day;
+    switch (dayOfWeek) {
+      case 0:
+        day = 7;
+        break;
+      case 1:
+        day = 1;
+        break;
+      case 2:
+         day = 2;
+        break;
+      case 3:
+        day = 3;
+        break;
+      case 4:
+        day = 4;
+        break;
+      case 5:
+        day = 5;
+        break;
+      case 6:
+        day = 6;
+    }
+    return day
+  }
+
+  getDateofTable = (number, aDate)=>{
+    const today = new Date(aDate);
+    const dayOfMonth = today.getDate();
+    const difference = number - this.todayIs(today);
+    const set = dayOfMonth + difference;
+    const date= today.setDate(set);
+    
+    return this.formatDate(date)
+  }
+
+
   Change = async () =>{
-    const date = new Date(this.state.today)
-   
+    const date1 = this.state.today;
+    const date = new Date(date1);
     const pastWeek = date.getDate()-7;
     date.setDate(pastWeek);
-    const changeToday= this.formatDate(date)+'T00:00:00.000-06:00'
-    const monday = this.getDateofTable(1)
-
+    const today= this.formatDate(date)+'T01:00:00.000-06:00';
+    
 
     const state = {
-      today: changeToday,  
-      monday: monday,
-      tuesday: this.getDateofTable(2),
-      wednesday: this.getDateofTable(3),
-      thursday: this.getDateofTable(4),
-      friday: this.getDateofTable(5),
-      saturday: this.getDateofTable(6),
-      sunday: this.getDateofTable(7),
+      today: today,  
+      monday: this.getDateofTable(1, today),
+      tuesday: this.getDateofTable(2, today),
+      wednesday: this.getDateofTable(3, today),
+      thursday: this.getDateofTable(4, today),
+      friday: this.getDateofTable(5, today),
+      saturday: this.getDateofTable(6, today),
+      sunday: this.getDateofTable(7, today),
     }
-     
+       
     return this.setState({...state})
     
   }
@@ -179,27 +218,7 @@ isLeapYear(year) {
     return formatDate
   }
 
-  getFirstDateofTable = (number)=>{
-    
-    const today = new Date();
-    const dayOfWeek = today.getDay(); 
-    const dayOfMonth = today.getDate();
-    const difference = dayOfMonth - dayOfWeek;
-    const day = difference + number;
-    const date= today.setDate(day)
-    return this.formatDate(date)
-  }
-
-  getDateofTable = (number)=>{
-    
-    const today = new Date(this.state.today);
-    const dayOfWeek = today.getDay(); 
-    const dayOfMonth = today.getDate();
-    const difference = dayOfMonth - dayOfWeek;
-    const day = difference + number;
-    const date= today.setDate(day)
-    return this.formatDate(date)
-  }
+  
 
   renderContent = () => {
     if(!this.state.today) { 
