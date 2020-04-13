@@ -7,9 +7,9 @@ class Moldes extends React.Component {
   renderList() {
     return this.props.moldes.map( molde => 
     <tr key={molde._id}>
-      <td className="table_data">{molde.moldeNumber}</td>
-      <td className="table_data">{molde.moldeSerial}</td>
-      <td className="table_data"><Link to={`/molds/update/${molde._id}`}><button>Update</button></Link></td>
+      <td className="table_data molde_number">{molde.moldeNumber}</td>
+      <td className="table_data molde_serial">{molde.moldeSerial}</td>
+      <td className="table_data molde_table_data"><Link to={`/molds/update/${molde._id}`}><button>Update</button></Link></td>
     </tr>)
     }
 
@@ -17,7 +17,7 @@ class Moldes extends React.Component {
     return (
       <div className="Moldes">
         <h2 className="section_header">Injection Mold List:</h2>
-        <table className="table_list">
+        <table className="table_list_moldes">
           <thead>
           <tr>
             <th className="table_header">Mold Number</th>

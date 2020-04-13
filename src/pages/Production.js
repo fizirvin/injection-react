@@ -123,9 +123,25 @@ class Production extends React.Component {
 
   filterTotalProduction = (id) =>{
     const array = [...this.props.reportsDate]
-    const filter = array.filter( item => item.part === id)
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.part === id)
     const reduce = filter.reduce( (a, b) =>{
       return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
+  filterTotalNG = (id) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.part === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
     },0)
 
     return reduce
@@ -140,22 +156,52 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.monday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.monday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.tuesday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.tuesday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.wednesday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.wednesday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.thursday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.thursday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.friday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.friday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.saturday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.saturday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.reduceOk(this.state.sunday, model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.sunday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalProduction(model._id)}</td>
-        <td className='production_normal_row' colSpan='1'></td>
+        <td className='production_normal_row' colSpan='1'>{this.filterTotalNG(model._id)}</td>
         <td className='production_normal_row' colSpan='1'><button>graph</button></td>
       </tr>
     )
+  }
+
+  goToDate = (e) =>{
+    const date1 = e.target.value + 'T01:00:00.000-06:00'
+    console.log('gotodate', e.target.value)
+    // if(date >= this.state.monday && date <= this.state.sunday){ console.log('misma semana')}else{console.log('otra semana')}
+    // item => item.date >= this.state.monday 
+    // && item.date <= this.state.sunday
+
+    
+    const date = new Date(date1);
+   console.log(date)
+    const today= this.formatDate(date)+'T01:00:00.000-06:00';
+    
+
+    const state = {
+      today: today,  
+      monday: this.getDateofTable(1, today),
+      tuesday: this.getDateofTable(2, today),
+      wednesday: this.getDateofTable(3, today),
+      thursday: this.getDateofTable(4, today),
+      friday: this.getDateofTable(5, today),
+      saturday: this.getDateofTable(6, today),
+      sunday: this.getDateofTable(7, today),
+    }
+       
+    return this.setState({...state})
+
+
+
   }
 
   renderProductionHeader() {
@@ -164,7 +210,10 @@ class Production extends React.Component {
       <button>Model</button>
       <button>Machine</button>
       <button onClick={this.showState}>state</button>
-      <button onClick={this.Change}>change</button>
+      <label>Change Week:</label>
+      <button onClick={this.Change}>Go Back</button>
+      <label>Go to Date:</label>
+      <input type='date' onChange={this.goToDate}></input>
     </div>
   }
 

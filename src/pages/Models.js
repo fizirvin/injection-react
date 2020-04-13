@@ -15,10 +15,10 @@ class Models extends React.Component {
     return (
       <div className="Models">
         <h2 className="section_header">Injection Model List:</h2>
-        <table className="table_list">
+        <table className="table_list partnumber_table">
           <thead>
           <tr>
-            <th className="table_header">Part Number</th>
+            <th className="table_header partnumber">Part Number</th>
             <th className="table_header"><Link to="/models/add"><button>Add Model</button></Link></th>
           </tr>
           </thead>

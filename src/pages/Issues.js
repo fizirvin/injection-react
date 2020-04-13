@@ -17,11 +17,11 @@ class Issues extends React.Component {
     return (
       <div className="Issues">
         <h2 className="section_header">Injection Issues List:</h2>
-        <table className="table_list">
+        <table className="table_list issue_table">
         <thead>
           <tr>
-            <th className="table_header">Issue</th>
-            <th className="table_header"><Link to="/issues/add"><button>Add Issue</button></Link></th>
+            <th className="table_header issue_name">Issue</th>
+            <th className="table_header issue_button"><Link to="/issues/add"><button>Add Issue</button></Link></th>
           </tr>
           </thead> 
           <tbody>

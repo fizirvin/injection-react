@@ -41,6 +41,8 @@ class App extends React.Component {
     programs: [],
     reports: [],
     reportsDate: [],
+    initial49:'',
+    end:'',
     server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
@@ -69,24 +71,65 @@ class App extends React.Component {
     return formatDate
   }
 
+  todayIs(date){
+    const today = date
+    const dayOfWeek = today.getDay()
+    let day;
+    switch (dayOfWeek) {
+      case 0:
+        day = 7;
+        break;
+      case 1:
+        day = 1;
+        break;
+      case 2:
+         day = 2;
+        break;
+      case 3:
+        day = 3;
+        break;
+      case 4:
+        day = 4;
+        break;
+      case 5:
+        day = 5;
+        break;
+      case 6:
+        day = 6;
+    }
+    return day
+  }
   
 
-  getDateofTable = (number)=>{
-    const today = new Date();
-    const dayOfWeek = today.getDay(); 
+  getDateofTable = (number, aDate)=>{
+    const today = new Date(aDate);
     const dayOfMonth = today.getDate();
-    const difference = dayOfMonth - dayOfWeek;
-    const day = difference + number;
-    const date= today.setDate(day)
+    const difference = number - this.todayIs(today);
+    const set = dayOfMonth + difference;
+    const date= today.setDate(set);
+    
+    return this.formatDate(date)
+  }
+
+  getDateofTable49 = (number, aDate)=>{
+    const today = new Date(aDate);
+    const dayOfMonth = today.getDate();
+    const difference = number - this.todayIs(today);
+    const set = dayOfMonth + difference;
+    const set2= set - 50
+    const date= today.setDate(set2);
+    
     return this.formatDate(date)
   }
 
 
   async componentDidMount(){
 
-    const initial = this.getDateofTable(1)
-    const end = this.getDateofTable(7)
-
+    const date = new Date();
+    const today = this.formatDate(date)+'T01:00:00.000-06:00'
+    // const initial = this.getDateofTable(1, today);
+    const end = this.getDateofTable(7, today);
+    const initial49 = this.getDateofTable49(1, today);
     
 
     const query = `query{
@@ -170,7 +213,7 @@ class App extends React.Component {
           mins
         }
       }
-      reportsDate(initial: "${initial}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      reportsDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         date
  	      report
         machine
@@ -197,7 +240,9 @@ class App extends React.Component {
       issues: data.data.issues,
       programs: data.data.programs,
       reports: data.data.reports,
-      reportsDate: data.data.reportsDate
+      reportsDate: data.data.reportsDate,
+      initial49: initial49,
+      end: end
     })
   }
 
@@ -821,7 +866,9 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="App">
+          <div className='NavBar'>
             <Toolbar></Toolbar>
+          </div>
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />
@@ -885,7 +932,10 @@ class App extends React.Component {
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
               <Route path="/production" exact component={ props => ( <Production {...props} 
-              models={this.state.models} reportsDate={this.state.reportsDate}
+              models={this.state.models} 
+              reportsDate={this.state.reportsDate} 
+              initial49={this.state.initial49}
+              end={this.state.end}
               /> )} />
             </Switch> 
           </div>

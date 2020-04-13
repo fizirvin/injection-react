@@ -7,9 +7,9 @@ class Machines extends React.Component {
   renderList() {
   return this.props.machines.map(machine => 
   <tr key={machine._id}>
-    <td className="table_data">{machine.machineNumber}</td>
-    <td className="table_data">{machine.machineSerial}</td>
-    <td className="table_data"><Link to={`/machines/update/${machine._id}`}><button>Update</button></Link></td>
+    <td className="table_data machine_number">{machine.machineNumber}</td>
+    <td className="table_data machine_Serial">{machine.machineSerial}</td>
+    <td className="table_data machine_update"><Link to={`/machines/update/${machine._id}`}><button>Update</button></Link></td>
   </tr>)
   }
 
