@@ -11,7 +11,8 @@ class Production extends React.Component {
     thursday: '',
     friday: '',
     saturday: '',
-    sunday: ''
+    sunday: '',
+    render: 'Model'
   }
 
   async componentDidMount(){
@@ -96,13 +97,27 @@ class Production extends React.Component {
   }
 
   showState = () => {
-    console.log(this.state)
+    console.log(this.props)
     
   }
 
   filterProduction = (date, id) => {
     const array = [...this.props.reportsDate]
     const filter = array.filter( item => item.date === date).filter( item => item.part === id)
+
+    return filter
+  }
+
+  filterProductionByMachine = (date, id) => {
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( item => item.date === date).filter( item => item.machine === id)
+
+    return filter
+  }
+
+  filterProductionByMolde = (date, id) => {
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( item => item.date === date).filter( item => item.molde === id)
 
     return filter
   }
@@ -114,8 +129,38 @@ class Production extends React.Component {
     return reduce
   }
 
+  reduceMachineOk = (date, id) =>{
+    const reduce = this.filterProductionByMachine(date, id).reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+    return reduce
+  }
+
+  reduceMoldeOk = (date, id) =>{
+    const reduce = this.filterProductionByMolde(date, id).reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+    return reduce
+  }
+
+  
+
   reduceNG = (date, id) =>{
     const reduce = this.filterProduction(date, id).reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+    return reduce
+  }
+
+  reduceMachineNG = (date, id) =>{
+    const reduce = this.filterProductionByMachine(date, id).reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+    return reduce
+  }
+
+  reduceMoldeNG = (date, id) =>{
+    const reduce = this.filterProductionByMolde(date, id).reduce( (a, b) =>{
       return a + b.ng || 0
     },0)
     return reduce
@@ -127,6 +172,32 @@ class Production extends React.Component {
       item => item.date >= this.state.monday 
       && item.date <= this.state.sunday)
       .filter( item => item.part === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
+  filterTotalMachine = (id) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
+  filterTotalMolde = (id) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.molde === id)
     const reduce = filter.reduce( (a, b) =>{
       return a + b.ok || 0
     },0)
@@ -147,9 +218,93 @@ class Production extends React.Component {
     return reduce
   }
 
-  
+  filterTotalMachineNG = (id) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
 
-  renderList() {
+    return reduce
+  }
+
+  filterTotalMoldeNG = (id) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.molde === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+
+    return reduce
+  }
+
+  renderMoldeList() {
+    return this.props.moldes.map( molde => 
+      <tr key={molde._id}>
+        <td className='production_list_row' colSpan='3'>{molde.moldeNumber}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.monday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.monday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.tuesday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.tuesday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.wednesday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.wednesday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.thursday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.thursday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.friday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.friday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.saturday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.saturday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeOk(this.state.sunday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.sunday, molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.filterTotalMolde(molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.filterTotalMoldeNG(molde._id)}</td>
+        <td className='production_normal_row' colSpan='1'><button>graph</button></td>
+      </tr>
+    )
+  }
+  
+  renderMachineList() {
+    return this.props.machines.map( machine => 
+      <tr key={machine._id}>
+        <td className='production_list_row' colSpan='3'>{machine.machineNumber}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.monday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.monday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.tuesday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.tuesday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.wednesday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.wednesday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.thursday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.thursday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.friday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.friday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.saturday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.saturday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineOk(this.state.sunday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.sunday, machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.filterTotalMachine(machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'>{this.filterTotalMachineNG(machine._id)}</td>
+        <td className='production_normal_row' colSpan='1'><button>graph</button></td>
+      </tr>
+    )
+  }
+
+  renderList = (list) =>{
+    if(list == 'Model'){ return this.renderModelList()} 
+    else if(list == 'Machine'){return this.renderMachineList()} 
+    else if(list == 'Molde'){return this.renderMoldeList()}
+    else{
+      return <div>select filter</div>
+    }
+  }
+
+
+  renderModelList() {
     return this.props.models.map( model => 
       <tr key={model._id}>
         <td className='production_list_row' colSpan='3'>{model.partNumber}</td>
@@ -204,11 +359,16 @@ class Production extends React.Component {
 
   }
 
+  changeTo = (e) =>{
+    this.setState({render: e.target.name})
+  }
+
   renderProductionHeader() {
     return <div className='production_nav'>
       <h2>Injection Production</h2>
-      <button>Model</button>
-      <button>Machine</button>
+      <button name='Model' onClick={this.changeTo}>Model</button>
+      <button name='Machine' onClick={this.changeTo}>Machine</button>
+      <button name='Molde' onClick={this.changeTo}>Molde</button>
       <button onClick={this.showState}>state</button>
       <label>Change Week:</label>
       <button onClick={this.Change}>Go Back</button>
@@ -279,22 +439,40 @@ isLeapYear(year) {
           <table className="production_table_list">
             <thead>
               <tr>
-                <th className="production_list_header production_model_table" colSpan='3'>Model</th>
-                <th className="production_list_header production_model" colSpan='2'>
-                  <div>Mon</div><div>{this.state.monday}</div><div>OK   NG</div>
-                </th>
-                <th className="production_list_header production_model" colSpan='2'><div>Tue</div><div>{this.state.tuesday}</div></th>
-                <th className="production_list_header production_model" colSpan='2'><div>Wed</div><div>{this.state.wednesday}</div></th>
-                <th className="production_list_header production_model" colSpan='2'><div>Thu</div><div>{this.state.thursday}</div></th>
-                <th className="production_list_header production_model" colSpan='2'><div>Fri</div><div>{this.state.friday}</div></th>
-                <th className="production_list_header production_model" colSpan='2'><div>Sat</div><div>{this.state.saturday}</div></th>
-                <th className="production_list_header production_model" colSpan='2'><div>Sun  </div><div>{this.state.sunday}</div></th>
-                <th className="production_list_header production_model_total" colSpan='2'>Total</th>
-                <th className="production_list_header production_model_detail" colSpan='1'>Graph</th>
+                <th className="production_list_header production_model_table" colSpan='3' rowSpan='2'>{this.state.render}</th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Mon</div><div>{this.state.monday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Tue</div><div>{this.state.tuesday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Wed</div><div>{this.state.wednesday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Thu</div><div>{this.state.thursday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Fri</div><div>{this.state.friday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
+                <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
+                <th className="production_list_header production_model_total" colSpan='2' rowSpan='1'>Total</th>
+                <th className="production_list_header production_model_detail" colSpan='1' rowSpan='2'>Graph</th>
+              </tr>
+              
+              
+              <tr>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
+              <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
               </tr>
             </thead> 
             <tbody>
-              {this.renderList()}
+              {this.renderList(this.state.render)}
             </tbody>
           </table>
         </div>

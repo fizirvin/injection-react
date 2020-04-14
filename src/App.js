@@ -933,6 +933,8 @@ class App extends React.Component {
               />
               <Route path="/production" exact component={ props => ( <Production {...props} 
               models={this.state.models} 
+              machines={this.state.machines}
+              moldes={this.state.moldes}  
               reportsDate={this.state.reportsDate} 
               initial49={this.state.initial49}
               end={this.state.end}

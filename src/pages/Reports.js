@@ -163,7 +163,7 @@ class Reports extends React.Component {
       <div className="Reports">
         <h2 className="section_header report_list_title">Injection Production Reports:</h2>
         <div className='reports_container'>
-        <table className="report_list_table">
+        <table className="report_list_table scrolldown">
         <thead>
           <tr>
             <th className="report_list_header date_data">Date</th>
@@ -180,7 +180,7 @@ class Reports extends React.Component {
               </th>
           </tr>
           </thead> 
-          <tbody>
+          <tbody className='body_reports'>
           {this.renderList()}
           </tbody>
         </table>

@@ -69,14 +69,7 @@ body{
   /* border-collapse: collapse; */
 }
 
-.table_list_moldes{
- 
-  width: 40%;
-  border: solid 2px;
-  margin-top: 2%;
-  margin-left: 3%;
-  /* border-collapse: collapse; */
-}
+
 .table_header {
   border: solid 1px;
   border-radius: 2px;
@@ -327,6 +320,7 @@ display: flex;
   margin-left: 5px;
   border: solid;
   border-radius: 3px;
+  table-layout: fixed;
 }
 
 .report_list_title{
@@ -350,6 +344,7 @@ display: flex;
   padding-left: 1%;
   font-size: 90%;
   height: 4vh;
+  
 }
 
 .date_data{
@@ -361,7 +356,7 @@ display: flex;
 }
 
 .machine_data{
-  width: 5%;
+  width: 10%;
 }
 
 .treal_data{
@@ -510,10 +505,16 @@ display: flex;
 
 .production_model{
   width: 10%;
+  border-collapse: collapse;
+}
+
+.production_model_ok{
+  width: 5%;
 }
 
 .production_model_table{
   width: 15%;
+  border-collapse: collapse;
 }
 
 .production_model_total{
@@ -546,3 +547,67 @@ display: flex;
   border-radius: 2px;
   padding-left: 3px;
 }
+
+.Moldes{
+  
+  width: 90%;
+  height: 95%;
+  
+}
+
+
+.table_list_moldes{
+  table-layout: fixed;
+  
+  border: solid 2px;
+  margin-top: 2%;
+  margin-left: 3%;
+  
+}
+
+.body_moldes{
+  display:block;
+  width: 100%;
+  overflow: auto;
+  height: 450px;
+
+}
+
+.table_list_moldes thead tr {
+  display: block;
+}
+
+
+
+.table_list_moldes th, .table_list_moldes td {
+ 
+ text-align: left;
+ width: 140px;
+}
+
+table.scrolldown { 
+  width: 100%; 
+    
+  /* border-collapse: collapse; */ 
+  border-spacing: 1; 
+  border: 2px solid black; 
+}
+
+/* table.scrolldown tbody, table.scrolldown thead { 
+  display: block; 
+}  */
+table.scrolldown tbody { 
+              
+  /* Set the height of table body */ 
+  height: 100px;  
+  
+  /* Set vertical scroll */ 
+  overflow-y: auto; 
+    
+  /* Hide the horizontal scroll */ 
+  overflow-x: hidden;  
+} 
+
+
+
+

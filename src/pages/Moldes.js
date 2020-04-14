@@ -15,7 +15,7 @@ class Moldes extends React.Component {
 
   render(){
     return (
-      <div className="Moldes">
+      <div className="Moldes" >
         <h2 className="section_header">Injection Mold List:</h2>
         <table className="table_list_moldes">
           <thead>
@@ -25,9 +25,13 @@ class Moldes extends React.Component {
             <th className="table_header"><Link to="/molds/add"><button>Add Mold</button></Link></th>
           </tr>
           </thead>
-          <tbody>
+          
+          <tbody className='body_moldes'>
+            
           {this.renderList()}
+          
           </tbody>
+          
         </table>
       </div>
     )
