@@ -20,19 +20,21 @@ class Moldes extends React.Component {
         <table className="table_list_moldes">
           <thead>
           <tr>
-            <th className="table_header">Mold Number</th>
-            <th className="table_header">Mold Serial</th>
-            <th className="table_header"><Link to="/molds/add"><button>Add Mold</button></Link></th>
+            <th className="table_header mold_number_header">Mold Number</th>
+            <th className="table_header mold_serial_header">Mold Serial</th>
+            <th className="table_header mold_add_header"><Link to="/molds/add"><button>Add Mold</button></Link></th>
           </tr>
           </thead>
-          
-          <tbody className='body_moldes'>
+          </table>
+          <div className='body_moldes'>
+          <table className='body_table_moldes'>
+          <tbody>
             
           {this.renderList()}
           
           </tbody>
-          
-        </table>
+          </table>
+          </div>
       </div>
     )
   }

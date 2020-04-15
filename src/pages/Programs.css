@@ -1,0 +1,85 @@
+.Programs{
+    width: 100%;
+    height: 95%;
+        
+
+}
+.table_programs{
+    width: 65%;
+    table-layout: fixed;
+    border: solid 2px;
+    margin-top: 2%;
+    margin-left: 3%;
+    margin-bottom: 0;
+  }
+  
+  .body_programs_table{
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: 3%;
+    margin-bottom: 0;
+   height: 82%;
+    width: 67%;
+    
+  }
+  
+  .body_programs{
+    width: 99%;
+    table-layout: fixed;
+    border: solid 2px;
+    margin-top: 1px;
+    margin-bottom: 0;
+  }
+  
+  
+  
+  .machineNumber_header{
+    width: 20%;
+  }
+  
+  .moldeNumber_header{
+    width: 25%;
+  }
+  
+  .partNumber_header{
+    width: 25%;
+  }
+  
+  .cycles_header{
+    width: 10%;
+  }
+  
+  .capacity_header{
+    width: 10%;
+  }
+  
+  .add_program_header{
+    width: 10%;
+  }
+  
+  
+  .machineNumber{
+    width: 20%;
+  }
+  
+  .moldeNumber{
+    width: 25%;
+  }
+  
+  .partNumber{
+    width: 25%;
+  }
+  
+  .cycles{
+    width: 10%;
+  }
+  
+  .capacity{
+    width: 10%;
+  }
+  
+  .add_program{
+    width: 10%;
+    align-content: left;
+    padding-left: 1px;
+  }

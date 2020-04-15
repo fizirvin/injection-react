@@ -85,18 +85,7 @@ body{
   background-color: white;
 }
 
-.molde_number{
-  width: 25%;
-}
 
-.molde_serial{
-  width: 10%;
-}
-
-
-.molde_table_data{
-  width: 5%;
-}
 
 .machine_update{
   width: 15%;
@@ -118,17 +107,7 @@ body{
   width: 85%;
 }
 
-.issue_table{
-  width: 35%;
-}
 
-.issue_name{
-width: 80%;
-}
-
-.issue_button{
-  width: 20%;
-}
 .Modal {
   
   position: fixed; /* Stay in place */
@@ -152,9 +131,6 @@ width: 80%;
   border-radius: 4px;
 }
 
-.table_programs{
-  width: 60%;
-}
 
 .program_list{
   margin: 0px;
@@ -548,42 +524,13 @@ display: flex;
   padding-left: 3px;
 }
 
-.Moldes{
-  
-  width: 90%;
-  height: 95%;
-  
-}
-
-
-.table_list_moldes{
-  table-layout: fixed;
-  
-  border: solid 2px;
-  margin-top: 2%;
-  margin-left: 3%;
-  
-}
-
-.body_moldes{
-  display:block;
-  width: 100%;
-  overflow: auto;
-  height: 450px;
-
-}
-
-.table_list_moldes thead tr {
-  display: block;
-}
 
 
 
-.table_list_moldes th, .table_list_moldes td {
- 
- text-align: left;
- width: 140px;
-}
+
+
+
+
 
 table.scrolldown { 
   width: 100%; 
@@ -607,6 +554,21 @@ table.scrolldown tbody {
   /* Hide the horizontal scroll */ 
   overflow-x: hidden;  
 } 
+
+.production_container{
+  display: flex;
+}
+
+.report_chart{
+  width: 30%;
+  margin-left: 5px;
+  margin-right: 5px;
+  border: solid;
+}
+
+
+
+
 
 
 

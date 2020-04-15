@@ -436,6 +436,7 @@ isLeapYear(year) {
       return (
         <div className="Production">
           {this.renderProductionHeader()}
+          <div className='production_container'>
           <table className="production_table_list">
             <thead>
               <tr>
@@ -475,6 +476,10 @@ isLeapYear(year) {
               {this.renderList(this.state.render)}
             </tbody>
           </table>
+          <div className='report_chart'>
+            Aui
+          </div>
+          </div>
         </div>
       )
     }

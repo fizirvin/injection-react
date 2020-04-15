@@ -25,6 +25,9 @@ import Production from './pages/Production.js'
 
 
 import './App.css';
+import './pages/Programs.css'
+import './pages/Moldes.css'
+import './pages/Issues.css'
 
 class App extends React.Component {
   state = { 
