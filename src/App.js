@@ -28,6 +28,7 @@ import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
 import './pages/Issues.css'
+import './pages/Reports.css'
 
 class App extends React.Component {
   state = { 
@@ -191,6 +192,9 @@ class App extends React.Component {
         efficiency
         production{
           _id
+          program{
+            _id
+          }
           real
           ng
           ok
@@ -682,6 +686,7 @@ class App extends React.Component {
       const production = report.production
       const downtimeDetail = report.downtimeDetail
 
+      
 
     const query = `mutation NewInjectionReport($input: NewInjectionReport ){
       newInjectionReport(input: $input){
@@ -707,6 +712,9 @@ class App extends React.Component {
           time
           oee
           capacity
+          program {
+            _id
+          }
           partNumber {
             _id
             partNumber
@@ -751,7 +759,7 @@ class App extends React.Component {
 
     const res = await fetch(url, opts);
     const data = await res.json();
-    
+    console.log(data, 'holahola')
     if(data.errors){
     
     return this.setState({reportMessage: 'error'})
@@ -803,6 +811,9 @@ class App extends React.Component {
         time
         oee
         capacity
+        program {
+          _id
+        }
         partNumber {
           _id
           partNumber

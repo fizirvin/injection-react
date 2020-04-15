@@ -37,9 +37,9 @@ class Reports extends React.Component {
     return formatDate
   }
 
-  formatRow = (id) => {
-    const normal = 'report_list';
-    const selected = 'report_selected_list'
+  formatRow = (id, style) => {
+    const normal = `report_list ${style}`;
+    const selected = `report_selected_list ${style}`
     const stateId = this.state._id
     if(stateId === id){
       return selected
@@ -141,16 +141,16 @@ class Reports extends React.Component {
   renderList() {
     return this.props.reports.map( report => 
     <tr key={report._id}>
-      <td className={this.formatRow(report._id)}>{ this.formatDate(report.reportDate)}</td>
-      <td className={this.formatRow(report._id)}>{ report.shift}</td>
-      <td className={this.formatRow(report._id)}>{ report.machine.machineNumber}</td>
-      <td className={this.formatRow(report._id)}>{ report.totalReal}</td>
-      <td className={this.formatRow(report._id)}>{ report.totalNG}</td>
-      <td className={this.formatRow(report._id)}>{ report.totalOK}</td>
-      <td className={this.formatRow(report._id)}>{ report.totalCapacity}</td>
-      <td className={this.formatRow(report._id)}>{ report.efficiency.$numberDecimal}</td>
-      <td className={this.formatRow(report._id)}>{ report.downtime}</td>
-      <td className={this.formatRow(report._id)}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
+      <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(report.reportDate)}</td>
+      <td className={this.formatRow(report._id, 'body_shift_table')}>{ report.shift}</td>
+      <td className={this.formatRow(report._id, 'body_machine_table')}>{ report.machine.machineNumber}</td>
+      <td className={this.formatRow(report._id, 'body_real_table')}>{ report.totalReal}</td>
+      <td className={this.formatRow(report._id, 'body_ng_table')}>{ report.totalNG}</td>
+      <td className={this.formatRow(report._id, 'body_ok_table')}>{ report.totalOK}</td>
+      <td className={this.formatRow(report._id, 'body_capacity_table')}>{ report.totalCapacity}</td>
+      <td className={this.formatRow(report._id, 'body_efficiency_table')}>{ report.efficiency.$numberDecimal}</td>
+      <td className={this.formatRow(report._id, 'body_downtime_table')}>{ report.downtime}</td>
+      <td className={this.formatRow(report._id, 'body_update_table')}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
       <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
     </tr>)
   }
@@ -163,7 +163,8 @@ class Reports extends React.Component {
       <div className="Reports">
         <h2 className="section_header report_list_title">Injection Production Reports:</h2>
         <div className='reports_container'>
-        <table className="report_list_table scrolldown">
+          <div className='container_first_table'>
+        <table className="report_list_table">
         <thead>
           <tr>
             <th className="report_list_header date_data">Date</th>
@@ -180,10 +181,16 @@ class Reports extends React.Component {
               </th>
           </tr>
           </thead> 
-          <tbody className='body_reports'>
+
+          </table>
+          <div className='body_reports'>
+          <table className='body_table_reports'> 
+          <tbody>
           {this.renderList()}
           </tbody>
         </table>
+        </div>
+        </div>
         <div className='report_detail'>
           {this.renderDetailTable()}
         </div>

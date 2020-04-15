@@ -28,15 +28,15 @@ class AddReport extends Component {
     const value = parseInt(e.target.value)|0;
     let selected = [...this.state.selected];
     
-    const ok = value - selected[selected.findIndex(el => el._id === e.target.name)].production.ng;
-    const time = selected[selected.findIndex(el => el._id === e.target.name)].production.time;
-    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity;
+    const ok = value - selected[selected.findIndex(el => el.program === e.target.name)].production.ng;
+    const time = selected[selected.findIndex(el => el.program === e.target.name)].production.time;
+    const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
     const production = ok;
     const expected = capacity * time;
     const oee = parseInt((production/expected)*100)|0;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.real = value;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.real = value;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
     
     
     return this.setState({selected: selected});
@@ -46,15 +46,15 @@ class AddReport extends Component {
     const value = parseInt(e.target.value)|0;
     let selected = [...this.state.selected];
 
-    const ok = selected[selected.findIndex(el => el._id === e.target.name)].production.real - value;
-    const time = selected[selected.findIndex(el => el._id === e.target.name)].production.time;
-    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity;
+    const ok = selected[selected.findIndex(el => el.program === e.target.name)].production.real - value;
+    const time = selected[selected.findIndex(el => el.program === e.target.name)].production.time;
+    const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
     
     const expected = capacity * time;
     const oee = parseInt((ok/expected)*100)|0;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.ng = value;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.ok = ok;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.ng = value;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
     return this.setState({selected});
   }
 
@@ -63,30 +63,30 @@ class AddReport extends Component {
     let selected = [...this.state.selected];
 
     
-    selected[selected.findIndex(el => el._id === e.target.name)].production.time = value;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.time = value;
     const time = parseInt(e.target.value);
-    const capacity = selected[selected.findIndex(el => el._id === e.target.name)].capacity
-    const production = selected[selected.findIndex(el => el._id === e.target.name)].production.ok
+    const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity
+    const production = selected[selected.findIndex(el => el.program === e.target.name)].production.ok
     const expected = capacity * time
     const oee = parseInt((production/expected)*100)|0;
-    selected[selected.findIndex(el => el._id === e.target.name)].production.oee = oee;
+    selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
     return this.setState({selected});
 
   }
 
   getOK = (id) =>{
     let selected = [...this.state.selected];
-    const real = selected[selected.findIndex(el => el._id === id)].production.real
-    const ng = selected[selected.findIndex(el => el._id === id)].production.ng
+    const real = selected[selected.findIndex(el => el.program === id)].production.real
+    const ng = selected[selected.findIndex(el => el.program === id)].production.ng
     const ok = real - ng
     return isNaN(ok) ? 0 : ok;
   }
 
   getOEE = (id) =>{
     let selected = [...this.state.selected];
-    const time = selected[selected.findIndex(el => el._id === id)].production.time
-    const capacity = selected[selected.findIndex(el => el._id === id)].capacity
-    const production = selected[selected.findIndex(el => el._id === id)].production.ok
+    const time = selected[selected.findIndex(el => el.program === id)].production.time
+    const capacity = selected[selected.findIndex(el => el.program === id)].capacity
+    const production = selected[selected.findIndex(el => el.program === id)].production.ok
     const expected = capacity * time
     const oee = parseInt((production/expected)*100);
     return isNaN(oee) ? 0 : oee;
@@ -184,7 +184,7 @@ class AddReport extends Component {
   }
 
   findMolde = (id) =>{
-    const select = this.state.selected.find( selected => selected._id === id);
+    const select = this.state.selected.find( selected => selected.program === id);
     return select ? true : false
   }
 
@@ -216,16 +216,17 @@ class AddReport extends Component {
     let programs = [...this.state.selected];
     const id = e.target.name 
     //   machines.push(data.data.newMachine);
-    const selected = this.state.selected.find( program => program._id === id);
+    const selected = this.state.selected.find( program => program.program === id);
     if(!selected){
       const getProgram = this.state.programs.find( program => program._id === id);
       const { _id, partNumber, moldeNumber, capacity } = {...getProgram}
       const item ={
-        _id: _id, //id del programa
+        program: _id, //id del programa
         moldeNumber: moldeNumber,
         partNumber: partNumber,
         capacity: capacity,
         production: {
+          program: _id,
           partNumber: partNumber._id,
           molde: moldeNumber._id,
           real: 0,
@@ -241,7 +242,7 @@ class AddReport extends Component {
       this.setState({selected: programs});
       
     } else{
-      const items = this.state.selected.filter(program => program._id !== id);
+      const items = this.state.selected.filter(program => program.program !== id);
     this.setState({ selected: items });
       
     }
@@ -352,7 +353,7 @@ class AddReport extends Component {
     }
     else{ 
       return selected.map(( program ) =>
-        <tr key={program._id}>
+        <tr key={program.program}>
           <td className='production_row'>
             <label>{program.moldeNumber.moldeNumber}</label>
           </td>
@@ -360,19 +361,19 @@ class AddReport extends Component {
           <label>{program.partNumber.partNumber}</label>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="12000" defaultValue={0} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
+            <input type='number' min="0" max="12000" defaultValue={0} name={program.program} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="12000" defaultValue={0} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
+            <input type='number' min="0" max="12000" defaultValue={0} name={program.program} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
+          <input type='number' className='production_input' name={program.program} value={this.getOK(program.program)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="14" defaultValue={0} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' min="0" max="14" defaultValue={0} name={program.program} className='production_input' onChange={this.onTimeProduction}></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
+          <input type='number' className='production_input' name={program.program} value={this.getOEE(program.program)} disabled></input>
           </td>
         </tr>  
       );
@@ -431,7 +432,7 @@ class AddReport extends Component {
         <table className='production_table-container'>
           <thead>
       <tr>
-        <th className='production_table issueName'>Down Time</th>
+        <th className='production_table issueName_report'>Down Time</th>
         <th className='production_table mins'>Time (min)</th>
       </tr>
       </thead>

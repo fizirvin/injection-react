@@ -28,7 +28,7 @@ class UpdateReport extends Component {
       
       const date = this.formatDate(reportDate)
       const programs = this.filterPrograms(machine._id)
-
+      
       const downtime = downtimeDetail.map( item => {
         
         const selection = {
@@ -40,13 +40,15 @@ class UpdateReport extends Component {
       })
 
       const selected = production.map( item => {
-        const getProgram = programs.find( program => program.moldeNumber._id === item.molde._id)
+        const getProgram = programs.find( program => program._id === item.program._id)
+        console.log('hola', getProgram)
         const selection = {
           _id: getProgram._id,
           moldeNumber: item.molde,
           partNumber: item.partNumber,
           capacity: item.capacity,
-          production: { 
+          production: {
+            program: getProgram._id, 
             partNumber: item.partNumber._id,
 	          molde: item.molde._id,
             real: item.real,
@@ -338,6 +340,7 @@ class UpdateReport extends Component {
         partNumber: partNumber,
         capacity: capacity,
         production: {
+          program: _id,
           partNumber: partNumber._id,
           molde: moldeNumber._id,
           real: 0,
