@@ -139,20 +139,26 @@ class Reports extends React.Component {
   }
 
   renderList() {
-    return this.props.reports.map( report => 
-    <tr key={report._id}>
-      <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(report.reportDate)}</td>
-      <td className={this.formatRow(report._id, 'body_shift_table')}>{ report.shift}</td>
-      <td className={this.formatRow(report._id, 'body_machine_table')}>{ report.machine.machineNumber}</td>
-      <td className={this.formatRow(report._id, 'body_real_table')}>{ report.totalReal}</td>
-      <td className={this.formatRow(report._id, 'body_ng_table')}>{ report.totalNG}</td>
-      <td className={this.formatRow(report._id, 'body_ok_table')}>{ report.totalOK}</td>
-      <td className={this.formatRow(report._id, 'body_capacity_table')}>{ report.totalCapacity}</td>
-      <td className={this.formatRow(report._id, 'body_efficiency_table')}>{ report.efficiency.$numberDecimal}</td>
-      <td className={this.formatRow(report._id, 'body_downtime_table')}>{ report.downtime}</td>
-      <td className={this.formatRow(report._id, 'body_update_table')}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
-      <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
-    </tr>)
+    const reports = this.props.reports
+    if(reports.length === 0){
+      
+      return <tr><td>no reports find, add report</td></tr>
+    } else {
+      return(this.props.reports.map( report => 
+        <tr key={report._id}>
+          <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(report.reportDate)}</td>
+          <td className={this.formatRow(report._id, 'body_shift_table')}>{ report.shift}</td>
+          <td className={this.formatRow(report._id, 'body_machine_table')}>{ report.machine.machineNumber}</td>
+          <td className={this.formatRow(report._id, 'body_real_table')}>{ report.totalReal}</td>
+          <td className={this.formatRow(report._id, 'body_ng_table')}>{ report.totalNG}</td>
+          <td className={this.formatRow(report._id, 'body_ok_table')}>{ report.totalOK}</td>
+          <td className={this.formatRow(report._id, 'body_capacity_table')}>{ report.totalCapacity}</td>
+          <td className={this.formatRow(report._id, 'body_efficiency_table')}>{ report.efficiency.$numberDecimal}</td>
+          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ report.downtime}</td>
+          <td className={this.formatRow(report._id, 'body_update_table')}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
+          <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
+        </tr>))
+    }
   }
 
 

@@ -430,7 +430,7 @@ class UpdateReport extends Component {
         }else{return (this.state.programs.map(( program ) => 
           <div key={program._id} className='checkboxes'>
           <input type='checkbox' className='checkbox-input' checked={this.findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
-          <label htmlFor={program._id}>{program.moldeNumber.moldeNumber}</label>
+          <label htmlFor={program._id}>{program.moldeNumber.moldeNumber} model: {program.partNumber.partNumber}</label>
           </div>)
         )}
         
