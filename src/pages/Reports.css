@@ -1,6 +1,14 @@
+.Reports{
+  
+  height: 95%;
+}
+
 .container_first_table{
-    
+  
+  
     width: 60%;
+  
+
 }
 .report_list_table{
     
@@ -10,15 +18,17 @@
     border: solid 2px;
     border-radius: 3px;
     table-layout: fixed;
+    
+    
   }
 
   .body_reports{
   
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
     margin-left: 3px;
     margin-bottom: 0;
-   height: 88%;
+    height: 450px;
     width: 100%;
   }
 
@@ -28,7 +38,7 @@
     border: solid 2px;
     margin-top: 1px;
     margin-bottom: 0;
-   
+  
     
   }
 
