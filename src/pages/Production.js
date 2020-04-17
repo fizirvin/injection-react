@@ -1,5 +1,4 @@
 import React from 'react';
-import Graphic from './Graphic'
 import BarChart from './charts/BarCharts'
 
 class Production extends React.Component {

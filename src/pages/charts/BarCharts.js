@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
-import chroma from 'chroma-js';
+
 
 const width = 400;
 const height = 200;
 const margin = {top: 20, right: 5, bottom: 20, left: 35};
 const red = '#eb6a5b';
-const green = '#b6e86f';
 const blue = '#52b6ca';
-const colors = chroma.scale([blue, green, red]).mode('hsl');
+
 
 class BarChart extends Component {
   xAxisRef = React.createRef();
@@ -66,13 +65,13 @@ class BarChart extends Component {
   }
 
   render() {
-    console.log(this.state.bars)
+    
     return (
       <svg width={width} height={height} className='svg_model'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width='50' height={d.height} fill={'blue'} />))}
+          (<rect key={i} x={d.x} y={d.y} width='50' height={d.height} fill={blue} />))}
          {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.ng} width='50' height={d.ngH} fill={'tomato'} />))}
+          (<rect key={i} x={d.x} y={d.ng} width='50' height={d.ngH} fill={red} />))}
         <g>
           <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={this.yAxisRef}  transform={`translate(${margin.left}, 0)`} />
