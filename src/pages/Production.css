@@ -1,0 +1,21 @@
+.production_container{ 
+    display: flex;
+  }
+
+.production_table_list{
+ 
+    margin-bottom: 3px;
+    width: 70%;
+    margin-left: 5px;
+    border: solid;
+    border-radius: 3px;
+    font-size: 80%;
+  }
+
+  .report_chart{
+    width: 400px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border: solid;
+    background-color: tomato;
+  }

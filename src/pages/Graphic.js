@@ -2,9 +2,9 @@ import React from 'react';
 import BarChart from './charts/BarCharts'
 
 
-class Graphic extends React.Component {
+class Home extends React.Component {
   state = {
-    data: [],
+    data: ['w'],
     data2: [
       {
         "date": "04/06/2020",
@@ -65,23 +65,30 @@ class Graphic extends React.Component {
   }
 
   componentDidMount(){
-    const data = this.state.data2.map(item => {
-      const date = new Date(item.date)
-      const data = {
-        date: date,
-        high: item.high,
-        avg: item.avg,
-        low: item.low,
-        ng: item.ng 
-      }
-      return data
-    })
+    const data = [...this.props.week]
+    
+
+    
+
     console.log(data)
+
+    // const data = this.state.data2.map(item => {
+    //   const date = new Date(item.date)
+    //   const data = {
+    //     date: date,
+    //     high: item.high,
+    //     avg: item.avg,
+    //     low: item.low,
+    //     ng: item.ng 
+    //   }
+    //   return data
+    // })
+    // console.log(data)
     return this.setState({data})
   }
 
   renderChart = () =>{
-    if(this.state.data.length === 0){ return <div>wait</div>}
+    if(this.state.data.length === 0){ return <div>...wait</div>}
     else {
       return <BarChart data={this.state.data}></BarChart>
     }
@@ -89,14 +96,11 @@ class Graphic extends React.Component {
 
   render(){
     return (
-      <div className="Home">
-        <div className='Hola'>Hola</div>
-        <div className='gra'>
+      <div className="Graphic">
       {this.renderChart()}
-      </div>
       </div>
     )
   }
 }
 
-export default Graphic;
+export default Home;

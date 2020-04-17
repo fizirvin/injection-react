@@ -29,6 +29,7 @@ import './pages/Programs.css'
 import './pages/Moldes.css'
 import './pages/Issues.css'
 import './pages/Reports.css'
+import './pages/Production.css'
 
 class App extends React.Component {
   state = { 
