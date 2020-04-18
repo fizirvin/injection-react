@@ -45,8 +45,13 @@ class BarChart extends Component {
     const max = okMax + ngMax
     const colorDomain = d3.extent(data, d => d.avg);
     yScale.domain([0, max]);
-    xScale.domain(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    xScale.domain(data.map(d => d.part))
     colorScale.domain(colorDomain);
+
+
+    const dataLength = data.length;
+    const barPos= ((width - margin.left - margin.right) / dataLength);
+    const barWidth = barPos - 1
 
     // calculate x and y for each rectangle
     const bars = data.map((d,i) => {
@@ -54,7 +59,7 @@ class BarChart extends Component {
       const y2 = yScale(0);
       const y3 = yScale(d.ng)
       return {
-        x: 35 + (i*51),
+        x: 35 + (i*barPos),
         y: y1,
         height: y2 - y1,
         // fill: colors(colorScale(d.avg)),
@@ -63,7 +68,7 @@ class BarChart extends Component {
       }
     });
 
-    return {bars};
+    return {bars, barWidth};
   }
 
   componentDidUpdate() {
@@ -76,9 +81,9 @@ class BarChart extends Component {
     return (
       <svg width={width} height={height} className='svg_model'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width='50' height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
          {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.ng} width='50' height={d.ngH} fill={red} />))}
+          (<rect key={i} x={d.x} y={d.ng} width={this.state.barWidth} height={d.ngH} fill={red} />))}
         <g>
           <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
           <g ref={this.yAxisRef}  transform={`translate(${margin.left}, 0)`} />

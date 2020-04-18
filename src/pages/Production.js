@@ -37,19 +37,38 @@ class Production extends React.Component {
     sunday: this.getDateofTable(7, today)
     }
 
-    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday, 'Model')
     
     return this.setState({...state, data})
 
   }
 
-  setGraphicFirst = (mon, sun) =>{ 
+  setGraphicFirst = (mon, sun, filter) =>{ 
+    if(filter === 'Model'){
       const data = this.props.models.map(model =>{  
-      const ok = this.forGraphOK(model._id, mon, sun)
-      const ng = this.forGraphNG(model._id, mon, sun)
-      return {part: model.partNumber, ok: ok, ng: ng}
-    })
-    return data
+        const ok = this.forGraphOK(model._id, mon, sun)
+        const ng = this.forGraphNG(model._id, mon, sun)
+        return {part: model.partNumber, ok: ok, ng: ng}
+      })
+      return data
+    }
+    else if(filter === 'Machine'){
+      const data = this.props.machines.map(machine =>{  
+        const ok = this.forGraphMachine(machine._id, mon, sun)
+        const ng = this.forGraphMachineNG(machine._id, mon, sun)
+        return {part: machine.machineNumber, ok: ok, ng: ng}
+      })
+      return data
+    }
+    else if( filter === 'Molde'){
+      const data = this.props.moldes.map(molde =>{  
+        const ok = this.forGraphMolde(molde._id, mon, sun)
+        const ng = this.forGraphMoldeNG(molde._id, mon, sun)
+        return {part: molde.moldeNumber, ok: ok, ng: ng}
+      })
+      return data
+    }
+    else { return }
   }
 
 
@@ -112,7 +131,7 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
        
-    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday, this.state.render)
     const week = []
     return this.setState({...state, data, week})
     
@@ -138,14 +157,14 @@ class Production extends React.Component {
     }
        
 
-    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday, this.state.render)
     const week = []
     return this.setState({...state, data, week})
     
   }
 
   showState = () => {
-    console.log(this.state)
+    console.log(this.props)
     
   }
 
@@ -253,11 +272,37 @@ class Production extends React.Component {
     return reduce
   }
 
+  forGraphMachine = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun )
+      .filter( item => item.machine === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
   filterTotalMolde = (id) =>{
     const array = [...this.props.reportsDate]
     const filter = array.filter( 
       item => item.date >= this.state.monday 
       && item.date <= this.state.sunday)
+      .filter( item => item.molde === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
+  forGraphMolde = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun)
       .filter( item => item.molde === id)
     const reduce = filter.reduce( (a, b) =>{
       return a + b.ok || 0
@@ -306,11 +351,37 @@ class Production extends React.Component {
     return reduce
   }
 
+  forGraphMachineNG = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun )
+      .filter( item => item.machine === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+
+    return reduce
+  }
+
   filterTotalMoldeNG = (id) =>{
     const array = [...this.props.reportsDate]
     const filter = array.filter( 
       item => item.date >= this.state.monday 
       && item.date <= this.state.sunday)
+      .filter( item => item.molde === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+
+    return reduce
+  }
+
+  forGraphMoldeNG = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun )
       .filter( item => item.molde === id)
     const reduce = filter.reduce( (a, b) =>{
       return a + b.ng || 0
@@ -339,7 +410,7 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.sunday, molde._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMolde(molde._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMoldeNG(molde._id)}</td>
-        <td className='production_normal_row' colSpan='1'><button>graph</button></td>
+        <td className='production_normal_row' colSpan='1'><button name='molde' value={molde._id} onClick={this.displayGraph} >graph</button></td>
       </tr>
     )
   }
@@ -364,7 +435,7 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.sunday, machine._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMachine(machine._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMachineNG(machine._id)}</td>
-        <td className='production_normal_row' colSpan='1'><button>graph</button></td>
+        <td className='production_normal_row' colSpan='1'><button name='machine' value={machine._id} onClick={this.displayGraph} >graph</button></td>
       </tr>
     )
   }
@@ -406,14 +477,8 @@ class Production extends React.Component {
 
   goToDate = (e) =>{
     const date1 = e.target.value + 'T01:00:00.000-06:00'
-    console.log('gotodate', e.target.value)
-    // if(date >= this.state.monday && date <= this.state.sunday){ console.log('misma semana')}else{console.log('otra semana')}
-    // item => item.date >= this.state.monday 
-    // && item.date <= this.state.sunday
-
-    
     const date = new Date(date1);
-   console.log(date)
+  
     const today= this.formatDate(date)+'T01:00:00.000-06:00';
     
 
@@ -428,14 +493,28 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
        
-    return this.setState({...state})
+
+    const data = this.setGraphicFirst(state.monday, state.sunday, this.state.render)
+    return this.setState({...state, data, week: [] })
 
 
 
   }
 
   changeTo = (e) =>{
-    this.setState({render: e.target.name})
+    if( e.target.name === 'Machine'){
+      const data = this.setGraphicFirst(this.state.monday, this.state.sunday, 'Machine')
+      this.setState({render: e.target.name, data, week: []})
+    }
+    else if(e.target.name === 'Molde'){
+      const data = this.setGraphicFirst(this.state.monday, this.state.sunday, 'Molde')
+      this.setState({render: e.target.name, data, week: []})
+    }
+    else if(e.target.name === 'Model'){
+      const data = this.setGraphicFirst(this.state.monday, this.state.sunday, 'Model')
+      this.setState({render: e.target.name, data, week: []})
+    }
+    else{ return }
   }
 
   renderProductionHeader() {
@@ -444,7 +523,7 @@ class Production extends React.Component {
       <button name='Model' onClick={this.changeTo}>Model</button>
       <button name='Machine' onClick={this.changeTo}>Machine</button>
       <button name='Molde' onClick={this.changeTo}>Molde</button>
-      <button onClick={this.showState}>state</button>
+      {/* <button onClick={this.showState}>state</button> */}
       <label>Change Week:</label>
       <button onClick={this.goBack}>Go Back</button>
       <button onClick={this.goForward}>Go Forward</button>
@@ -523,10 +602,11 @@ isLeapYear(year) {
       return 
     }
     else { 
-      return (<div className='Graphic'>
-            
-      <WeekChart data={this.state.data}></WeekChart>
-      </div>)
+      return (
+        <div className='Graphic'>  
+          <WeekChart data={this.state.data}></WeekChart>
+        </div>
+      )
     }
   }
 
@@ -534,71 +614,195 @@ isLeapYear(year) {
 
   displayGraph = (e) =>{
     const id = e.target.value
-    const total = this.filterTotalProduction(id)
-    if(total === 0){
-      return this.setState({week: []})
+    if(this.state.render === 'Model'){
+      const total = this.filterTotalProduction(id)
+      if( total === 0){ return } 
+      else{ 
+        const monday = this.reduceOk(this.state.monday, id);
+        const monNG = this.reduceNG(this.state.monday, id);
+        const tuesday = this.reduceOk(this.state.tuesday, id);
+        const tueNG = this.reduceNG(this.state.tuesday, id);
+        const wednesday = this.reduceOk(this.state.wednesday, id);
+        const wedNG = this.reduceNG(this.state.wednesday, id);
+        const thursday = this.reduceOk(this.state.thursday, id);
+        const thuNG = this.reduceNG(this.state.thursday, id);
+        const friday = this.reduceOk(this.state.friday, id);
+        const friNG = this.reduceNG(this.state.friday, id);
+        const saturday = this.reduceOk(this.state.saturday, id);
+        const satNG = this.reduceNG(this.state.saturday, id);
+        const sunday = this.reduceOk(this.state.sunday, id);
+        const sunNG = this.reduceNG(this.state.sunday, id);
+        const week = [
+          {
+            part: 'Mon',
+            ok: monday,
+            ng: monNG
+          },
+          {
+            part: 'Tue',
+            ok: tuesday,
+            ng: tueNG
+          },
+          {
+            part: 'Wed',
+            ok: wednesday,
+            ng: wedNG
+          },
+          {
+            part: 'Thu',
+            ok: thursday,
+            ng: thuNG
+          },
+          {
+            part: 'Fri',
+            ok: friday,
+            ng: friNG
+          },
+          {
+            part: 'Sat',
+            ok: saturday,
+            ng: satNG
+          },
+          {
+            part: 'sun',
+            ok: sunday,
+            ng: sunNG
+         }
+        ]
+        this.setState({type: e.target.name, graphic: e.target.value, week})
+      } 
+    } 
+    else if(this.state.render === 'Machine'){
+      const total = this.filterTotalMachine(id)
+      if(total === 0){ return }
+      else{
+        const monday = this.reduceMachineOk(this.state.monday, id);
+        const monNG = this.reduceMachineNG(this.state.monday, id);
+  
+        const tuesday = this.reduceMachineOk(this.state.tuesday, id);
+        const tueNG = this.reduceMachineNG(this.state.tuesday, id);
+  
+        const wednesday = this.reduceMachineOk(this.state.wednesday, id);
+        const wedNG = this.reduceMachineNG(this.state.wednesday, id);
+  
+        const thursday = this.reduceMachineOk(this.state.thursday, id);
+        const thuNG = this.reduceMachineNG(this.state.thursday, id);
+  
+        const friday = this.reduceMachineOk(this.state.friday, id);
+        const friNG = this.reduceMachineNG(this.state.friday, id);
+  
+        const saturday = this.reduceMachineOk(this.state.saturday, id);
+        const satNG = this.reduceMachineNG(this.state.saturday, id);
+  
+        const sunday = this.reduceMachineOk(this.state.sunday, id);
+        const sunNG = this.reduceMachineNG(this.state.sunday, id);
+  
+        const week = [
+          {
+            part: 'Mon',
+            ok: monday,
+            ng: monNG
+          },
+          {
+            part: 'Tue',
+            ok: tuesday,
+            ng: tueNG
+          },
+          {
+            part: 'Wed',
+            ok: wednesday,
+            ng: wedNG
+          },
+          {
+            part: 'Thu',
+            ok: thursday,
+            ng: thuNG
+          },
+          {
+            part: 'Fri',
+            ok: friday,
+            ng: friNG
+          },
+          {
+            part: 'Sat',
+            ok: saturday,
+            ng: satNG
+          },
+          {
+            part: 'sun',
+            ok: sunday,
+            ng: sunNG
+          }
+        ]
+        this.setState({type: e.target.name, graphic: e.target.value, week})
+      }
     }
-    else{
-      const monday = this.reduceOk(this.state.monday, id);
-      const monNG = this.reduceNG(this.state.monday, id);
+    else if(this.state.render === 'Molde'){
+      const total = this.filterTotalMolde(id)
 
-      const tuesday = this.reduceOk(this.state.tuesday, id);
-      const tueNG = this.reduceNG(this.state.tuesday, id);
-
-      const wednesday = this.reduceOk(this.state.wednesday, id);
-      const wedNG = this.reduceNG(this.state.wednesday, id);
-
-      const thursday = this.reduceOk(this.state.thursday, id);
-      const thuNG = this.reduceNG(this.state.thursday, id);
-
-      const friday = this.reduceOk(this.state.friday, id);
-      const friNG = this.reduceNG(this.state.friday, id);
-
-      const saturday = this.reduceOk(this.state.saturday, id);
-      const satNG = this.reduceNG(this.state.saturday, id);
-
-      const sunday = this.reduceOk(this.state.sunday, id);
-      const sunNG = this.reduceNG(this.state.sunday, id);
-
-      const week = [
-        {
-          day: 'Mon',
-          ok: monday,
-          ng: monNG
-        },
-        {
-          day: 'Tue',
-          ok: tuesday,
-          ng: tueNG
-        },
-        {
-          day: 'Wed',
-          ok: wednesday,
-          ng: wedNG
-        },
-        {
-          day: 'Thu',
-          ok: thursday,
-          ng: thuNG
-        },
-        {
-          day: 'Fri',
-          ok: friday,
-          ng: friNG
-        },
-        {
-          day: 'Sat',
-          ok: saturday,
-          ng: satNG
-        },
-        {
-          day: 'sun',
-          ok: sunday,
-          ng: sunNG
-        }
-      ]
-      this.setState({type: e.target.name, graphic: e.target.value, week})
-    }
+      if(total === 0){return }
+      else{
+        const monday = this.reduceMoldeOk(this.state.monday, id);
+        const monNG = this.reduceMoldeNG(this.state.monday, id);
+  
+        const tuesday = this.reduceMoldeOk(this.state.tuesday, id);
+        const tueNG = this.reduceMoldeNG(this.state.tuesday, id);
+  
+        const wednesday = this.reduceMoldeOk(this.state.wednesday, id);
+        const wedNG = this.reduceMoldeNG(this.state.wednesday, id);
+  
+        const thursday = this.reduceMoldeOk(this.state.thursday, id);
+        const thuNG = this.reduceMoldeNG(this.state.thursday, id);
+  
+        const friday = this.reduceMoldeOk(this.state.friday, id);
+        const friNG = this.reduceMoldeNG(this.state.friday, id);
+  
+        const saturday = this.reduceMoldeOk(this.state.saturday, id);
+        const satNG = this.reduceMoldeNG(this.state.saturday, id);
+  
+        const sunday = this.reduceMoldeOk(this.state.sunday, id);
+        const sunNG = this.reduceMoldeNG(this.state.sunday, id);
+  
+        const week = [
+          {
+            part: 'Mon',
+            ok: monday,
+            ng: monNG
+          },
+          {
+            part: 'Tue',
+            ok: tuesday,
+            ng: tueNG
+          },
+          {
+            part: 'Wed',
+            ok: wednesday,
+            ng: wedNG
+          },
+          {
+            part: 'Thu',
+            ok: thursday,
+            ng: thuNG
+          },
+          {
+            part: 'Fri',
+            ok: friday,
+            ng: friNG
+          },
+          {
+            part: 'Sat',
+            ok: saturday,
+            ng: satNG
+          },
+          {
+            part: 'sun',
+            ok: sunday,
+            ng: sunNG
+          }
+        ]
+        this.setState({type: e.target.name, graphic: e.target.value, week})
+      }
+    }else{ return }
   }
   
 
