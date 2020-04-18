@@ -1,14 +1,18 @@
 import React from 'react';
 
-class Graphic extends React.Component {
+
+class Home extends React.Component {
   
+
+
   render(){
     return (
       <div className="Home">
       ...Home
+      
       </div>
     )
   }
 }
 
-export default Graphic;
+export default Home;

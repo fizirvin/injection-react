@@ -3,13 +3,13 @@ import * as d3 from 'd3';
 
 
 const width = 400;
-const height = 200;
-const margin = {top: 20, right: 5, bottom: 20, left: 35};
+const height = 250;
+const margin = {top: 20, right: 5, bottom: 100, left: 35};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
 
-class BarChart extends Component {
+class WeekChart extends Component {
   xAxisRef = React.createRef();
   yAxisRef= React.createRef();
   state = {
@@ -28,8 +28,9 @@ class BarChart extends Component {
 
 
   componentDidMount (){
-    d3.select(this.xAxisRef.current).call(this.xAxis);
+    d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
     d3.select(this.yAxisRef.current).call(this.yAxis);
+  
 
   }
 
@@ -45,8 +46,14 @@ class BarChart extends Component {
     const max = okMax + ngMax
     const colorDomain = d3.extent(data, d => d.avg);
     yScale.domain([0, max]);
-    xScale.domain(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    xScale.domain(data.map(d => d.part))
     colorScale.domain(colorDomain);
+
+   
+
+    const dataLength = data.length;
+    const barPos= ((width - margin.left - margin.right) / dataLength);
+    const barWidth = barPos - 1
 
     // calculate x and y for each rectangle
     const bars = data.map((d,i) => {
@@ -54,7 +61,7 @@ class BarChart extends Component {
       const y2 = yScale(0);
       const y3 = yScale(d.ng)
       return {
-        x: 35 + (i*51),
+        x: 35 + (i*barPos),
         y: y1,
         height: y2 - y1,
         // fill: colors(colorScale(d.avg)),
@@ -63,11 +70,11 @@ class BarChart extends Component {
       }
     });
 
-    return {bars};
+    return {bars, barWidth};
   }
 
   componentDidUpdate() {
-    d3.select(this.xAxisRef.current).call(this.xAxis);
+    d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
     d3.select(this.yAxisRef.current).call(this.yAxis);
   }
 
@@ -76,11 +83,11 @@ class BarChart extends Component {
     return (
       <svg width={width} height={height} className='svg_model'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width='50' height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
          {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.ng} width='50' height={d.ngH} fill={red} />))}
+          (<rect key={i} x={d.x} y={d.ng} width={this.state.barWidth} height={d.ngH} fill={red} />))}
         <g>
-          <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
+          <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`}/>
           <g ref={this.yAxisRef}  transform={`translate(${margin.left}, 0)`} />
         </g>
       </svg>
@@ -88,4 +95,4 @@ class BarChart extends Component {
   }
 }
 
-export default BarChart;
+export default WeekChart;

@@ -371,7 +371,7 @@ display: flex;
 
 
 .Graphic{
-  padding-left: 20px;
+  padding-left: 0;
   width: 400px;
   margin: 0;
   
@@ -379,6 +379,10 @@ display: flex;
 
 .invisible{
   display: none
+}
+
+.svg_model2{
+  background-color: white;
 }
 
 

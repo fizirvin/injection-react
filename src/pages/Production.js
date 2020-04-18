@@ -1,5 +1,6 @@
 import React from 'react';
 import BarChart from './charts/BarCharts'
+import WeekChart from './charts/WeekChart'
 
 class Production extends React.Component {
 
@@ -15,10 +16,12 @@ class Production extends React.Component {
     render: 'Model',
     graphic: '',
     type: '',
-    week: []
+    week: [],
+    data: [],
+    general: ''
   }
 
-  async componentDidMount(){
+  async componentDidMount (){
 
     const date = new Date();
     const today = this.formatDate(date)+'T01:00:00.000-06:00'
@@ -33,14 +36,22 @@ class Production extends React.Component {
     saturday: this.getDateofTable(6, today),
     sunday: this.getDateofTable(7, today)
     }
-   
-    return this.setState({...state})
+
+    const data = this.setGraphicFirst(state.monday, state.sunday)
+    
+    return this.setState({...state, data})
+
   }
 
-  changeData =() => {
-    const data = [1,2,3,4,5,6]
-    return this.setState({data})
+  setGraphicFirst = (mon, sun) =>{ 
+      const data = this.props.models.map(model =>{  
+      const ok = this.forGraphOK(model._id, mon, sun)
+      const ng = this.forGraphNG(model._id, mon, sun)
+      return {part: model.partNumber, ok: ok, ng: ng}
+    })
+    return data
   }
+
 
   todayIs(date){
     const today = date
@@ -82,7 +93,7 @@ class Production extends React.Component {
   }
 
 
-  Change = async () =>{
+  goBack = async () =>{
     const date1 = this.state.today;
     const date = new Date(date1);
     const pastWeek = date.getDate()-7;
@@ -101,7 +112,9 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
        
-    return this.setState({...state})
+    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const week = []
+    return this.setState({...state, data, week})
     
   }
 
@@ -124,7 +137,10 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
        
-    return this.setState({...state})
+
+    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const week = []
+    return this.setState({...state, data, week})
     
   }
 
@@ -211,6 +227,19 @@ class Production extends React.Component {
     return reduce
   }
 
+  forGraphOK = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon
+      && item.date <= sun)
+      .filter( item => item.part === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+
+    return reduce
+  }
+
   filterTotalMachine = (id) =>{
     const array = [...this.props.reportsDate]
     const filter = array.filter( 
@@ -249,6 +278,20 @@ class Production extends React.Component {
 
     return reduce
   }
+
+  forGraphNG = (id, mon, sun) =>{
+    const array = [...this.props.reportsDate]
+    const filter = array.filter( 
+      item => item.date >= mon
+      && item.date <= sun)
+      .filter( item => item.part === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+
+    return reduce
+  }
+
 
   filterTotalMachineNG = (id) =>{
     const array = [...this.props.reportsDate]
@@ -403,10 +446,11 @@ class Production extends React.Component {
       <button name='Molde' onClick={this.changeTo}>Molde</button>
       <button onClick={this.showState}>state</button>
       <label>Change Week:</label>
-      <button onClick={this.Change}>Go Back</button>
+      <button onClick={this.goBack}>Go Back</button>
       <button onClick={this.goForward}>Go Forward</button>
       <label>Go to Date:</label>
       <input type='date' onChange={this.goToDate}></input>
+      
     </div>
   }
 
@@ -462,18 +506,31 @@ isLeapYear(year) {
 
   renderGraphic = () =>{
     if(this.state.week.length === 0){
-      return (<div className='invisible'>
+      return 
+    }
+    else { 
+      
+      return (<div className='Graphic'>
             
       <BarChart data={this.state.week}></BarChart>
+      
       </div>)
+    }
+  }
+
+  renderModelGraphic = () =>{
+    if(this.state.data.length === 0){
+      return 
     }
     else { 
       return (<div className='Graphic'>
             
-      <BarChart data={this.state.week}></BarChart>
+      <WeekChart data={this.state.data}></WeekChart>
       </div>)
     }
   }
+
+
 
   displayGraph = (e) =>{
     const id = e.target.value
@@ -592,9 +649,10 @@ isLeapYear(year) {
               {this.renderList(this.state.render)}
             </tbody>
           </table>
-          
+          <div className='graphics'>
+          {this.renderModelGraphic()}
           {this.renderGraphic()}
-          
+          </div>
           </div>
         </div>
       )
