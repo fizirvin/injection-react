@@ -410,7 +410,7 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceMoldeNG(this.state.sunday, molde._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMolde(molde._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMoldeNG(molde._id)}</td>
-        <td className='production_normal_row' colSpan='1'><button name='molde' value={molde._id} onClick={this.displayGraph} >graph</button></td>
+        <td className='production_normal_row' colSpan='1'><button className='button_displaygraph' name='molde' value={molde._id} onClick={this.displayGraph} >graph</button></td>
       </tr>
     )
   }
@@ -435,7 +435,7 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceMachineNG(this.state.sunday, machine._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMachine(machine._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalMachineNG(machine._id)}</td>
-        <td className='production_normal_row' colSpan='1'><button name='machine' value={machine._id} onClick={this.displayGraph} >graph</button></td>
+        <td className='production_normal_row' colSpan='1'><button className='button_displaygraph' name='machine' value={machine._id} onClick={this.displayGraph} >graph</button></td>
       </tr>
     )
   }
@@ -470,7 +470,7 @@ class Production extends React.Component {
         <td className='production_normal_row' colSpan='1'>{this.reduceNG(this.state.sunday, model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalProduction(model._id)}</td>
         <td className='production_normal_row' colSpan='1'>{this.filterTotalNG(model._id)}</td>
-        <td className='production_normal_row' colSpan='1'><button name='model' value={model._id} onClick={this.displayGraph} >graph</button></td>
+        <td className='production_normal_row normal_button' colSpan='1'><button className='button_displaygraph' name='model' value={model._id} onClick={this.displayGraph} >graph</button></td>
       </tr>
     )
   }
@@ -519,17 +519,36 @@ class Production extends React.Component {
 
   renderProductionHeader() {
     return <div className='production_nav'>
-      <h2>Injection Production</h2>
-      <button name='Model' onClick={this.changeTo}>Model</button>
-      <button name='Machine' onClick={this.changeTo}>Machine</button>
-      <button name='Molde' onClick={this.changeTo}>Molde</button>
+      <h2 className='production_header'>Injection Production</h2>
+      <div className='production_controls'>
+        <table>
+          <tbody>
+            <tr>
+              <td className='right_data'><label>Filter By:</label></td>
+              <td>
+                <button name='Model' onClick={this.changeTo}>Model</button>
+                <button name='Machine' onClick={this.changeTo}>Machine</button>
+                <button name='Molde' onClick={this.changeTo}>Molde</button>
+              </td>
+            </tr>
+            <tr>
+              <td className='right_data'><label>Change Week:</label></td>
+              <td>
+                <button onClick={this.goBack}>Go Back</button>
+                <button onClick={this.goForward}>Go Forward</button>
+              </td>
+            </tr>
+            <tr>
+              <td className='right_data'><label>Go to Date:</label></td>
+              <td>
+                <input type='date' onChange={this.goToDate}></input>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
       {/* <button onClick={this.showState}>state</button> */}
-      <label>Change Week:</label>
-      <button onClick={this.goBack}>Go Back</button>
-      <button onClick={this.goForward}>Go Forward</button>
-      <label>Go to Date:</label>
-      <input type='date' onChange={this.goToDate}></input>
-      
+      </div>
     </div>
   }
 
@@ -814,6 +833,7 @@ isLeapYear(year) {
         <div className="Production">
           {this.renderProductionHeader()}
           <div className='production_container'>
+            <div className='production_tables'>
           <table className="production_table_list">
             <thead>
               <tr>
@@ -826,7 +846,7 @@ isLeapYear(year) {
                 <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
                 <th className="production_list_header production_model" colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
                 <th className="production_list_header production_model_total" colSpan='2' rowSpan='1'>Total</th>
-                <th className="production_list_header production_model_detail" colSpan='1' rowSpan='2'>Graph</th>
+                <th className="production_list_header production_model_detail graph_class" colSpan='1' rowSpan='2'>Graph</th>
               </tr>
               
               
@@ -848,11 +868,16 @@ isLeapYear(year) {
               <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>OK</th>
               <th className="production_list_header production_model_ok" colSpan='1' rowSpan='1'>NG</th>
               </tr>
-            </thead> 
+            </thead>
+            </table>
+            <div className='body_production_table'> 
+            <table className='body_table_body'>
             <tbody>
               {this.renderList(this.state.render)}
             </tbody>
           </table>
+          </div>
+          </div>
           <div className='graphics'>
           {this.renderModelGraphic()}
           {this.renderGraphic()}

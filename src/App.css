@@ -286,61 +286,6 @@ display: flex;
 }
 
 
-
-.production_list_header{
-  background-color: rgba(5, 131, 53, 0.404);
-  border: solid 1px;
-  border-radius: 2px;
-  
-}
-
-.production_model{
-  width: 10%;
-  border-collapse: collapse;
-}
-
-.production_model_ok{
-  width: 5%;
-}
-
-.production_model_table{
-  width: 15%;
-  border-collapse: collapse;
-}
-
-.production_model_total{
-  width: 10%;
-}
-
-.production_model_detail{
-  width: 5%;
-}
-
-.button_production_list{
-  width: 5%;
-  font-size: 5%;
-}
-
-.production_list_row{
-  width: 15%;
-  background-color: rgba(5, 131, 53, 0.404);
-  border: solid 1px;
-  border-radius: 2px;
-  padding-left: 5px;
-  font-weight: bold;
-  font-size: 95%;
-}
-
-.production_normal_row{
-  width: 5%;
-  background-color: white;
-  border: solid 1px;
-  border-radius: 2px;
-  padding-left: 3px;
-}
-
-
-
 .svg_model{
   
   border-radius: 3px;
