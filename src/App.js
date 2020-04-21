@@ -14,6 +14,9 @@ import UpdateModel from './pages/forms/UpdateModel.js'
 import Issues from './pages/Issues.js'
 import AddIssue from './pages/forms/AddIssue.js'
 import UpdateIssue from './pages/forms/UpdateIssue.js'
+import Defects from './pages/Defects.js'
+import AddDefect from './pages/forms/AddDefect.js'
+import UpdateDefect from './pages/forms/UpdateDefect.js'
 import Programs from './pages/Programs.js'
 import AddProgram from './pages/forms/AddProgram.js'
 import UpdateProgram from './pages/forms/UpdateProgram.js'
@@ -38,11 +41,13 @@ class App extends React.Component {
     moldeMessage: 'new',
     modelMessage: 'new',
     issueMessage: 'new',
+    defectMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
     moldes: [],
     models: [],
     issues: [],
+    defects: [],
     programs: [],
     reports: [],
     reportsDate: [],
@@ -156,6 +161,10 @@ class App extends React.Component {
         _id
         issueName
       }
+      defects{
+        _id
+        defectName
+      }
       programs{
         _id
         machineNumber{
@@ -246,6 +255,7 @@ class App extends React.Component {
       moldes: data.data.moldes, 
       models: data.data.parts, 
       issues: data.data.issues,
+      defects: data.data.defects,
       programs: data.data.programs,
       reports: data.data.reports,
       reportsDate: data.data.reportsDate,
@@ -566,6 +576,67 @@ class App extends React.Component {
       let issues = [...this.state.issues];
       issues[issues.findIndex(el => el._id === issue._id)] = issue;
       this.setState({issues: issues, issueMessage: 'sucess'});
+    }
+
+  }
+
+  addDefect = async (newDefect)=>{
+    
+    const query = `mutation{newDefect(input:{
+      defectName: "${newDefect.defectName}"
+    }) {
+      _id
+      defectName
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({defectMessage: 'error'})
+    } else{
+      let defects = [...this.state.defects];
+      defects.push(data.data.newDefect);
+      this.setState({defects: defects, defectMessage: 'sucess'});
+    }
+
+  }
+
+  updateDefect = async (updateDefect)=>{
+
+    const query = `mutation{updateDefect(_id: "${updateDefect._id}", input:{
+      defectName: "${updateDefect.defectName}"
+    }) {
+      _id
+      defectName
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({defectMessage: 'error'})
+    } else{
+      let defect = data.data.updateDefect;
+      let defects = [...this.state.defects];
+      defects[defects.findIndex(el => el._id === defect._id)] = defect;
+      this.setState({defects: defects, defectMessage: 'sucess'});
     }
 
   }
@@ -961,6 +1032,14 @@ class App extends React.Component {
                 issues={this.state.issues} message={this.state.issueMessage} close={this.close} updateIssue={this.updateIssue}/> )} 
               />
               
+              <Route path="/defects" exact component={ props => ( <Defects {...props} defects={this.state.defects}/> )} />    
+              <Route path="/defects/add" exact component={ props => ( <AddDefect {...props} 
+                message={this.state.defectMessage} close={this.close} addDefect={this.addDefect}/> )} 
+              />
+              <Route path="/defects/update/:id" exact component={ props => ( <UpdateDefect {...props} 
+                defects={this.state.defects} message={this.state.defectMessage} close={this.close} updateDefect={this.updateDefect}/> )} 
+              />      
+
               <Route path="/programs" exact component={ props => ( <Programs {...props} programs={this.state.programs}/> )} />
               <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
                 machines={this.state.machines} 
