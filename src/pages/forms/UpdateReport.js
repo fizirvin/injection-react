@@ -41,7 +41,7 @@ class UpdateReport extends Component {
 
       const selected = production.map( item => {
         const getProgram = programs.find( program => program._id === item.program._id)
-        console.log('hola', getProgram)
+        
         const selection = {
           _id: getProgram._id,
           moldeNumber: item.molde,

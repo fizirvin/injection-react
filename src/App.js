@@ -760,14 +760,33 @@ class App extends React.Component {
 
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log(data, 'holahola')
+    
     if(data.errors){
     
     return this.setState({reportMessage: 'error'})
     } else{
       let reports = [...this.state.reports];
+      let reportsDate = [...this.state.reportsDate]
+      const testArr = [data.data.newInjectionReport]
+      
+      const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
+      if(test){
+
+        const convert = testArr.map( item => { 
+        const date = this.formatDate(item.reportDate);
+        const id = item._id
+        const machine = item.machine._id
+        const production = item.production.map( prod =>{
+          return { report: id, date: date, machine: machine, part: prod.partNumber._id, molde: prod.molde._id, ok: prod.ok, ng: prod.ng}
+          })
+          return production
+        })
+          
+        reportsDate.push(...convert[0])
+      } 
+      else{}
       reports.push(data.data.newInjectionReport);
-      this.setState({reports: reports, reportMessage: 'sucess'});
+      this.setState({reports: reports, reportsDate: reportsDate, reportMessage: 'sucess'});
     }
 
   }
