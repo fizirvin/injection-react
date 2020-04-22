@@ -25,6 +25,7 @@ import AddReport from './pages/forms/AddReport.js'
 import UpdateReport from './pages/forms/UpdateReport.js'
 import Toolbar from './pages/Toolbar.js'
 import Production from './pages/Production.js'
+import Downtime from './pages/Downtime.js'
 
 
 import './App.css';
@@ -33,6 +34,7 @@ import './pages/Moldes.css'
 import './pages/Issues.css'
 import './pages/Reports.css'
 import './pages/Production.css'
+import './pages/Downtime.css'
 
 class App extends React.Component {
   state = { 
@@ -1075,6 +1077,7 @@ class App extends React.Component {
               initial49={this.state.initial49}
               end={this.state.end}
               /> )} />
+              <Route path="/downtime" exact component={ props => ( <Downtime {...props}/> )} />
             </Switch> 
           </div>
         </div>
