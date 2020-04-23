@@ -6,3 +6,7 @@
 .downtime_controlls{
     margin-left: 5%;
 }
+
+.downtime_container{
+    display: flex;
+}

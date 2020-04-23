@@ -52,6 +52,7 @@ class App extends React.Component {
     defects: [],
     programs: [],
     reports: [],
+    reportsByDate: [],
     reportsDate: [],
     initial49:'',
     end:'',
@@ -241,6 +242,14 @@ class App extends React.Component {
         ok
         ng
       }
+      reportsByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+        report
+        date
+        machine
+        issue
+        issueName
+        mins
+      }
     }`
 
     const url = this.state.server;
@@ -261,6 +270,7 @@ class App extends React.Component {
       programs: data.data.programs,
       reports: data.data.reports,
       reportsDate: data.data.reportsDate,
+      reportsByDate: data.data.reportsByDate,
       initial49: initial49,
       end: end
     })
@@ -1077,7 +1087,10 @@ class App extends React.Component {
               initial49={this.state.initial49}
               end={this.state.end}
               /> )} />
-              <Route path="/downtime" exact component={ props => ( <Downtime {...props}/> )} />
+              <Route path="/downtime" exact component={ props => ( <Downtime {...props}
+              machines={this.state.machines}
+              reports={this.state.reportsByDate}
+              /> )} />
             </Switch> 
           </div>
         </div>
