@@ -249,17 +249,16 @@ setDataForGraph = ( id ) =>{
         <thead>
           <tr>
             <th className='downtime_header_machine'>Machine</th>
-            <th className='downtime_header_day'>Mon</th>
-            <th className='downtime_header_day'>Tue</th>
-            <th className='downtime_header_day'>Wed</th>
-            <th className='downtime_header_day'>Thu</th>
-            <th className='downtime_header_day'>Fri</th>
-            <th className='downtime_header_day'>Sat</th>
-            <th className='downtime_header_day'>Sun</th>
+            <th className='downtime_header_day'><div>Mon</div><div>{this.state.monday}</div></th>
+            <th className='downtime_header_day'><div>Tue</div><div>{this.state.tuesday}</div></th>
+            <th className='downtime_header_day'><div>Wed</div><div>{this.state.wednesday}</div></th>
+            <th className='downtime_header_day'><div>Thu</div><div>{this.state.thursday}</div></th>
+            <th className='downtime_header_day'><div>Fri</div><div>{this.state.friday}</div></th>
+            <th className='downtime_header_day'><div>Sat</div><div>{this.state.saturday}</div></th>
+            <th className='downtime_header_day'><div>Sun</div><div>{this.state.sunday}</div></th>
             <th className='downtime_header_week'>Week mins</th>
             <th className='downtime_header_highest'>Highest</th>
             <th className='downtime_header_item'>Item</th>
-            <th className='downtime_header_graphic'>Graph</th>
           </tr>
         </thead>
       </table>
@@ -306,7 +305,7 @@ setDataForGraph = ( id ) =>{
         <td className='downtime_body_week'>{this.filterTotalProduction(machine._id)}</td>
         <td className='downtime_body_highest'>{this.filterTotalProduction(machine._id)}</td>
         <td className='downtime_body_item'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_graph'>{this.filterTotalProduction(machine._id)}</td>
+        
 
         {/* <td className='downtime_body_graphic'>{this.setDataForGraph(machine._id)}</td> */}
       </tr>
