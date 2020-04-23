@@ -1088,6 +1088,7 @@ class App extends React.Component {
               end={this.state.end}
               /> )} />
               <Route path="/downtime" exact component={ props => ( <Downtime {...props}
+              issues={this.state.issues}
               machines={this.state.machines}
               reports={this.state.reportsByDate}
               /> )} />

@@ -44,37 +44,44 @@
 }
 
 .downtime_header_machine{
+    background-color: rgba(5, 131, 53, 0.404);
     font-size: 90%;
     font-size: 70%;
     width: 8%;
     border: solid 1px;
+    
 }
 
 .downtime_header_week{
+    background-color: rgba(5, 131, 53, 0.404);
     font-size: 90%;
     width: 7%;
     border: solid 1px;
 }
 
 .downtime_header_graphic{
+    background-color: rgba(5, 131, 53, 0.404);
     width: 5%;
     border: solid 1px;
     font-size: 60%;
 }
 
 .downtime_header_day{
+    background-color: rgba(5, 131, 53, 0.404);
     width: 8%;
     border: solid 1px;
     font-size: 68%;
 }
 
 .downtime_header_highest{
+    background-color: rgba(5, 131, 53, 0.404);
     width: 7%;
     border: solid 1px;
     font-size: 70%;
 }
 
 .downtime_header_item{
+    background-color: rgba(5, 131, 53, 0.404);
     width: 22%;
     border: solid 1px;
     font-size: 90%;
@@ -85,6 +92,7 @@
     text-align: center;
     width: 8%;
     border: solid 1px;
+    font-weight: bold;
 }
 
 .downtime_body_day{

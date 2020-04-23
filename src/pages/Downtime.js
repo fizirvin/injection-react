@@ -35,7 +35,7 @@ class Downtime extends React.Component {
     sunday: this.getDateofTable(7, today)
     }
 
-    const data = this.FilterDataForGraph(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday)
     
     return this.setState({...state, data})
 
@@ -127,7 +127,7 @@ class Downtime extends React.Component {
     }
        
    
-    const data = this.FilterDataForGraph(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday)
     return this.setState({...state, data})
     
   }
@@ -153,7 +153,7 @@ class Downtime extends React.Component {
        
 
     
-    const data = this.FilterDataForGraph(state.monday, state.sunday)
+    const data = this.setGraphicFirst(state.monday, state.sunday)
     return this.setState({...state, data})
     
   }
@@ -216,17 +216,59 @@ setDataForGraph = ( id ) =>{
   return <DowntimeBar data={week}></DowntimeBar>
 }
 
+renderDowntimeWeekGraphic = () =>{
+  if(this.state.data.length === 0){
+    return 
+  }
+  else { 
+    return (
+      <div className='Graphic'>  
+        {/* <WeekChart data={this.state.data}></WeekChart> */}
+      </div>
+    )
+  }
+}
 
-  FilterDataForGraph = (mon, sun) =>{
+setGraphicFirst = (mon, sun) =>{ 
+  
+    const data = this.props.issues.map(issue =>{  
+      const mins = this.FilterDataForGraph(issue._id, mon, sun)
+      return {issue: issue.issueName, mins: mins}
+    })
+    return data
+  }
+
+ 
+  
+
+
+  FilterDataForGraph = (id, mon, sun) =>{
     const array = [...this.props.reports]
     const filter = array.filter( 
       item => item.date >= mon 
-      && item.date <= sun)
+      && item.date <= sun).filter( item => item.issue === id)
+      const reduce = filter.reduce( (a, b) =>{
+        return a + b.mins || 0
+      },0)
+
+    return reduce
+  }
+
+  filterMins = (date, id) => {
+    const array = [...this.props.reports]
+    const filter = array.filter( item => item.date === date).filter( item => item.machine === id)
 
     return filter
   }
 
-  filterTotalProduction = (id) =>{
+  reduceMins = (date, id) =>{
+    const reduce = this.filterMins(date, id).reduce( (a, b) =>{
+      return a + b.mins || 0
+    },0)
+    return reduce
+  }
+
+  filterTotalMins = (id) =>{
     const array = [...this.props.reports]
     const filter = array.filter( 
       item => item.date >= this.state.monday 
@@ -295,16 +337,16 @@ setDataForGraph = ( id ) =>{
     return this.props.machines.map( machine =>
       <tr key={machine._id}>
         <td className='downtime_body_machine'>{machine.machineNumber}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_week'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_highest'>{this.filterTotalProduction(machine._id)}</td>
-        <td className='downtime_body_item'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.monday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.tuesday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.wednesday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.thursday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.friday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.saturday, machine._id)}</td>
+        <td className='downtime_body_day'>{this.reduceMins(this.state.sunday, machine._id)}</td>
+        <td className='downtime_body_week'>{this.filterTotalMins(machine._id)}</td>
+        <td className='downtime_body_highest'>{this.reduceMins(machine._id)}</td>
+        <td className='downtime_body_item'>{this.reduceMins(machine._id)}</td>
         
 
         {/* <td className='downtime_body_graphic'>{this.setDataForGraph(machine._id)}</td> */}
@@ -328,7 +370,7 @@ setDataForGraph = ( id ) =>{
           </div>
         </div>
         <div className='graphics_container'>
-            hola
+            graphics
         </div>
         </div>
       </div>
