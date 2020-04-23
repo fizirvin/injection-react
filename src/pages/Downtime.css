@@ -1,3 +1,5 @@
+
+
 .downtime_header{
     margin-left: 2%;
     display: flex;
@@ -8,5 +10,123 @@
 }
 
 .downtime_container{
+    display: block;
+    width: 50%;
+    height: 75vh;
+}
+
+.svg_downtime{
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.downtime_tablehader{
+    border: solid 2px;
+    margin-left: 2%;
+    width: 95.5%;
+    
+}
+
+.downtime_table_body{
+    margin-top: 2px;
+    margin-left: 2%;
+    height: 88%;
+    
+    overflow-y: scroll;
+}
+
+.downtime_body_table{
+    
+    width: 100%;
+   border: solid 2px; 
+}
+
+.downtime_header_machine{
+    font-size: 90%;
+    font-size: 70%;
+    width: 10%;
+    border: solid 1px;
+}
+
+.downtime_header_week{
+    font-size: 90%;
+    width: 7%;
+    border: solid 1px;
+}
+
+.downtime_header_graphic{
+    width: 5%;
+    border: solid 1px;
+    font-size: 60%;
+}
+
+.downtime_header_day{
+    width: 7%;
+    border: solid 1px;
+}
+
+.downtime_header_highest{
+    width: 7%;
+    border: solid 1px;
+    font-size: 70%;
+}
+
+.downtime_header_item{
+    width: 22%;
+    border: solid 1px;
+    font-size: 90%;
+}
+
+
+.downtime_body_machine{
+    text-align: center;
+    width: 10%;
+    border: solid 1px;
+}
+
+.downtime_body_day{
+    width: 7%;
+    text-align: center;
+    border: solid 1px; 
+}
+
+.downtime_body_week{
+    width: 7%;
+    text-align: center;
+    border: solid 1px;
+}
+
+.downtime_body_highest{
+    width: 7%;
+    text-align: center;
+    border: solid 1px; 
+}
+
+.downtime_body_item{
+    width: 22%;
+    text-align: center;
+    border: solid 1px; 
+}
+.downtime_body_graph{
+    width: 5%;
+    text-align: center;
+    border: solid 1px; 
+}
+
+.downtime_body_graphic{
+    width: 80%;
+    
+    text-align: center;
+    border: solid 1px;
+    
+}
+
+.downtime_graphs{
     display: flex;
+}
+.graphics_container{
+    border: solid 1px;
+    width: 50%;
 }

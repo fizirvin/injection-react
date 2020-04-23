@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import DowntimeBar from './charts/DowntimeBar.js'
+
 
 
 class Downtime extends React.Component {
@@ -14,12 +16,7 @@ class Downtime extends React.Component {
     friday: '',
     saturday: '',
     sunday: '',
-    render: 'Model',
-    graphic: '',
-    type: '',
-    week: [],
-    data: [],
-    general: ''
+    data: []
   }
 
   async componentDidMount (){
@@ -38,9 +35,9 @@ class Downtime extends React.Component {
     sunday: this.getDateofTable(7, today)
     }
 
+    const data = this.FilterDataForGraph(state.monday, state.sunday)
     
-    
-    return this.setState({...state})
+    return this.setState({...state, data})
 
   }
 
@@ -130,8 +127,8 @@ class Downtime extends React.Component {
     }
        
    
-    const week = []
-    return this.setState({...state, week})
+    const data = this.FilterDataForGraph(state.monday, state.sunday)
+    return this.setState({...state, data})
     
   }
 
@@ -156,36 +153,113 @@ class Downtime extends React.Component {
        
 
     
-    const week = []
-    return this.setState({...state, week})
+    const data = this.FilterDataForGraph(state.monday, state.sunday)
+    return this.setState({...state, data})
     
+  }
+
+  filterDowntime = (date, id) => {
+    const array = [...this.state.data]
+    const filter = array.filter( item => item.date === date).filter( item => item.machine === id)
+
+    return filter
+  }
+
+  reduceMins = (date, id) =>{
+    const reduce = this.filterDowntime(date, id).reduce( (a, b) =>{
+      return a + b.mins || 0
+    },0)
+    return reduce
+  }
+
+setDataForGraph = ( id ) =>{
+
+  const monday = this.reduceMins(this.state.monday, id);
+  const tuesday = this.reduceMins(this.state.tuesday, id);
+  const wednesday = this.reduceMins(this.state.wednesday, id);
+  const thursday = this.reduceMins(this.state.thursday, id);
+  const friday = this.reduceMins(this.state.friday, id);
+  const saturday = this.reduceMins(this.state.saturday, id);
+  const sunday = this.reduceMins(this.state.sunday, id);
+
+  const week = [
+    {
+      day: 'Mon',
+      mins: monday,
+    },
+    {
+      day: 'Tue',
+      mins: tuesday
+    },
+    {
+      day: 'Wed',
+      mins: wednesday
+    },
+    {
+      day: 'Thu',
+      mins: thursday
+    },
+    {
+      day: 'Fri',
+      mins: friday
+    },
+    {
+      day: 'Sat',
+      mins: saturday
+    },
+    {
+      day: 'sun',
+      mins: sunday
+   }
+  ]
+
+  return <DowntimeBar data={week}></DowntimeBar>
+}
+
+
+  FilterDataForGraph = (mon, sun) =>{
+    const array = [...this.props.reports]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun)
+
+    return filter
   }
 
   filterTotalProduction = (id) =>{
     const array = [...this.props.reports]
     const filter = array.filter( 
-      item => item.reportDate >= this.state.monday 
+      item => item.date >= this.state.monday 
       && item.date <= this.state.sunday)
-      .filter( item => item.machine._id === id)
+      .filter( item => item.machine === id)
     const reduce = filter.reduce( (a, b) =>{
-      return a + b.ok || 0
+      return a + b.mins || 0
     },0)
 
     return reduce
   }
 
   showReports = () =>{
-    console.log(this.props.reports)
+    console.log(this.state, this.props)
   }
 
   renderHeaderTable(){
     return (
-      <table>
+      <table className='downtime_tablehader'>
         <thead>
           <tr>
-            <th>Machine</th>
-            <th>Week DT</th>
-            <th>Graphic</th>
+            <th className='downtime_header_machine'>Machine</th>
+            <th className='downtime_header_day'>Mon</th>
+            <th className='downtime_header_day'>Tue</th>
+            <th className='downtime_header_day'>Wed</th>
+            <th className='downtime_header_day'>Thu</th>
+            <th className='downtime_header_day'>Fri</th>
+            <th className='downtime_header_day'>Sat</th>
+            <th className='downtime_header_day'>Sun</th>
+            <th className='downtime_header_week'>Week mins</th>
+            <th className='downtime_header_highest'>Highest</th>
+            <th className='downtime_header_item'>Item</th>
+            <th className='downtime_header_graphic'>Graph</th>
           </tr>
         </thead>
       </table>
@@ -205,7 +279,7 @@ class Downtime extends React.Component {
               </tr>
               <tr>
                 <td>Change Week:</td>
-                <td><button>Go Back</button><button>Go Forward</button></td>
+                <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
               </tr>
               <tr>
                 <td>Go to Date:</td>
@@ -218,21 +292,45 @@ class Downtime extends React.Component {
     )
   }
 
-  renderList() {
-    return this.props.issues.map( issue => 
-    <tr key={issue._id}>
-      <td className="table_data issueName">{ issue.issueName}</td>
-      <td className="table_data issue_update"><Link to={`/issues/update/${issue._id}`}><button className='button_issue'>Update</button></Link></td>
-    </tr>)
+  renderBodyRow = () =>{
+    return this.props.machines.map( machine =>
+      <tr key={machine._id}>
+        <td className='downtime_body_machine'>{machine.machineNumber}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_day'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_week'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_highest'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_item'>{this.filterTotalProduction(machine._id)}</td>
+        <td className='downtime_body_graph'>{this.filterTotalProduction(machine._id)}</td>
+
+        {/* <td className='downtime_body_graphic'>{this.setDataForGraph(machine._id)}</td> */}
+      </tr>
+    )
   }
 
   render(){
     return (
       <div className="Downtime">
           {this.renderHeader()}
-        downtime graphic... highest indicator
+          <div className='downtime_graphs'>
         <div className='downtime_container'>
           {this.renderHeaderTable()}
+          <div className='downtime_table_body'>
+            <table className='downtime_body_table'>
+              <tbody>
+                {this.renderBodyRow()}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className='graphics_container'>
+            hola
+        </div>
         </div>
       </div>
     )
