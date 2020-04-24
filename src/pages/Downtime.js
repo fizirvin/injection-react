@@ -44,6 +44,33 @@ class Downtime extends React.Component {
 
   }
 
+
+  goToDate = (e) =>{
+    const date1 = e.target.value + 'T01:00:00.000-06:00'
+    const date = new Date(date1);
+  
+    const today= this.formatDate(date)+'T01:00:00.000-06:00';
+    
+
+    const state = {
+      today: today,  
+      monday: this.getDateofTable(1, today),
+      tuesday: this.getDateofTable(2, today),
+      wednesday: this.getDateofTable(3, today),
+      thursday: this.getDateofTable(4, today),
+      friday: this.getDateofTable(5, today),
+      saturday: this.getDateofTable(6, today),
+      sunday: this.getDateofTable(7, today),
+    }
+       
+
+    const data = this.setGraphicFirst(state.monday, state.sunday)
+    const week = this.setGraphicFirstMachine(state.monday, state.sunday)
+    return this.setState({...state, data, week})
+
+
+
+  }
   
 
   getDateofTable = (number, aDate)=>{
@@ -385,7 +412,7 @@ setGraphicFirst = (mon, sun) =>{
             <th className='downtime_header_day'><div>Fri</div><div>{this.state.friday}</div></th>
             <th className='downtime_header_day'><div>Sat</div><div>{this.state.saturday}</div></th>
             <th className='downtime_header_day'><div>Sun</div><div>{this.state.sunday}</div></th>
-            <th className='downtime_header_week'>Week (mins)</th>
+            <th className='downtime_header_week'>Total (mins)</th>
             <th className='downtime_header_highest'>Highest (mins)</th>
             <th className='downtime_header_item'>Indicator Item</th>
           </tr>
@@ -401,17 +428,17 @@ setGraphicFirst = (mon, sun) =>{
         <div className='downtime_controlls'>
           <table>
             <tbody>
-              <tr>
+              {/* <tr>
                 <td>Filter By:</td>
                 <td><button onClick={this.showReports}>Filter 1</button><button>Filter 2</button><button>Filter 3</button></td>
-              </tr>
+              </tr> */}
               <tr>
                 <td>Change Week:</td>
                 <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
               </tr>
               <tr>
                 <td>Go to Date:</td>
-                <td><input type='date'></input></td>
+                <td><input type='date' onChange={this.goToDate}></input></td>
               </tr>
             </tbody>
           </table>
