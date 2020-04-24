@@ -850,6 +850,7 @@ class App extends React.Component {
     } else{
       let reports = [...this.state.reports];
       let reportsDate = [...this.state.reportsDate]
+      let reportsByDate = [...this.state.reportsByDate]
       const testArr = [data.data.newInjectionReport]
       
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
@@ -864,12 +865,23 @@ class App extends React.Component {
           })
           return production
         })
+
+        const convertDowntime = testArr.map( item => { 
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const downtime = item.downtimeDetail.map( downtime =>{
+            return { report: id, date: date, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
+            })
+            return downtime
+          })
           
         reportsDate.push(...convert[0])
+        reportsByDate.push(...convertDowntime[0])
       } 
       else{}
       reports.push(data.data.newInjectionReport);
-      this.setState({reports: reports, reportsDate: reportsDate, reportMessage: 'sucess'});
+      this.setState({reports: reports, reportsDate: reportsDate, reportsByDate, reportMessage: 'sucess'});
     }
 
   }
@@ -971,6 +983,7 @@ class App extends React.Component {
     let reports = [...this.state.reports];
 
     let reportsDate = [...this.state.reportsDate].filter( reportDate => reportDate.report !== report._id)
+    let reportsByDate = [...this.state.reportsByDate].filter( reportDate => reportDate.report !== report._id)
       const testArr = [data.data.updateInjectionReport]
       
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
@@ -985,15 +998,26 @@ class App extends React.Component {
           })
           return production
         })
+
+        const convertDowntime = testArr.map( item => { 
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const downtime = item.downtimeDetail.map( downtime =>{
+            return { report: id, date: date, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
+            })
+            return downtime
+          })
           
         reportsDate.push(...convert[0])
+        reportsByDate.push(...convertDowntime[0])
       } 
       else{}
 
 
 
     reports[reports.findIndex(el => el._id === report._id)] = report;
-    this.setState({reports: reports, reportsDate: reportsDate, reportMessage: 'sucess'});
+    this.setState({reports: reports, reportsDate: reportsDate, reportsByDate, reportMessage: 'sucess'});
 
   }
 

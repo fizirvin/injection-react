@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import DowntimeBar from './charts/DowntimeBar.js'
+import DowntimeWeekChart from './charts/DowntimeWeekChart.js'
+import DownTimeWeekByMachine from './charts/DowntimeWeekByMachine.js'
 
 
 
@@ -16,7 +18,8 @@ class Downtime extends React.Component {
     friday: '',
     saturday: '',
     sunday: '',
-    data: []
+    data: [],
+    week: []
   }
 
   async componentDidMount (){
@@ -36,8 +39,8 @@ class Downtime extends React.Component {
     }
 
     const data = this.setGraphicFirst(state.monday, state.sunday)
-    
-    return this.setState({...state, data})
+    const week = this.setGraphicFirstMachine(state.monday, state.sunday)
+    return this.setState({...state, data, week})
 
   }
 
@@ -128,7 +131,8 @@ class Downtime extends React.Component {
        
    
     const data = this.setGraphicFirst(state.monday, state.sunday)
-    return this.setState({...state, data})
+    const week = this.setGraphicFirstMachine(state.monday, state.sunday)
+    return this.setState({...state, data, week})
     
   }
 
@@ -154,7 +158,8 @@ class Downtime extends React.Component {
 
     
     const data = this.setGraphicFirst(state.monday, state.sunday)
-    return this.setState({...state, data})
+    const week = this.setGraphicFirstMachine(state.monday, state.sunday)
+    return this.setState({...state, data, week})
     
   }
 
@@ -223,7 +228,20 @@ renderDowntimeWeekGraphic = () =>{
   else { 
     return (
       <div className='Graphic'>  
-        {/* <WeekChart data={this.state.data}></WeekChart> */}
+        <DowntimeWeekChart data={this.state.data}> </DowntimeWeekChart>
+      </div>
+    )
+  }
+}
+
+renderDowntimeByMachineGraphic = () =>{
+  if(this.state.data.length === 0){
+    return 
+  }
+  else { 
+    return (
+      <div className='Graphic'>  
+        <DownTimeWeekByMachine data={this.state.week}> </DownTimeWeekByMachine>
       </div>
     )
   }
@@ -235,10 +253,31 @@ setGraphicFirst = (mon, sun) =>{
       const mins = this.FilterDataForGraph(issue._id, mon, sun)
       return {issue: issue.issueName, mins: mins}
     })
-    return data
+    return data.sort((x, y)  => y.mins - x.mins)
+  }
+
+  setGraphicFirstMachine = (mon, sun) =>{ 
+  
+    const data = this.props.machines.map(machine =>{  
+      const mins = this.FilterDataForGraphByMachine(machine._id, mon, sun)
+      return {machine: machine.machineNumber, mins: mins}
+    })
+    return data.sort((x, y)  => y.mins - x.mins)
   }
 
  
+  FilterDataForGraphByMachine = (id, mon, sun) =>{
+    const array = [...this.props.reports]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun).filter( item => item.machine === id)
+      const reduce = filter.reduce( (a, b) =>{
+        return a + b.mins || 0
+      },0)
+
+    return reduce
+  }
+
   
 
 
@@ -281,6 +320,54 @@ setGraphicFirst = (mon, sun) =>{
     return reduce
   }
 
+  filterHighest = (id) =>{
+    const array = [...this.props.reports]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+
+      const issues = [...this.props.issues]
+      const mapping = issues.map( issue =>
+        {
+          const reduceMins = filter.filter( item => item.issue === issue._id)
+          .reduce( (a, b) =>{
+            return a + b.mins || 0
+          },0)
+          return {issue: issue.issueName, mins: reduceMins }
+        })
+   
+    return mapping.sort((x, y)  => y.mins - x.mins)[0].mins
+  }
+
+  filterHighestIndicator = (id) =>{
+    const array = [...this.props.reports]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+
+      const issues = [...this.props.issues]
+      const mapping = issues.map( issue =>
+        {
+          const reduceMins = filter.filter( item => item.issue === issue._id)
+          .reduce( (a, b) =>{
+            return a + b.mins || 0
+          },0)
+          return {issue: issue.issueName, mins: reduceMins }
+        })
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.mins || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return 'no downtime'
+        } else {
+          return mapping.sort((x, y)  => y.mins - x.mins)[0].issue
+        }
+  }
+
   showReports = () =>{
     console.log(this.state, this.props)
   }
@@ -298,9 +385,9 @@ setGraphicFirst = (mon, sun) =>{
             <th className='downtime_header_day'><div>Fri</div><div>{this.state.friday}</div></th>
             <th className='downtime_header_day'><div>Sat</div><div>{this.state.saturday}</div></th>
             <th className='downtime_header_day'><div>Sun</div><div>{this.state.sunday}</div></th>
-            <th className='downtime_header_week'>Week mins</th>
-            <th className='downtime_header_highest'>Highest</th>
-            <th className='downtime_header_item'>Item</th>
+            <th className='downtime_header_week'>Week (mins)</th>
+            <th className='downtime_header_highest'>Highest (mins)</th>
+            <th className='downtime_header_item'>Indicator Item</th>
           </tr>
         </thead>
       </table>
@@ -345,8 +432,8 @@ setGraphicFirst = (mon, sun) =>{
         <td className='downtime_body_day'>{this.reduceMins(this.state.saturday, machine._id)}</td>
         <td className='downtime_body_day'>{this.reduceMins(this.state.sunday, machine._id)}</td>
         <td className='downtime_body_week'>{this.filterTotalMins(machine._id)}</td>
-        <td className='downtime_body_highest'>{this.reduceMins(machine._id)}</td>
-        <td className='downtime_body_item'>{this.reduceMins(machine._id)}</td>
+        <td className='downtime_body_highest'>{this.filterHighest(machine._id)}</td>
+        <td className='downtime_body_item'>{this.filterHighestIndicator(machine._id)}</td>
         
 
         {/* <td className='downtime_body_graphic'>{this.setDataForGraph(machine._id)}</td> */}
@@ -357,9 +444,10 @@ setGraphicFirst = (mon, sun) =>{
   render(){
     return (
       <div className="Downtime">
-          {this.renderHeader()}
+          {/* {this.renderHeader()} */}
           <div className='downtime_graphs'>
         <div className='downtime_container'>
+        {this.renderHeader()}
           {this.renderHeaderTable()}
           <div className='downtime_table_body'>
             <table className='downtime_body_table'>
@@ -370,7 +458,8 @@ setGraphicFirst = (mon, sun) =>{
           </div>
         </div>
         <div className='graphics_container'>
-            graphics
+            {this.renderDowntimeWeekGraphic()}
+            {this.renderDowntimeByMachineGraphic()}
         </div>
         </div>
       </div>
