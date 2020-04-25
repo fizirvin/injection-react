@@ -224,19 +224,17 @@ class UpdateReport extends Component {
     return isNaN(mins) ? 0 : mins;
   }
 
-  getDefaultDefect = async (program, id) =>{
-   return 0
-    // const programId = program;
-    // const defectId = id;
-    // let value
-    // const getDefect = await this.state.defects.find(defect => defect.program === programId && defect.defect === defectId);
-    // if(!getDefect){ value = 0}
-    // else{
-    //   const { defectPcs } = await getDefect
-    //   console.log(getDefect)
-    //   value = defectPcs
-    // }
-    // return value    
+  getDefaultDefect = (programId, id) =>{
+   
+    let value
+    const getDefect = this.state.defects.find(defect => defect.program === programId && defect.defect === id);
+    if(!getDefect){ value = 0}
+    else{
+      const { defectPcs } = getDefect
+     
+      value = defectPcs
+    }
+    return value    
   }
 
   getOEE = (id) =>{
@@ -552,7 +550,7 @@ class UpdateReport extends Component {
 
          </td>
          <td className='input-defect-body-pcs'>
-           <input type='number' defaultValue={this.getDefaultDefect(program, defect._id)} name={program} id={defect._id} onChange={this.onDefect} disabled={this.disabledDefect(program, defect._id)}  className='input-defect-number'></input>
+           <input type='number' defaultValue={this.getDefaultDefect(program, defect._id )} name={program} id={defect._id} onChange={this.onDefect} disabled={this.disabledDefect(program, defect._id)}  className='input-defect-number'></input>
          </td>
        </tr>))
     }
@@ -660,7 +658,7 @@ class UpdateReport extends Component {
             <button type='button' onClick={this.showMolds}>Injection Molds</button>
             <button type='button' onClick={this.showIssues}>Downtime</button>
             <button type='button' onClick={this.showDefects}>Defects</button>
-            <button type='button' onClick={this.showstate}>state</button>
+            {/* <button type='button' onClick={this.showstate}>state</button> */}
            </div>
     )
   }

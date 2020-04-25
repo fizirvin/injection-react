@@ -837,6 +837,25 @@ class App extends React.Component {
           }
           mins
         }
+        defects{
+          _id
+          defect{
+            _id
+            defectName
+          }
+          defectPcs
+          molde{
+            _id
+            moldeNumber
+          }
+          partNumber{
+            _id
+            partNumber
+          }
+          program{
+            _id
+          }
+        }
     }}`;
 
     const url = this.state.server;
@@ -901,7 +920,7 @@ class App extends React.Component {
         reportsByDate.push(...convertDowntime[0])
       } 
       else{}
-      reports.push(data.data.newInjectionReport);
+      reports.unshift(data.data.newInjectionReport);
       this.setState({reports: reports, reportsDate: reportsDate, reportsByDate, reportMessage: 'sucess'});
     }
 
@@ -921,6 +940,7 @@ class App extends React.Component {
     const efficiency = report.totalOEE
     const production = report.production
     const downtimeDetail = report.downtimeDetail
+    const defects = report.defects
 
 
   const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
@@ -968,6 +988,25 @@ class App extends React.Component {
         }
         mins
       }
+      defects{
+        _id
+        defect{
+          _id
+          defectName
+        }
+        defectPcs
+        molde{
+          _id
+          moldeNumber
+        }
+        partNumber{
+          _id
+          partNumber
+        }
+        program{
+          _id
+        }
+      }
   }}`;
 
   const url = this.state.server;
@@ -988,7 +1027,8 @@ class App extends React.Component {
           downtime ,
           efficiency,
           production,
-          downtimeDetail 
+          downtimeDetail,
+          defects 
         }
       } })
   };
