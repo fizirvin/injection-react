@@ -11,7 +11,8 @@ class AddReport extends Component {
     programs: [],
     selected: [],
     show: 'molds',
-    downtime: [], 
+    downtime: [],
+    defects: [] 
 
   }
 
@@ -40,6 +41,19 @@ class AddReport extends Component {
     
     
     return this.setState({selected: selected});
+  }
+
+  onDefect = (e) =>{
+    const value = parseInt(e.target.value)|0;
+    const programId = e.target.name;
+    const id = e.target.id;
+
+    
+
+    let defects = [...this.state.defects];
+    defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)].defectPcs = value
+
+    return this.setState({defects});
   }
 
   onNGProduction = (e) =>{
@@ -188,6 +202,16 @@ class AddReport extends Component {
     return select ? true : false
   }
 
+  findDefect = (program, id) =>{
+    const select = this.state.defects.find( defect => defect.program === program && defect.defect === id);
+    return select ? true : false
+  }
+
+  disabledDefect = (program, id) =>{
+    const select = this.state.defects.find( defect => defect.program === program && defect.defect === id);
+    return select ? false : true
+  }
+
   onSelectIssue = e =>{
     let downtime = [...this.state.downtime];
     const id = e.target.name 
@@ -208,6 +232,36 @@ class AddReport extends Component {
     } else{
       const items = this.state.downtime.filter(downtime => downtime._id !== id);
     this.setState({ downtime: items });
+      
+    }
+  }
+
+  onSelectDefect = e =>{
+    let defects = [...this.state.defects];
+    const id = e.target.value
+    const programId = e.target.name 
+    
+    const selected = this.state.defects.find( defect => defect.program === programId && defect.defect === id);
+    if(!selected){
+      const getProgram = this.state.programs.find( program => program._id === programId);
+      const { _id, partNumber, moldeNumber } = {...getProgram}
+      const item ={
+          defect: id,
+          program: _id,
+          partNumber: partNumber._id,
+          molde: moldeNumber._id,
+          defectPcs: 0
+      }
+
+      defects.push(item);
+      this.setState({defects: defects});
+      
+    } else{
+
+      const defect = defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)]
+      const items = this.state.defects.filter(item => item !== defect);
+      
+    this.setState({ defects: items });
       
     }
   }
@@ -319,12 +373,52 @@ class AddReport extends Component {
           </div>)
         )}
         
-      } else{
+      } else if(this.state.show === 'issues'){
         return (this.props.issues.map(( issue ) => 
         <div key={issue._id} className='checkboxes issuesboxes'>
         <input type='checkbox' className='checkbox-input' checked={this.findDowntime(issue._id)} onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
         <label htmlFor={issue._id}>{issue.issueName}</label>
         </div>))
+    } else{
+      return this.renderDefectsTable()
+    }
+  }
+
+
+  renderDefectsRows = (program) =>{
+     return (this.props.defects.map(( defect ) => 
+        <tr key={defect._id} className='checkboxes-defects defectboxes'>
+          <td className='input-defect-body'>
+        <input type='checkbox' className='checkbox-defect-input' checked={this.findDefect(program, defect._id)} value={defect._id} name={program} onChange={this.onSelectDefect}></input>
+        <label className='label-defect-body' htmlFor={defect._id}>{defect.defectName}</label>
+
+          </td>
+          <td className='input-defect-body-pcs'>
+            <input type='number' name={program} id={defect._id} onChange={this.onDefect} disabled={this.disabledDefect(program, defect._id)} defaultValue={0} className='input-defect-number'></input>
+          </td>
+        </tr>))
+  }
+
+  renderDefectsTable = () =>{
+    const selected = this.state.selected
+    if(selected.length === 0){ return <div>choose Molde</div>}
+    else{
+      return (selected.map( item =>{ 
+        return(<table key={item.program} className='defect-table'>
+          <thead>
+            <tr>
+              <th colSpan='2' className='defect-table-molde'>{item.moldeNumber.moldeNumber}-{item.partNumber.partNumber}</th>
+            </tr>
+            <tr>
+              <th className='defect-header-table'>Defect</th>
+              <th className='pcs-header-table'>pcs</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderDefectsRows(item.program)}
+          </tbody>
+        </table>)
+      }))
     }
   }
 
@@ -388,6 +482,14 @@ class AddReport extends Component {
     return this.setState({show: 'issues'})
   }
 
+  showDefects = ( ) => {
+    return this.setState({show: 'defects'})
+  }
+
+  showstate = () =>{
+    return console.log(this.state)
+  }
+
   renderTitle = () =>{
     if(!this.state.machine){
       return
@@ -395,6 +497,8 @@ class AddReport extends Component {
     <div className='title_header'>
             <button type='button' onClick={this.showMolds}>Injection Molds</button>
             <button type='button' onClick={this.showIssues}>Downtime</button>
+            <button type='button' onClick={this.showDefects}>Defects</button>
+            <button type='button' onClick={this.showstate}>state</button>
            </div>
     )
   }

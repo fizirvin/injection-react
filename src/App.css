@@ -330,6 +330,66 @@ display: flex;
   background-color: white;
 }
 
+.checkboxes-defects{
+ 
+  
+  margin: 0px;
+  margin-right: 2%;
+  margin-bottom: 1%;
+  width: 45%;
+  padding: 0;
+  padding-left: 2%;
+  text-align: left;
+  border-radius: 9px;
+}
 
+.input-defect-body{
+  border: solid 1px;
+}
+.input-defect-body-pcs{
+  border: solid 1px;
+}
 
+.label-defect-body{
+  font-size: 90%;
+  
+}
+
+.checkbox-defect-input{
+  
+  margin-left: 3px;
+ }
+
+ .input-defect-number{
+   width: 95%;
+   
+   
+ }
+
+ .defect-table{
+   text-align: center;
+   width: 90%;
+   margin-left: 5%;
+   margin-top: 1px;
+   margin-bottom: 1px;
+   border: solid 2px;
+ }
+
+ .defect-header-table{
+   width: 80%;
+   border: solid 1px;
+   background-color: gold;
+ }
+
+ .pcs-header-table{
+  width: 20%;
+  border: solid 1px;
+  background-color: gold;
+ 
+ }
+
+ .defect-table-molde{
+  border: solid 1px;
+  background-color: gold;
+ }
 

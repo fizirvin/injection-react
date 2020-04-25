@@ -1091,6 +1091,7 @@ class App extends React.Component {
               />
               <Route path="/reports" exact component={ props => ( <Reports {...props} reports={this.state.reports}/> )} />
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
+                defects={this.state.defects}
                 programs={this.state.programs} 
                 machines={this.state.machines} 
                 issues={this.state.issues}
