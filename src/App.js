@@ -232,6 +232,25 @@ class App extends React.Component {
           }
           mins
         }
+        defects{
+          _id
+          defect{
+            _id
+            defectName
+          }
+          defectPcs
+          molde{
+            _id
+            moldeNumber
+          }
+          partNumber{
+            _id
+            partNumber
+          }
+          program{
+            _id
+          }
+        }
       }
       reportsDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         date
@@ -769,6 +788,7 @@ class App extends React.Component {
       const efficiency = report.totalOEE
       const production = report.production
       const downtimeDetail = report.downtimeDetail
+      const defects = report.defects
 
       
 
@@ -836,7 +856,8 @@ class App extends React.Component {
             downtime ,
             efficiency,
             production,
-            downtimeDetail 
+            downtimeDetail,
+            defects
           }
         } })
     };
@@ -845,7 +866,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    
+    console.log(data)
     return this.setState({reportMessage: 'error'})
     } else{
       let reports = [...this.state.reports];
@@ -1098,6 +1119,7 @@ class App extends React.Component {
                 message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
               />
               <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}
+                defects={this.state.defects}
                 reports={this.state.reports} 
                 programs={this.state.programs} 
                 machines={this.state.machines} 
