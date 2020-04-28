@@ -264,3 +264,30 @@
     height: 4vh;
     
   }
+
+  .molde{
+    width: 20%;
+  }
+  
+  .model{
+    width: 18%;
+  }
+  
+  .pcs{
+    width: 10%;
+  }
+  .ng{
+    width: 10%;
+  }
+  .ok{
+    width: 10%;
+  }
+
+  .time_table{
+    width: 12%;
+    font-size: 90%;
+  }
+
+  .control-mins{
+    font-size: 90%;
+  }

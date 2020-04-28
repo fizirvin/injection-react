@@ -34,7 +34,9 @@ class AddReport extends Component {
     const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
     const production = ok;
     const expected = capacity * time;
-    const oee = parseInt((production/expected)*100)|0;
+    const preoee = (production/expected)*100
+    const oee = this.precise_round(preoee, 1)
+    // const oee = parseInt((production/expected)*100)|0;
     selected[selected.findIndex(el => el.program === e.target.name)].production.real = value;
     selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
     selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
@@ -65,7 +67,9 @@ class AddReport extends Component {
     const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
     
     const expected = capacity * time;
-    const oee = parseInt((ok/expected)*100)|0;
+    const preoee = (ok/expected)*100
+    const oee = this.precise_round(preoee, 1)
+    // const oee = parseInt((ok/expected)*100)|0;
     selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
     selected[selected.findIndex(el => el.program === e.target.name)].production.ng = value;
     selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
@@ -73,19 +77,31 @@ class AddReport extends Component {
   }
 
   onTimeProduction = (e) =>{
-    const value = parseInt(e.target.value)|0;
+    
+    const prevalue = parseFloat(e.target.value);
+    const value = this.precise_round(prevalue, 2);
     let selected = [...this.state.selected];
-
+    
+    
     
     selected[selected.findIndex(el => el.program === e.target.name)].production.time = value;
-    const time = parseInt(e.target.value);
+    const time = value;
     const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity
     const production = selected[selected.findIndex(el => el.program === e.target.name)].production.ok
     const expected = capacity * time
-    const oee = parseInt((production/expected)*100)|0;
+    const preoee = (production/expected)*100
+    const oee = this.precise_round(preoee, 1)
     selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
+    
     return this.setState({selected});
 
+  }
+
+  precise_round(num, dec){
+    const num_sign = num >= 0 ? 1 : -1;
+    const value =  (Math.round((num*Math.pow(10,dec))+(num_sign*0.0001))/Math.pow(10,dec)).toFixed(dec);
+    const valid = isNaN(value) ? 0 : parseFloat(value)
+    return isFinite(valid) ? valid : 0
   }
 
   getOK = (id) =>{
@@ -102,7 +118,8 @@ class AddReport extends Component {
     const capacity = selected[selected.findIndex(el => el.program === id)].capacity
     const production = selected[selected.findIndex(el => el.program === id)].production.ok
     const expected = capacity * time
-    const oee = parseInt((production/expected)*100);
+    const preoee = (production/expected)*100
+    const oee = this.precise_round(preoee, 1)
     return isNaN(oee) ? 0 : oee;
   }
 
@@ -166,8 +183,8 @@ class AddReport extends Component {
     const sum = selected.reduce( (a, b) =>{
       return a + b.production.oee || 0
     },0)
-    const oee = sum/length
-
+    const preoee = sum/length
+    const oee = this.precise_round(preoee, 1)
     return isNaN(oee) ? 0 : oee;
   }
 
@@ -177,9 +194,11 @@ class AddReport extends Component {
     const capacity = selected.reduce( (a, b) =>{
       return a + (b.production.capacity * b.production.time) || 0
     },0)
+
+    const value = parseInt(capacity)
     
 
-    return isNaN(capacity) ? 0 : capacity;
+    return isNaN(value) ? 0 : value;
   }
 
 
@@ -190,6 +209,15 @@ class AddReport extends Component {
 
   onInputChange = e => {
     this.setState({ [e.target.name]: e.target.value });
+    
+  };
+
+  onInputTimeChange = e => {
+    
+    const prevalue = parseInt(e.target.value)
+    const value = isNaN(prevalue)? 0 : prevalue
+    
+    this.setState({ [e.target.name]: value });
     
   };
 
@@ -517,35 +545,41 @@ class AddReport extends Component {
 }
 
   renderButton= ()=>{
-    if(this.state.programs.length === 0){
-      return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
-    } 
-    else {
-      const defects = this.totalDefectPcs()
-      const totalNG = this.totalNG()
-
-      if(defects != totalNG){
-        return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
-      }
-      else{
-        if(this.state.downtime.length === 0){
+    const time = this.getDowntimeToReport();
+    if(time !== 0){ return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input> }
+    else{
+      const selected = this.state.selected.length
+      if( selected === 0){
+        return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+      } else{
+        const defects = this.totalDefectPcs()
+        const totalNG = this.totalNG()
+        if(defects != totalNG){
+          return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
+        }
+        else{
+          const totalTime = this.totalTIME()
           const totalReal = this.totalReal()
-          if(totalReal === 0){
+          if(totalReal <= 0 || totalTime <= 0){
             return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
           }
-          else {return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>}
-        }
-        else {
-          const totalMins = this.totalMins();
-          if(totalMins === 0){
-            return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
-          } 
           else {
             return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
           }
         }
       }
     }
+  }
+
+
+  getDowntimeToReport = () =>{
+
+    const shiftTime = this.state.time
+    const totalTime = this.totalTIME();
+    const mins = this.totalMins();
+    const TotalInt = parseInt(totalTime * 60)
+    const time = (shiftTime * 60) - (TotalInt) - mins
+    return time
   }
 
   renderDownTable = () =>{
@@ -565,7 +599,7 @@ class AddReport extends Component {
       </tbody>
       <tfoot>
       <tr>
-        <th className='production_table'>Total</th>
+      <th className='production_table control-mins'>Downtime to report ({this.getDowntimeToReport()})</th>
       <th className='production_table mins'><input type='number' className='production_input' name='mins' value={this.totalMins()} disabled></input></th>
 
       </tr>
@@ -585,11 +619,11 @@ class AddReport extends Component {
           <thead>
       <tr>
         <th className='production_table molde'>Mold</th>
-        <th className='production_table model'>PartNumber</th>
+        <th className='production_table model'>Part Number</th>
         <th className='production_table pcs'>Real (pcs)</th>
         <th className='production_table ng'>NG (pcs)</th>
         <th className='production_table ok'>OK (pcs)</th>
-        <th className='production_table ok'>Time (hrs)</th>
+        <th className='production_table time_table'>Work Time (hrs+min/60)</th>
         <th className='production_table ok'>OEE%</th>
       </tr>
       </thead>
@@ -642,11 +676,11 @@ class AddReport extends Component {
                 </select>
             </th>
             <th className="report_header">
-                <label>Time (hrs): </label>
+                <label>Shift Time (hrs): </label>
                 <input type="number" 
                 className='time_input' 
                 name='time'
-                value={this.state.time} onChange={this.onInputChange} required/>
+                value={this.state.time}  min="0" max="14" onChange={this.onInputTimeChange} required/>
             </th>
           </tr>
           </tbody>
