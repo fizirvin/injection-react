@@ -23,7 +23,7 @@ class Material extends React.Component {
         <table className="issue_table">
         <thead>
           <tr>
-            <th className="table_header material_number">Number</th>
+            <th className="table_header material_number">Part Number</th>
             <th className="table_header material_description">Description</th>
             <th className="table_header material_type">Type</th>
             <th className="table_header material_unit">Unit</th>
