@@ -2,22 +2,16 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 
-class UpdateDefect extends Component {
+class AddMaterial extends Component {
   state= {
-    _id:'',
-    defectName: '',
-    defectCode: ''
+    number: '',
+    description: '',
+    type: '',
+    unit: ''
   }
 
-  componentDidMount(){
-      
-    const getDefect = this.props.defects.find( defect => defect._id === this.props.match.params.id);
-    
-    this.setState({...getDefect})
-
-}
   onClose = () =>{
-    this.props.close('defectMessage')
+    this.props.close('materialMessage')
   }
 
   onInputChange = e => {
@@ -26,7 +20,7 @@ class UpdateDefect extends Component {
 
   onSubmit = e =>{
     e.preventDefault();
-    this.props.updateDefect(this.state);
+    this.props.addMaterial(this.state);
   }
 
   render() {
@@ -36,28 +30,41 @@ class UpdateDefect extends Component {
     return ReactDOM.createPortal(
     <div className="Modal">
         <div className="modal-content">
-          <h2>Update Defect:</h2>
+          <h2>Add New Injection Material:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
           <tbody>
             <tr>
-              <td><label>Defect Code: </label></td>
+              <td><label>Part Number: </label></td>
               <td><input type="text"
-              name='defectCode' 
-              defaultValue={this.state.defectCode}
+              name='number' 
+              value={this.state.number}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Description: </label></td>
+              <td><input type="text"
+              name='description' 
+              value={this.state.descrition}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Type: </label></td>
+              <td><input type="text"
+              name='type' 
+              value={this.state.type}
               onChange={this.onInputChange} required></input></td>
             </tr> 
             <tr>
-              <td><label>Defect Name: </label></td>
+              <td><label>Unit: </label></td>
               <td><input type="text"
-              name='defectName' 
-              defaultValue={this.state.defectName}
+              name='unit' 
+              value={this.state.unit}
               onChange={this.onInputChange} required></input></td>
             </tr>
-            
             <tr>
             <td></td>
-            <td><Link to="/defects"><button>Cancel</button></Link>
+            <td><Link to="/material"><button>Cancel</button></Link>
             <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
             </tr>
 
@@ -77,7 +84,7 @@ class UpdateDefect extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          Something goes Wrong, Try again later <Link to="/defects"><button onClick={this.onClose}>Close</button></Link>
+          Something goes Wrong, Try again later <Link to="/material"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -85,7 +92,7 @@ class UpdateDefect extends Component {
     return ReactDOM.createPortal(
       <div className="Modal">
         <div className="modal-content">
-          Defect updated correctly <Link to="/defects"><button onClick={this.onClose}>Close</button></Link>
+          New Injection Material added correctly <Link to="/material"><button onClick={this.onClose}>Close</button></Link>
         </div>
       </div>,document.querySelector('#modal')
     );
@@ -93,4 +100,4 @@ class UpdateDefect extends Component {
   }
 };
 
-export default UpdateDefect;
+export default AddMaterial;

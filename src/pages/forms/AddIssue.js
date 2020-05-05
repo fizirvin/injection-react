@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 
 class AddIssue extends Component {
   state= {
-    issueName: ''
+    issueName: '',
+    issueCode: ''
   }
 
   onClose = () =>{
@@ -30,7 +31,14 @@ class AddIssue extends Component {
           <h2>Add New Issue:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
-          <tbody> 
+          <tbody>
+            <tr>
+              <td><label>Issue Code: </label></td>
+              <td><input type="text"
+              name='issueCode' 
+              value={this.state.issueCode}
+              onChange={this.onInputChange} required></input></td>
+            </tr> 
             <tr>
               <td><label>Issue Name: </label></td>
               <td><input type="text"
@@ -38,7 +46,6 @@ class AddIssue extends Component {
               value={this.state.issueName}
               onChange={this.onInputChange} required></input></td>
             </tr>
-            
             <tr>
             <td></td>
             <td><Link to="/issues"><button>Cancel</button></Link>

@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 
 class AddDefect extends Component {
   state= {
-    defectName: ''
+    defectName: '',
+    defectCode: ''
   }
 
   onClose = () =>{
@@ -30,7 +31,14 @@ class AddDefect extends Component {
           <h2>Add New Defect:</h2>
           <form onSubmit={this.onSubmit}>
             <table>
-          <tbody> 
+          <tbody>
+            <tr>
+              <td><label>Defect Code: </label></td>
+              <td><input type="text"
+              name='defectCode' 
+              value={this.state.defectCode}
+              onChange={this.onInputChange} required></input></td>
+            </tr> 
             <tr>
               <td><label>Defect Name: </label></td>
               <td><input type="text"

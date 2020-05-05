@@ -8,6 +8,9 @@ import UpdateMold from './pages/forms/UpdateMold.js'
 import Machines from './pages/Machines.js'
 import AddMachine from './pages/forms/AddMachine.js'
 import UpdateMachine from './pages/forms/UpdateMachine.js'
+import Material from './pages/Material.js'
+import AddMaterial from './pages/forms/AddMaterial.js'
+import UpdateMaterial from './pages/forms/UpdateMaterial.js'
 import Models from './pages/Models.js'
 import AddModel from './pages/forms/AddModel.js'
 import UpdateModel from './pages/forms/UpdateModel.js'
@@ -31,6 +34,7 @@ import Downtime from './pages/Downtime.js'
 import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
+import './pages/Material.css'
 import './pages/Issues.css'
 import './pages/Reports.css'
 import './pages/Production.css'
@@ -42,11 +46,13 @@ class App extends React.Component {
     machineMessage: 'new',
     moldeMessage: 'new',
     modelMessage: 'new',
+    materialMessage: 'new',
     issueMessage: 'new',
     defectMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
     moldes: [],
+    materials: [],
     models: [],
     issues: [],
     defects: [],
@@ -155,6 +161,13 @@ class App extends React.Component {
         _id
         moldeNumber
         moldeSerial
+      }
+      materials{
+        _id
+        number
+        description
+        type
+        unit
       } 
       parts {
         _id
@@ -163,10 +176,12 @@ class App extends React.Component {
       issues{
         _id
         issueName
+        issueCode
       }
       defects{
         _id
         defectName
+        defectCode
       }
       programs{
         _id
@@ -281,7 +296,8 @@ class App extends React.Component {
     const data = await res.json();
     console.log('holalalala')
     this.setState({ 
-      machines: data.data.machines, 
+      machines: data.data.machines,
+      materials: data.data.materials, 
       moldes: data.data.moldes, 
       models: data.data.parts, 
       issues: data.data.issues,
@@ -474,6 +490,79 @@ class App extends React.Component {
 
   }
 
+  addMaterial = async (newMaterial)=>{
+
+    const query = `mutation{newMaterial(input:{
+      number: "${newMaterial.number}"
+      description: "${newMaterial.description}"
+      type: "${newMaterial.type}"
+      unit: "${newMaterial.unit}"
+    }) {
+      _id
+      number
+      description
+      type
+      unit
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({materialMessage: 'error'})
+    } else{
+      let materials = [...this.state.materials];
+      materials.push(data.data.newMaterial);
+      this.setState({materials: materials, materialMessage: 'sucess'});
+    }
+
+  }
+
+  updateMaterial = async (updateMaterial)=>{
+
+    const query = `mutation{updateMaterial(_id: "${updateMaterial._id}", input:{
+      number: "${updateMaterial.number}"
+      description: "${updateMaterial.description}"
+      type: "${updateMaterial.type}"
+      unit: "${updateMaterial.unit}"
+    }) {
+      _id
+      number
+      description
+      type
+      unit
+    }}`;
+
+    const url = this.state.server;
+    const opts = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query })
+    };
+
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    
+    if(data.errors){
+    
+    this.setState({materialMessage: 'error'})
+    } else{
+      let material = data.data.updateMaterial;
+      let materials = [...this.state.materials];
+      materials[materials.findIndex(el => el._id === material._id)] = material;
+      this.setState({materials: materials, materialMessage: 'sucess'});
+    }
+
+  }
+
   addModel = async (newModel)=>{
 
     const query = `mutation{newPartNumber(input:{
@@ -554,9 +643,11 @@ class App extends React.Component {
 
     const query = `mutation{newIssue(input:{
       issueName: "${newIssue.issueName}"
+      issueCode: "${newIssue.issueCode}"
     }) {
       _id
       issueName
+      issueCode
     }}`;
 
     const url = this.state.server;
@@ -584,9 +675,11 @@ class App extends React.Component {
 
     const query = `mutation{updateIssue(_id: "${updateIssue._id}", input:{
       issueName: "${updateIssue.issueName}"
+      issueCode: "${updateIssue.issueCode}"
     }) {
       _id
       issueName
+      issueCode
     }}`;
 
     const url = this.state.server;
@@ -615,9 +708,11 @@ class App extends React.Component {
     
     const query = `mutation{newDefect(input:{
       defectName: "${newDefect.defectName}"
+      defectCode: "${newDefect.defectCode}"
     }) {
       _id
       defectName
+      defectCode
     }}`;
 
     const url = this.state.server;
@@ -645,9 +740,11 @@ class App extends React.Component {
 
     const query = `mutation{updateDefect(_id: "${updateDefect._id}", input:{
       defectName: "${updateDefect.defectName}"
+      defectCode: "${updateDefect.defectCode}"
     }) {
       _id
       defectName
+      defectCode
     }}`;
 
     const url = this.state.server;
@@ -1103,6 +1200,14 @@ class App extends React.Component {
               />
               <Route path="/molds/update/:id" exact component={ props => ( <UpdateMold {...props} 
                 moldes={this.state.moldes} message={this.state.moldeMessage} close={this.close} updateMolde={this.updateMolde}/> )} 
+              />
+
+              <Route path="/material" exact component={ props => ( <Material {...props} material={this.state.materials}/> )} />
+              <Route path="/material/add" exact component={ props => ( <AddMaterial {...props} 
+                message={this.state.materialMessage} close={this.close} addMaterial={this.addMaterial}/> )} 
+              />
+              <Route path="/material/update/:id" exact component={ props => ( <UpdateMaterial {...props} 
+                material={this.state.materials} message={this.state.materialMessage} close={this.close} updateMaterial={this.updateMaterial}/> )} 
               />
 
               <Route path="/machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />

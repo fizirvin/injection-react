@@ -125,7 +125,7 @@ class Reports extends React.Component {
         <td  className='row_detail_production'>{production.real}</td>
         <td  className='row_detail_production'>{production.ng}</td>
         <td  className='row_detail_production'>{production.ok}</td>
-        <td  className='row_detail_production'>{production.time}</td>
+        <td  className='row_detail_production'>{production.time.$numberDecimal}</td>
         <td  className='row_detail_production'>{production.oee.$numberDecimal}</td>
       </tr>)
   }

@@ -1,0 +1,39 @@
+
+  
+  .material_number{
+    padding-left: 2px;
+    width: 20%;
+  }
+
+  .material_description{
+    padding-left: 2px;
+    width: 40%;
+  }
+    
+  .material_type{
+    padding-left: 2px;
+    width: 15%;
+  }
+    
+  .material_unit{
+    padding-left: 2px;
+    width: 10%;
+  }
+
+  .material_button{
+    width: 15%;
+  }
+
+  .material_update{
+    width: 15%;
+    align-items: center;
+    text-align: center;
+    padding-left: 0px;
+  }
+  
+  
+
+  
+
+  
+  

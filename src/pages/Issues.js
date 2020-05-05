@@ -8,6 +8,7 @@ class Issues extends React.Component {
   renderList() {
     return this.props.issues.map( issue => 
     <tr key={issue._id}>
+      <td className="table_data issueCode">{ issue.issueCode}</td>
       <td className="table_data issueName">{ issue.issueName}</td>
       <td className="table_data issue_update"><Link to={`/issues/update/${issue._id}`}><button className='button_issue'>Update</button></Link></td>
     </tr>)
@@ -20,6 +21,7 @@ class Issues extends React.Component {
         <table className="issue_table">
         <thead>
           <tr>
+            <th className="table_header issue_code">Code</th>
             <th className="table_header issue_name">Issue</th>
             <th className="table_header issue_button"><Link to="/issues/add"><button>Add Issue</button></Link></th>
           </tr>
