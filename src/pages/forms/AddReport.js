@@ -12,7 +12,8 @@ class AddReport extends Component {
     selected: [],
     show: 'molds',
     downtime: [],
-    defects: [] 
+    defects: [],
+    resines: [] 
 
   }
 
@@ -56,6 +57,17 @@ class AddReport extends Component {
     defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)].defectPcs = value
 
     return this.setState({defects});
+  }
+
+  onResine = (e) =>{
+    const value = parseInt(e.target.value)|0;
+    
+    let resines = [...this.state.resines];
+    const id = e.target.name;
+
+    resines[resines.findIndex(resine => resine.resine === id)].purge = value
+
+    return this.setState({resines});
   }
 
   onNGProduction = (e) =>{
@@ -244,6 +256,17 @@ class AddReport extends Component {
     return select ? true : false
   }
 
+  findResine = (id) =>{
+    const select = this.state.resines.find( resine => resine.resine === id );
+    return select ? true : false
+  }
+
+  disabledResine = (id) =>{
+    const select = this.state.resines.find( resine => resine.resine === id);
+    return select ? false : true
+  }
+
+
   disabledDefect = (program, id) =>{
     const select = this.state.defects.find( defect => defect.program === program && defect.defect === id);
     return select ? false : true
@@ -303,6 +326,31 @@ class AddReport extends Component {
     }
   }
 
+  onSelectResine = e =>{
+    let resines = [...this.state.resines];
+    const id = e.target.name
+    
+    const selected = this.state.resines.find( resine => resine.resine === id);
+    if(!selected){
+      const getResine = this.props.material.find( material => material._id === id);
+      const { _id } = {...getResine}
+      const item ={
+        resine: _id,
+        purge: 0
+      }
+      
+      resines.push(item);
+      this.setState({resines: resines});
+      
+    } else{
+
+      const items = this.state.resines.filter( resine => resine.resine !== id);
+      
+    this.setState({ resines: items });
+      
+    }
+  }
+
   onSelect = e =>{
     let programs = [...this.state.selected];
     const id = e.target.name 
@@ -345,6 +393,7 @@ class AddReport extends Component {
 
     const production = this.state.selected.map( item => item.production )
     const defects = this.state.defects;
+    const resines = this.state.resines;
     const downtime = this.state.downtime.map( item => {
       return { issueId: item._id, mins: item.mins }
     })
@@ -370,7 +419,8 @@ class AddReport extends Component {
       totalCapacity: totalCapacity,
       production,
       downtimeDetail: downtime,
-      defects: defects
+      defects: defects,
+      resines: resines
     }
     
     return this.props.addReport(report)
@@ -418,9 +468,47 @@ class AddReport extends Component {
         <input type='checkbox' className='checkbox-input' checked={this.findDowntime(issue._id)} onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
         <label htmlFor={issue._id}>{issue.issueName}</label>
         </div>))
-    } else{
+    } else if(this.state.show === 'purge'){
+      return this.renderResinesTable()
+  } 
+    
+    else{
       return this.renderDefectsTable()
     }
+  }
+
+  renderResinesTable = () =>{
+    const selected = this.state.selected
+    if(selected.length === 0){ return <div>choose Molde</div>}
+    else{
+      return(<table className='defect-table'>
+          <thead>
+            <tr>
+              <th className='defect-header-table'>Resine</th>
+              <th className='pcs-header-table'>Purge (g)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderResineRows()}
+          </tbody>
+        </table>)
+    }
+  }
+
+
+  renderResineRows = () =>{
+    const material = this.props.material.filter( item => item.type === 'resine')
+    return (material.map(( material ) => 
+        <tr key={material._id} className='checkboxes-defects defectboxes'>
+          <td className='input-defect-body'>
+        <input type='checkbox' className='checkbox-defect-input' checked={this.findResine(material._id)} name={material._id} onChange={this.onSelectResine}></input>
+        <label className='label-defect-body' htmlFor={material._id}>{material.description}</label>
+
+          </td>
+          <td className='input-defect-body-pcs'>
+            <input type='number' name={material._id} id={material._id} onChange={this.onResine} disabled={this.disabledResine(material._id)} defaultValue={0} className='input-defect-number'></input>
+          </td>
+        </tr>))
   }
 
 
@@ -525,6 +613,10 @@ class AddReport extends Component {
     return this.setState({show: 'defects'})
   }
 
+  showPurge = ( ) => {
+    return this.setState({show: 'purge'})
+  }
+
   showstate = () =>{
     const defects = this.totalDefectPcs()
     return console.log(this.state, defects)
@@ -538,6 +630,7 @@ class AddReport extends Component {
             <button type='button' onClick={this.showMolds}>Injection Molds</button>
             <button type='button' onClick={this.showIssues}>Downtime</button>
             <button type='button' onClick={this.showDefects}>Defects</button>
+            <button type='button' onClick={this.showPurge}>Purge</button>
             {/* <button type='button' onClick={this.showstate}>state</button> */}
            </div>
     )
@@ -554,7 +647,7 @@ class AddReport extends Component {
       } else{
         const defects = this.totalDefectPcs()
         const totalNG = this.totalNG()
-        if(defects != totalNG){
+        if(defects !== totalNG){
           return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
         }
         else{

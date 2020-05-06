@@ -247,6 +247,14 @@ class App extends React.Component {
           }
           mins
         }
+        resines {
+          _id
+          resine{
+            _id
+            
+          }
+          purge
+        }
         defects{
           _id
           defect{
@@ -886,6 +894,7 @@ class App extends React.Component {
       const production = report.production
       const downtimeDetail = report.downtimeDetail
       const defects = report.defects
+      const resines = report.resines
 
       
 
@@ -925,6 +934,13 @@ class App extends React.Component {
             moldeNumber
             moldeSerial
           }
+        }
+        resines {
+          _id
+          resine{
+            _id
+          }
+          purge
         }
         downtimeDetail {
           _id
@@ -973,7 +989,8 @@ class App extends React.Component {
             efficiency,
             production,
             downtimeDetail,
-            defects
+            defects,
+            resines
           }
         } })
     };
@@ -1038,6 +1055,7 @@ class App extends React.Component {
     const production = report.production
     const downtimeDetail = report.downtimeDetail
     const defects = report.defects
+    const resines = report.resines
 
 
   const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
@@ -1076,6 +1094,13 @@ class App extends React.Component {
           moldeNumber
           moldeSerial
         }
+      }
+      resines {
+        _id
+        resine{
+          _id
+        }
+        purge
       }
       downtimeDetail {
         _id
@@ -1125,7 +1150,8 @@ class App extends React.Component {
           efficiency,
           production,
           downtimeDetail,
-          defects 
+          defects,
+          resines 
         }
       } })
   };
@@ -1259,7 +1285,8 @@ class App extends React.Component {
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
                 defects={this.state.defects}
                 programs={this.state.programs} 
-                machines={this.state.machines} 
+                machines={this.state.machines}
+                material={this.state.materials} 
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
               />
@@ -1267,7 +1294,8 @@ class App extends React.Component {
                 defects={this.state.defects}
                 reports={this.state.reports} 
                 programs={this.state.programs} 
-                machines={this.state.machines} 
+                machines={this.state.machines}
+                material={this.state.materials}  
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />

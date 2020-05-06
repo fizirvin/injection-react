@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 const width = 400;
 const height = 110;
 const margin = {top: 3, right: 5, bottom: 17, left: 35};
-const red = '#eb6a5b';
+
 const blue = '#52b6ca';
 
 
