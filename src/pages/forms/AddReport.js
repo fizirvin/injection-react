@@ -632,7 +632,7 @@ class AddReport extends Component {
             <button type='button' onClick={this.showIssues}>Downtime</button>
             <button type='button' onClick={this.showDefects}>Defects</button>
             <button type='button' onClick={this.showPurge}>Purge</button>
-            <button type='button' onClick={this.showstate}>state</button>
+            {/* <button type='button' onClick={this.showstate}>state</button> */}
            </div>
     )
   }
