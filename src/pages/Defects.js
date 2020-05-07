@@ -14,7 +14,7 @@ class Defects extends React.Component {
           <td className="table_data defectCode">{ defect.defectCode}</td>
           <td className="table_data defectName">{ defect.defectName}</td>
           <td className="table_data defectisInjection">{ defect.isInjection ? 'Yes' : 'No'}</td>
-          <td className="table_data issue_update"><Link to={`/defects/update/${defect._id}`}><button className='button_issue'>Update</button></Link></td>
+          <td className="table_data defect_update"><Link to={`/defects/update/${defect._id}`}><button className='button_issue'>Update</button></Link></td>
         </tr>)
     }
   }

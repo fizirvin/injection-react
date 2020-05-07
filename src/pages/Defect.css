@@ -10,6 +10,14 @@
     width: 60%;
     padding-left: 3px;
 }
+
+.defect_update{
+    width: 15%;
+    
+    align-items: center;
+    
+}
+
     
 .defectCode {
     padding-left: 3px;
