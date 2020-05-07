@@ -11,8 +11,9 @@ class Defects extends React.Component {
     } else {
       return this.props.defects.map( defect => 
         <tr key={defect._id}>
-          <td className="table_data issueCode">{ defect.defectCode}</td>
-          <td className="table_data issueName">{ defect.defectName}</td>
+          <td className="table_data defectCode">{ defect.defectCode}</td>
+          <td className="table_data defectName">{ defect.defectName}</td>
+          <td className="table_data defectisInjection">{ defect.isInjection ? 'Yes' : 'No'}</td>
           <td className="table_data issue_update"><Link to={`/defects/update/${defect._id}`}><button className='button_issue'>Update</button></Link></td>
         </tr>)
     }
@@ -25,8 +26,9 @@ class Defects extends React.Component {
         <table className="issue_table">
         <thead>
           <tr>
-            <th className="table_header issue_code">Code</th>
-            <th className="table_header issue_name">Defect</th>
+            <th className="table_header defect_code">Code</th>
+            <th className="table_header defect_name">Defect</th>
+            <th className="table_header defect_isInjection">Inj Area</th>
             <th className="table_header issue_button"><Link to="/defects/add"><button>Add Defect</button></Link></th>
           </tr>
           </thead>

@@ -35,6 +35,7 @@ import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
 import './pages/Material.css'
+import './pages/Defect.css'
 import './pages/Issues.css'
 import './pages/Reports.css'
 import './pages/Production.css'
@@ -182,6 +183,7 @@ class App extends React.Component {
         _id
         defectName
         defectCode
+        isInjection
       }
       programs{
         _id
@@ -717,10 +719,12 @@ class App extends React.Component {
     const query = `mutation{newDefect(input:{
       defectName: "${newDefect.defectName}"
       defectCode: "${newDefect.defectCode}"
+      isInjection: ${newDefect.isInjection}
     }) {
       _id
       defectName
       defectCode
+      isInjection
     }}`;
 
     const url = this.state.server;
@@ -749,10 +753,12 @@ class App extends React.Component {
     const query = `mutation{updateDefect(_id: "${updateDefect._id}", input:{
       defectName: "${updateDefect.defectName}"
       defectCode: "${updateDefect.defectCode}"
+      isInjection: ${updateDefect.isInjection}
     }) {
       _id
       defectName
       defectCode
+      isInjection
     }}`;
 
     const url = this.state.server;

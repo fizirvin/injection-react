@@ -1,0 +1,25 @@
+.defect_name{
+    width: 60%;
+}
+  
+.defect_code{
+    width: 10%;
+}
+
+.defectName {
+    width: 60%;
+    padding-left: 3px;
+}
+    
+.defectCode {
+    padding-left: 3px;
+    width: 10%;
+}
+
+.defectisInjection{
+    width: 15%;
+}
+
+.defect_isInjection{
+    width: 15%;
+}

@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 class AddDefect extends Component {
   state= {
     defectName: '',
-    defectCode: ''
+    defectCode: '',
+    isInjection: ''
   }
 
   onClose = () =>{
@@ -20,6 +21,8 @@ class AddDefect extends Component {
     e.preventDefault();
     this.props.addDefect(this.state);
   }
+
+  
 
   render() {
 
@@ -45,6 +48,15 @@ class AddDefect extends Component {
               name='defectName' 
               value={this.state.defectName}
               onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Injection Area Defect?: </label></td>
+              <td>
+                <input type="radio" id="true" name="isInjection" value={true} onChange={this.onInputChange} required></input>
+                <label htmlFor="true">Yes</label>
+                <input type="radio" id="false" name="isInjection" value={false} onChange={this.onInputChange} required></input>
+                <label htmlFor="false">No</label>
+              </td>
             </tr>
             
             <tr>

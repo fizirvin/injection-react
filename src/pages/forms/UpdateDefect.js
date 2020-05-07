@@ -6,7 +6,8 @@ class UpdateDefect extends Component {
   state= {
     _id:'',
     defectName: '',
-    defectCode: ''
+    defectCode: '',
+    isInjection: ''
   }
 
   componentDidMount(){
@@ -28,6 +29,16 @@ class UpdateDefect extends Component {
     e.preventDefault();
     this.props.updateDefect(this.state);
   }
+
+  onIsInjection = e =>{
+    const value = e.target.value
+    let bool;
+    if(value === 'true'){
+      bool = true
+    } else {bool = false}
+    this.setState({isInjection: bool})
+  }
+
 
   render() {
 
@@ -53,6 +64,15 @@ class UpdateDefect extends Component {
               name='defectName' 
               defaultValue={this.state.defectName}
               onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Injection Area Defect?: </label></td>
+              <td>
+                <input type="radio" id="true" name="isInjection" onChange={this.onIsInjection} value={true}  checked={this.state.isInjection === true } required></input>
+                <label htmlFor="true">Yes</label>
+                <input type="radio" id="false" name="isInjection" onChange={this.onIsInjection} value={false} checked={this.state.isInjection === false } required></input>
+                <label htmlFor="false">No</label>
+              </td>
             </tr>
             
             <tr>

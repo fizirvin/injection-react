@@ -56,7 +56,7 @@ class UpdateReport extends Component {
             real: item.real,
             ok: item.ok,
 	          ng: item.ng,
-	          time: item.time,
+	          time: item.time.$numberDecimal,
 	          oee: parseFloat(item.oee.$numberDecimal),
 	          capacity: item.capacity
           }
