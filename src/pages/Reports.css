@@ -6,7 +6,7 @@
 .container_first_table{
   
   
-    width: 60%;
+    width: 65%;
   
 
 }
@@ -43,12 +43,12 @@
   }
 
   .date_data{
-    width: 15%;
+    width: 14%;
     font-size: 90%;
   }
 
   .body_date_table{
-    width: 15%;
+    width: 14%;
     font-size: 90%;
   }
   
@@ -63,82 +63,92 @@
   }
   
   .machine_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_machine_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
   
   .treal_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_real_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
   
   .ng_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_ng_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%; 
   }
   
   .ok_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_ok_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%;  
   }
   
   .capacity_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_capacity_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%; 
   }
 
   .oee_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_efficiency_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
   
   .downtime_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_downtime_table{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
   
   .add_data{
-    width: 10%;
+    width: 9%;
     font-size: 90%;
   }
 
   .body_update_table{
-    width: 10%;
+    width: 9%;
+    font-size: 90%; 
+  }
+
+  .body_purge{
+    width: 9%;
+    font-size: 90%; 
+  }
+
+  .purge_data{
+    width: 9%;
     font-size: 90%; 
   }
 

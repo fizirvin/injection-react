@@ -513,7 +513,8 @@ class AddReport extends Component {
 
 
   renderDefectsRows = (program) =>{
-     return (this.props.defects.map(( defect ) => 
+    const defects = this.props.defects.filter( item => item.isInjection === true)
+     return (defects.map(( defect ) => 
         <tr key={defect._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
         <input type='checkbox' className='checkbox-defect-input' checked={this.findDefect(program, defect._id)} value={defect._id} name={program} onChange={this.onSelectDefect}></input>

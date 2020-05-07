@@ -56,7 +56,7 @@ class UpdateReport extends Component {
             real: item.real,
             ok: item.ok,
 	          ng: item.ng,
-	          time: item.time.$numberDecimal,
+	          time: parseFloat(item.time.$numberDecimal),
 	          oee: parseFloat(item.oee.$numberDecimal),
 	          capacity: item.capacity
           }
@@ -342,9 +342,12 @@ class UpdateReport extends Component {
 
   totalTIME = () =>{
     let selected = [...this.state.selected];
+    
     const time = selected.reduce( (a, b) =>{
       return a + b.production.time || 0
     },0)
+
+    // const value = this.precise_round(time, 1)
 
     return isNaN(time) ? 0 : time;
   }
@@ -673,7 +676,8 @@ class UpdateReport extends Component {
     const defects = this.state.defects;
     if(!defects){return null}
     else{
-      return (this.props.defects.map(( defect ) => 
+      const defectList = this.props.defects.filter( item => item.isInjection === true)
+      return (defectList.map(( defect ) => 
        <tr key={defect._id} className='checkboxes-defects defectboxes'>
          <td className='input-defect-body'>
        <input type='checkbox' className='checkbox-defect-input' checked={this.findDefect(program, defect._id)} value={defect._id} name={program} onChange={this.onSelectDefect}></input>

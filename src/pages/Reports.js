@@ -138,6 +138,13 @@ class Reports extends React.Component {
       </tr>)
   }
 
+  getResines = (resines) =>{
+    const purge = resines.reduce( (a, b) =>{
+      return a + b.purge || 0
+    },0)
+    return purge
+  }
+
   renderList() {
     const reports = this.props.reports
     if(reports.length === 0){
@@ -155,6 +162,7 @@ class Reports extends React.Component {
           <td className={this.formatRow(report._id, 'body_capacity_table')}>{ report.totalCapacity}</td>
           <td className={this.formatRow(report._id, 'body_efficiency_table')}>{ report.efficiency.$numberDecimal}</td>
           <td className={this.formatRow(report._id, 'body_downtime_table')}>{ report.downtime}</td>
+          <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(report.resines)}</td>
           <td className={this.formatRow(report._id, 'body_update_table')}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
           <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
         </tr>))
@@ -182,6 +190,7 @@ class Reports extends React.Component {
             <th className="report_list_header capacity_data">Capacity (pcs)</th>
             <th className="report_list_header oee_data">OEE (%)</th>
             <th className="report_list_header downtime_data">Downtime (mins)</th>
+            <th className="report_list_header purge_data">Purge (g)</th>
             <th className="report_list_header add_data">
               <Link to="/reports/add"><button>Add Report</button></Link>
               </th>
