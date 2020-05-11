@@ -630,7 +630,7 @@ class AddReport extends Component {
         <tr key={defect._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
         <input type='checkbox' className='checkbox-defect-input' checked={this.findDefect(program, defect._id)} value={defect._id} name={program} onChange={this.onSelectDefect}></input>
-        <label className='label-defect-body' htmlFor={defect._id}>{defect.defectName}</label>
+  <label className='label-defect-body' htmlFor={defect._id}>{defect.defectCode} {defect.defectName}</label>
 
           </td>
           <td className='input-defect-body-pcs'>
@@ -672,7 +672,7 @@ class AddReport extends Component {
         <tr key={downtime._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
           <input type='checkbox' className='checkbox-defect-input' checked={this.findDowntime(downtime._id)} onChange={this.onSelectIssue} value={downtime._id} name={downtime._id}></input>
-            <label className='label-defect-body'>{downtime.issueName}</label>
+          <label className='label-defect-body'>{downtime.issueCode} {downtime.issueName}</label>
           </td>
           <td className='input-defect-body-pcs'>
             <input type='number' disabled={this.disabledDownTime(downtime._id)} min="0" max="840" value={this.getDefaultMins(downtime._id)} name={downtime._id} className='input-defect-number' onChange={this.onMins} ></input>
