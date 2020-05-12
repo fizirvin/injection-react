@@ -19,7 +19,8 @@ class AddDefect extends Component {
 
   onSubmit = e =>{
     e.preventDefault();
-    this.props.addDefect(this.state);
+    this.props.newLabel(this.state);
+    this.props.newPlastic(this.state)
   }
 
   
