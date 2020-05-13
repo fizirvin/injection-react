@@ -29,6 +29,7 @@ import UpdateReport from './pages/forms/UpdateReport.js'
 import Toolbar from './pages/Toolbar.js'
 import Production from './pages/Production.js'
 import Downtime from './pages/Downtime.js'
+import Efficiency from './pages/Efficiency.js'
 
 
 import './App.css';
@@ -40,6 +41,7 @@ import './pages/Issues.css'
 import './pages/Reports.css'
 import './pages/Production.css'
 import './pages/Downtime.css'
+import './pages/Efficiency.css'
 
 class App extends React.Component {
   state = { 
@@ -278,13 +280,17 @@ class App extends React.Component {
         }
       }
       reportsDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+        report
         date
- 	      report
         machine
         part
         molde
+        real
         ok
         ng
+        time
+        oee
+        capacity
       }
       reportsByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         report
@@ -1317,6 +1323,13 @@ class App extends React.Component {
               issues={this.state.issues}
               machines={this.state.machines}
               reports={this.state.reportsByDate}
+              /> )} />
+
+              <Route path="/efficiency" exact component={ props => ( <Efficiency {...props}
+              issues={this.state.issues}
+              machines={this.state.machines}
+              reports={this.state.reportsByDate}
+              production={this.state.reportsDate}
               /> )} />
             </Switch> 
           </div>
