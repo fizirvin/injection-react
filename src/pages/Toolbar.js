@@ -19,7 +19,7 @@ class Toolbar extends React.Component {
          <Link to="/reports"><button className="Button">Reports</button></Link>
          <Link to="/production"><button className="Button">Production</button></Link>
          <Link to="/downtime"><button className="Button">Downtime</button></Link>
-         <Link to="/efficiency"><button className="Button">Efficiency</button></Link>
+         {/* <Link to="/efficiency"><button className="Button">Efficiency</button></Link> */}
          <Link to="/quality"><button className="Button">Quality</button></Link>
          <Link to="/graphics"><button className="Button">Graphics</button></Link> 
       </div>

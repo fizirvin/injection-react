@@ -63,6 +63,7 @@ class App extends React.Component {
     reports: [],
     reportsByDate: [],
     reportsDate: [],
+    resinesByDate: [],
     initial49:'',
     end:'',
     server: 'https://injection.irvinfiz.now.sh/injection'
@@ -283,6 +284,7 @@ class App extends React.Component {
         report
         date
         machine
+        shift
         part
         molde
         real
@@ -295,10 +297,20 @@ class App extends React.Component {
       reportsByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         report
         date
+        shift
         machine
         issue
         issueName
         mins
+      }
+      resinesByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+        report
+        date
+        shift
+        machine
+        resine
+        resineName
+        purge
       }
     }`
 
@@ -310,7 +322,7 @@ class App extends React.Component {
     };
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log('holalalala')
+    console.log('holalalala', data)
     this.setState({ 
       machines: data.data.machines,
       materials: data.data.materials, 
@@ -322,6 +334,7 @@ class App extends React.Component {
       reports: data.data.reports,
       reportsDate: data.data.reportsDate,
       reportsByDate: data.data.reportsByDate,
+      resinesByDate: data.data.resinesByDate,
       initial49: initial49,
       end: end
     })
@@ -1311,7 +1324,7 @@ class App extends React.Component {
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
-              <Route path="/production" exact component={ props => ( <Production {...props} 
+              <Route path="/efficiency" exact component={ props => ( <Production {...props} 
               models={this.state.models} 
               machines={this.state.machines}
               moldes={this.state.moldes}  
@@ -1325,11 +1338,14 @@ class App extends React.Component {
               reports={this.state.reportsByDate}
               /> )} />
 
-              <Route path="/efficiency" exact component={ props => ( <Efficiency {...props}
+              <Route path="/production" exact component={ props => ( <Efficiency {...props}
               issues={this.state.issues}
               machines={this.state.machines}
+              models={this.state.models}
+              moldes={this.state.moldes}  
               reports={this.state.reportsByDate}
               production={this.state.reportsDate}
+              purge={this.state.resinesByDate}
               /> )} />
             </Switch> 
           </div>

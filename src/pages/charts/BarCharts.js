@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 
 
-const width = 400;
+const width = 450;
 const height = 200;
-const margin = {top: 20, right: 5, bottom: 20, left: 35};
+const margin = {top: 10, right: 5, bottom: 20, left: 40};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
@@ -59,7 +59,7 @@ class BarChart extends Component {
       const y2 = yScale(0);
       const y3 = yScale(d.ng)
       return {
-        x: 35 + (i*barPos),
+        x: 40 + (i*barPos),
         y: y1,
         height: y2 - y1,
         // fill: colors(colorScale(d.avg)),
