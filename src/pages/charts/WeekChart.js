@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 
 
-const width = 400;
-const height = 250;
-const margin = {top: 20, right: 5, bottom: 100, left: 35};
+const width = 450;
+const height = 200;
+const margin = {top: 10, right: 5, bottom: 20, left: 40};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
@@ -28,7 +28,7 @@ class WeekChart extends Component {
 
 
   componentDidMount (){
-    d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
+    d3.select(this.xAxisRef.current).call(this.xAxis);
     d3.select(this.yAxisRef.current).call(this.yAxis);
   
 
@@ -61,7 +61,7 @@ class WeekChart extends Component {
       const y2 = yScale(0);
       const y3 = yScale(d.ng)
       return {
-        x: 35 + (i*barPos),
+        x: 40 + (i*barPos),
         y: y1,
         height: y2 - y1,
         // fill: colors(colorScale(d.avg)),
@@ -74,7 +74,7 @@ class WeekChart extends Component {
   }
 
   componentDidUpdate() {
-    d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
+    d3.select(this.xAxisRef.current).call(this.xAxis)
     d3.select(this.yAxisRef.current).call(this.yAxis);
   }
 
