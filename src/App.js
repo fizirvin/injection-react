@@ -36,6 +36,7 @@ import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
 import './pages/Material.css'
+import './pages/Machines.css'
 import './pages/Defect.css'
 import './pages/Issues.css'
 import './pages/Reports.css'
@@ -160,11 +161,14 @@ class App extends React.Component {
         _id
         machineNumber
         machineSerial
+        closingForce
+        spindleDiameter
       } 
       moldes{
         _id
         moldeNumber
         moldeSerial
+        cavities
       }
       materials{
         _id
@@ -349,10 +353,14 @@ class App extends React.Component {
     const query = `mutation{newMachine(input:{
       machineNumber: "${newMachine.machineNumber}"
       machineSerial: "${newMachine.machineSerial}"
+      closingForce: ${newMachine.closingForce}
+      spindleDiameter: ${newMachine.spindleDiameter}
     }) {
       _id
       machineNumber
       machineSerial
+      closingForce
+      spindleDiameter
     }}`;
 
     const url = this.state.server;
@@ -381,10 +389,14 @@ class App extends React.Component {
     const query = `mutation{updateMachine(_id: "${updateMachine._id}", input:{
       machineNumber: "${updateMachine.machineNumber}"
       machineSerial: "${updateMachine.machineSerial}"
+      closingForce: ${updateMachine.closingForce}
+      spindleDiameter: ${updateMachine.spindleDiameter}
     }) {
       _id
       machineNumber
       machineSerial
+      closingForce
+      spindleDiameter
     }}`;
 
     const url = this.state.server;
@@ -442,10 +454,12 @@ class App extends React.Component {
     const query = `mutation{newMolde(input:{
       moldeNumber: "${newMolde.moldeNumber}"
       moldeSerial: "${newMolde.moldeSerial}"
+      cavities: ${newMolde.cavities}
     }) {
       _id
       moldeNumber
       moldeSerial
+      cavities
     }}`;
 
     const url = this.state.server;
@@ -475,10 +489,12 @@ class App extends React.Component {
     const query = `mutation{updateMolde(_id: "${updateMolde._id}", input:{
       moldeNumber: "${updateMolde.moldeNumber}"
       moldeSerial: "${updateMolde.moldeSerial}"
+      cavities: ${updateMolde.cavities}
     }) {
       _id
       moldeNumber
       moldeSerial
+      cavities
     }}`;
 
     const url = this.state.server;
@@ -492,7 +508,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    
+    console.log(data)
     this.setState({moldeMessage: 'error'})
     } else{
       let molde = data.data.updateMolde;

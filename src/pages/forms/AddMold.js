@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 class AddMold extends Component {
   state= {
     moldeNumber:'',
-    moldeSerial: ''
+    moldeSerial: '',
+    cavities: ''
   }
 
   onClose = () =>{
@@ -16,9 +17,35 @@ class AddMold extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  onCavitieChange = (e) => {
+    const value = parseInt(e.target.value)
+    if( isNaN(value) ){ return this.setState({ [e.target.name]: '' }) }
+    else if( value === 0 ){ return this.setState({ [e.target.name]: '' }) }
+    else { 
+      console.log('meti')
+      return this.setState({ [e.target.name]: e.target.value });
+    }
+  };
+
+  cavitieValue = () => {
+    const value = parseInt(this.state.cavities)
+    if( isNaN(value) ){ return '' }
+    else if( value === 0 ){ return ''}
+    else { 
+      return value
+    }
+  };
+
   onSubmit = e =>{
     e.preventDefault();
     this.props.addMolde(this.state);
+  }
+
+  renderSubmit = () =>{
+    if(this.state.cavities === ''){return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>}
+    else{
+      return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+    }
   }
 
 
@@ -48,9 +75,18 @@ class AddMold extends Component {
               onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
+              <td><label>Cavities: </label></td>
+              <td><input type="number"
+                name='cavities' 
+                value={this.cavitieValue()}
+                onChange={this.onCavitieChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
             <td></td>
             <td><Link to="/molds"><button>Cancel</button></Link>
-            <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
+            {this.renderSubmit()}
+            </td>
             </tr>
 
 

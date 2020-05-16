@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 class AddMachine extends Component {
   state= {
       machineNumber:'',
-      machineSerial: ''
+      machineSerial: '',
+      closingForce: '',
+      spindleDiameter: ''
   }
 
     onClose = () =>{
@@ -16,9 +18,35 @@ class AddMachine extends Component {
       this.setState({ [e.target.name]: e.target.value });
     };
 
+    onNumChange = (e) => {
+      const value = parseInt(e.target.value)
+      if( isNaN(value) ){ return this.setState({ [e.target.name]: '' }) }
+      else if( value === 0 ){ return this.setState({ [e.target.name]: '' }) }
+      else { 
+        console.log('meti')
+        return this.setState({ [e.target.name]: e.target.value });
+      }
+    };
+  
+    inputValue = (name) => {
+      const value = parseInt(this.state[name])
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return ''}
+      else { 
+        return value
+      }
+    };
+
     onSubmit = e =>{
       e.preventDefault();
       this.props.addMachine(this.state);
+    }
+
+    renderSubmit = () =>{
+      if(this.state.closingForce === '' | this.state.spindleDiameter === ''){return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>}
+      else{
+        return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+      }
     }
 
 
@@ -49,9 +77,25 @@ class AddMachine extends Component {
                 </input></td>
             </tr>
             <tr>
+              <td><label>Closing Force: </label></td>
+              <td><input type="number"
+                name='closingForce' 
+                value={this.inputValue('closingForce')}
+                onChange={this.onNumChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
+              <td><label>Spindle Diameter: </label></td>
+              <td><input type="number"
+                name='spindleDiameter' 
+                value={this.inputValue('spindleDiameter')}
+                onChange={this.onNumChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
             <td></td>
             <td><Link to="/machines"><button>Cancel</button></Link>
-            <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
+            {this.renderSubmit()}</td>
             </tr>
 
 

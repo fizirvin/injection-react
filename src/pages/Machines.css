@@ -1,0 +1,47 @@
+
+.header_num{
+    width: 30%; 
+}
+
+.header_serial{
+    width: 35%;  
+}
+
+
+
+.header_force{
+    font-size: 80%;
+    width: 10%;
+}
+
+.header_diameter{
+    font-size: 80%;
+    width: 15%;
+}
+
+.header_addmachine{
+    width: 10%;
+}
+
+  .machine_number{
+    width: 30%;
+  }
+
+  .machine_Serial{
+    width: 35%;
+  }
+  
+  
+
+  .machine_force{
+    width: 10%;
+  }
+
+  .machine_diameter{
+    width: 15%;
+  }
+  .machine_update{
+    width: 10%;
+    padding-left: 0;
+    text-align: left;
+  }

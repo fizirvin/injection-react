@@ -12,12 +12,12 @@
     margin-top: 1px;
     margin-left: 3%;
     margin-bottom: 0;
-    
+    border-spacing: 1px;
   }
 
   .body_moldes{
   
-  
+    
     overflow-y: auto;
     margin-left: 3%;
     margin-bottom: 0;
@@ -26,35 +26,54 @@
   }
 
   .body_table_moldes{
-    width: 99%;
+    width: 98.5%;
     table-layout: fixed;
     border: solid 2px;
     margin-top: 1px;
     margin-bottom: 0;
-   
+    border-spacing: 1px;
+    border-radius: 0;
     
   }
 
   .mold_number_header{
     width: 45%;
+    border-radius: 0;
   }
   .mold_serial_header{
-    width: 35%;
+    width: 25%;
+    border-radius: 0;
   }
   
+  .mold_cavities_header{
+    width: 15%;
+    border-radius: 0;
+  }
+
   .mold_add_header{
-    width: 20%;
+    width: 15%;
+    border-radius: 0;
   }
   
   .molde_number{
     width: 45%;
+    border-radius: 0;
   }
   
   .molde_serial{
-    width: 35%;
+    width: 25%;
+    border-radius: 0;
   }
+
+  .molde_cavities{
+    width: 15%;
+    border-radius: 0;
+  }
+  
+
   
   
   .molde_table_data{
-    width: 20%;
+    width: 15%;
+    border-radius: 0;
   }
