@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 class AddMaterial extends Component {
   state= {
     number: '',
+    manufacturer: '',
     description: '',
+    acronym: '',
+    identification: '',
     type: '',
     unit: ''
   }
@@ -42,10 +45,31 @@ class AddMaterial extends Component {
               onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>
+              <td><label>Manufacturer: </label></td>
+              <td><input type="text"
+              name='manufacturer' 
+              value={this.state.manufacturer}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
               <td><label>Description: </label></td>
               <td><input type="text"
               name='description' 
-              value={this.state.descrition}
+              value={this.state.description}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Acronym: </label></td>
+              <td><input type="text"
+              name='acronym' 
+              value={this.state.acronym}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>ID: </label></td>
+              <td><input type="text"
+              name='identification' 
+              value={this.state.identification}
               onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>

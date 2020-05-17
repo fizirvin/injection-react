@@ -5,7 +5,9 @@ import { Link } from 'react-router-dom';
 class UpdateModel extends Component {
   state= {
     _id:'',
-    partNumber: ''
+    partNumber: '',
+    partName: '',
+    family: ''
   }
 
   componentDidMount(){
@@ -45,7 +47,21 @@ class UpdateModel extends Component {
               <td><label>Part Number: </label></td>
               <td><input type="text"
                 name='partNumber' 
-                defaultValue={this.state.partNumber}
+                value={this.state.partNumber}
+                onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Part Name: </label></td>
+              <td><input type="text"
+                name='partName' 
+                value={this.state.partName}
+                onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Family: </label></td>
+              <td><input type="text"
+                name='family' 
+                value={this.state.family}
                 onChange={this.onInputChange} required></input></td>
             </tr>
             

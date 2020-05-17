@@ -36,6 +36,7 @@ import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
 import './pages/Material.css'
+import './pages/Models.css'
 import './pages/Machines.css'
 import './pages/Defect.css'
 import './pages/Issues.css'
@@ -173,13 +174,18 @@ class App extends React.Component {
       materials{
         _id
         number
+        manufacturer
         description
+        acronym
+        identification
         type
         unit
       } 
       parts {
         _id
         partNumber
+        partName
+        family
       }
       issues{
         _id
@@ -207,6 +213,8 @@ class App extends React.Component {
         partNumber{
           _id
           partNumber
+          partName
+          family
         }
         cycles
         capacity
@@ -241,6 +249,8 @@ class App extends React.Component {
           partNumber {
             _id
             partNumber
+            partName
+            family
           }
           molde{
             _id
@@ -278,6 +288,8 @@ class App extends React.Component {
           partNumber{
             _id
             partNumber
+            partName
+            family
           }
           program{
             _id
@@ -539,13 +551,19 @@ class App extends React.Component {
 
     const query = `mutation{newMaterial(input:{
       number: "${newMaterial.number}"
+      manufacturer: "${newMaterial.manufacturer}"
       description: "${newMaterial.description}"
+      acronym: "${newMaterial.acronym}"
+      identification: "${newMaterial.identification}"
       type: "${newMaterial.type}"
       unit: "${newMaterial.unit}"
     }) {
       _id
       number
+      manufacturer
       description
+      acronym
+      identification
       type
       unit
     }}`;
@@ -575,13 +593,19 @@ class App extends React.Component {
 
     const query = `mutation{updateMaterial(_id: "${updateMaterial._id}", input:{
       number: "${updateMaterial.number}"
+      manufacturer: "${updateMaterial.manufacturer}"
       description: "${updateMaterial.description}"
+      acronym: "${updateMaterial.acronym}"
+      identification: "${updateMaterial.identification}"
       type: "${updateMaterial.type}"
       unit: "${updateMaterial.unit}"
     }) {
       _id
       number
+      manufacturer
       description
+      acronym
+      identification
       type
       unit
     }}`;
@@ -612,9 +636,13 @@ class App extends React.Component {
 
     const query = `mutation{newPartNumber(input:{
       partNumber: "${newModel.partNumber}"
+      partName: "${newModel.partName}"
+      family: "${newModel.family}"
     }) {
       _id
       partNumber
+      partName
+      family
     }}`;
 
     const url = this.state.server;
@@ -642,9 +670,13 @@ class App extends React.Component {
 
     const query = `mutation{updatePartNumber(_id: "${updateModel._id}",input:{
       partNumber: "${updateModel.partNumber}"
+      partName: "${updateModel.partName}"
+      family: "${updateModel.family}"
     }) {
       _id
       partNumber
+      partName
+      family
     }}`;
 
     const url = this.state.server;

@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 
 class AddModel extends Component {
   state= {
-    partNumber: ''
+    partNumber: '',
+    partName: '',
+    family: ''
   }
 
   onClose = () =>{
@@ -37,6 +39,20 @@ class AddModel extends Component {
               <td><input type="text"
                 name='partNumber' 
                 value={this.state.partNumber}
+                onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Part Name: </label></td>
+              <td><input type="text"
+                name='partName' 
+                value={this.state.partName}
+                onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Family: </label></td>
+              <td><input type="text"
+                name='family' 
+                value={this.state.family}
                 onChange={this.onInputChange} required></input></td>
             </tr>
             

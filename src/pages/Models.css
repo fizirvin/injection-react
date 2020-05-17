@@ -1,0 +1,21 @@
+
+.partnumber_table{
+    width: 40%;
+    border-spacing: 1px;
+  }
+  
+  .partnumber_header{
+    width: 30%;
+  }
+
+  .partname_hader{
+      width: 35%;
+  }
+
+  .family_header{
+    width: 20%
+  }
+
+  .addpart_hader{
+    width: 15% 
+  }

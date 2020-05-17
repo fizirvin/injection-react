@@ -20,7 +20,7 @@ class Machines extends React.Component {
     return (
       <div className="Moldes">
         <h2 className="section_header">Injection Machine List:</h2>
-        <table className="table_list">
+        <table className="table_list machine_table">
         <thead> 
             <tr>
               <th className="table_header header_num">Machine Number</th>
