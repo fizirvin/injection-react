@@ -209,6 +209,7 @@ class App extends React.Component {
           _id
           moldeNumber
           moldeSerial
+          cavities
         }
         partNumber{
           _id

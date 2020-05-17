@@ -10,7 +10,7 @@ class Programs extends React.Component {
     <tr key={program._id}>
       <td className="table_data machineNumber">{ program.machineNumber.machineNumber}</td>
       <td className="table_data moldeNumber">{ program.moldeNumber.moldeNumber}</td>
-      <td className="table_data partNumber">{ program.partNumber.partNumber}</td>
+      <td className="table_data partNumber">{ program.partNumber.partName}</td>
       <td className="table_data cycles">{ program.cycles}</td>
       <td className="table_data capacity">{ program.capacity}</td>
       <td className="table_data add_program"><Link to={`/programs/update/${program._id}`}><button>Update</button></Link></td>
