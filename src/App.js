@@ -63,8 +63,8 @@ class App extends React.Component {
     defects: [],
     programs: [],
     reports: [],
-    reportsByDate: [],
-    reportsDate: [],
+    downtimeByDate: [],
+    productionByDate: [],
     resinesByDate: [],
     initial49:'',
     end:'',
@@ -230,13 +230,16 @@ class App extends React.Component {
           machineNumber
           machineSerial
         }
-        totalReal
-        totalOK
-        totalNG
-        totalCapacity
-        totalTime
-        downtime
-        efficiency
+        TReal
+        TNG
+        TOK
+        TPlan
+        TWTime
+        TDTime
+        TAvailability
+        TPerformance
+        TQuality
+        TOEE
         production{
           _id
           program{
@@ -245,9 +248,13 @@ class App extends React.Component {
           real
           ng
           ok
-          time
+          plan
+          wtime
+          dtime
+          availability
+          performance
+          quality
           oee
-          capacity
           partNumber {
             _id
             partNumber
@@ -298,7 +305,7 @@ class App extends React.Component {
           }
         }
       }
-      reportsDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      productionByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         report
         date
         machine
@@ -306,13 +313,17 @@ class App extends React.Component {
         part
         molde
         real
-        ok
         ng
-        time
+        ok
+        plan
+        wtime
+        dtime
+        availability
+        performance
+        quality
         oee
-        capacity
       }
-      reportsByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      downtimeByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
         report
         date
         shift
@@ -350,8 +361,8 @@ class App extends React.Component {
       defects: data.data.defects,
       programs: data.data.programs,
       reports: data.data.reports,
-      reportsDate: data.data.reportsDate,
-      reportsByDate: data.data.reportsByDate,
+      productionByDate: data.data.productionByDate,
+      downtimeByDate: data.data.downtimeByDate,
       resinesByDate: data.data.resinesByDate,
       initial49: initial49,
       end: end
@@ -1393,7 +1404,7 @@ class App extends React.Component {
               <Route path="/downtime" exact component={ props => ( <Downtime {...props}
               issues={this.state.issues}
               machines={this.state.machines}
-              reports={this.state.reportsByDate}
+              reports={this.state.downtimeByDate}
               /> )} />
 
               <Route path="/production" exact component={ props => ( <Efficiency {...props}
@@ -1401,8 +1412,8 @@ class App extends React.Component {
               machines={this.state.machines}
               models={this.state.models}
               moldes={this.state.moldes}  
-              reports={this.state.reportsByDate}
-              production={this.state.reportsDate}
+              downtime={this.state.downtimeByDate}
+              production={this.state.productionByDate}
               purge={this.state.resinesByDate}
               /> )} />
             </Switch> 
