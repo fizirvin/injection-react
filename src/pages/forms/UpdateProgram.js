@@ -4,13 +4,19 @@ import { Link } from 'react-router-dom';
 
 class UpdateProgram extends Component {
   state= {
-    _id:''
+    _id:'',
+    machine: '',
+    molde:'',
+    model:'',
+    cycleTime: 0,
+    cycles: 0,
+    capacity: 0
   }
 
   componentDidMount(){
       
     const getProgram = this.props.programs.find( program => program._id === this.props.match.params.id);
-    const { _id, machineNumber, partNumber, moldeNumber, cycles, capacity } = {...getProgram}
+    const { _id, machineNumber, partNumber, cycleTime, moldeNumber, cycles, capacity } = {...getProgram}
     if(!machineNumber){
       return 
     } else {
@@ -18,6 +24,7 @@ class UpdateProgram extends Component {
         machine: machineNumber._id, 
         model: partNumber._id, 
         molde: moldeNumber._id,
+        cycleTime: cycleTime.$numberDecimal,
         cycles: cycles,
         capacity: capacity})
     }
@@ -30,6 +37,53 @@ class UpdateProgram extends Component {
 
   onInputChange = e => {
     this.setState({ [e.target.name]: e.target.value });
+  };
+
+  inputValue = (name) => {
+    const value = parseFloat(this.state[name])
+    if( isNaN(value) ){ return '' }
+    else if( value === 0 ){ return 0}
+    else { 
+      return value
+    }
+  };
+
+  onNumChange = (e) => {
+    const value = parseFloat(e.target.value)
+    if( isNaN(value) ){ return this.setState({ [e.target.name]: '' }) }
+    else if( value === 0 ){ return this.setState({ [e.target.name]: '' }) }
+    else {
+      const capacity = this.capacityValue(value)
+      const cycles = this.cyclesValue(capacity) 
+      return this.setState({ [e.target.name]: e.target.value, capacity, cycles });
+    }
+  };
+
+  capacityValue = (cycleTime) => {
+    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    if(!capacity){ return 0}
+    else {
+      const value = parseInt(3600/cycleTime*capacity.cavities)
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }
+  };
+
+  cyclesValue = (cap) => {
+    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    if(!capacity){ return 0}
+    else {
+      const value = cap/capacity.cavities
+      if( isNaN(value) ){ return 0 }
+      else if( cap % capacity.cavities !== 0 ){ return 0}
+      else if( value === 0 ){ return 0}
+      else {
+        return value
+      }
+    }
   };
 
   onSubmit = e =>{
@@ -48,7 +102,7 @@ class UpdateProgram extends Component {
   }
   renderModels(){
     return this.props.models.map(( model ) => 
-    <option key={model._id} value={model._id}>{model.partNumber}</option>);
+    <option key={model._id} value={model._id}>{model.partName}</option>);
   }
 
   condition = () =>{
@@ -88,19 +142,27 @@ class UpdateProgram extends Component {
       </td>
     </tr>
     <tr>
-      <td><label>Cycles: </label></td>
-      <td><input type="number"
-        name='cycles' 
-        defaultValue={this.state.cycles}
-        onChange={this.onInputChange} required></input></td>
-    </tr>
-    <tr>
-      <td><label>Capacity: </label></td>
-      <td><input type="number"
-        name='capacity' 
-        defaultValue={this.state.capacity}
-        onChange={this.onInputChange} required></input></td>
-    </tr>
+              <td><label>Cycle Time: </label></td>
+              <td><input type="number"
+                name='cycleTime' 
+                value={this.inputValue('cycleTime')}
+                onChange={this.onNumChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Capacity: </label></td>
+              <td><input type="number"
+                name='capacity' 
+                value={this.state.capacity}
+                required disabled></input></td>
+            </tr>
+            <tr>
+              <td><label>Cycles: </label></td>
+              <td><input type="number"
+                name='cycles'
+                min='1' 
+                value={this.state.cycles}
+                required disabled></input></td>
+            </tr>
     
     <tr>
     <td></td>

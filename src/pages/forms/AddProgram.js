@@ -7,6 +7,7 @@ class AddProgram extends Component {
     machine: '',
     molde:'',
     model:'',
+    cycleTime: 0,
     cycles: 0,
     capacity: 0
   }
@@ -16,7 +17,54 @@ class AddProgram extends Component {
   }
 
   onInputChange = e => {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value,cycleTime: 0, cycles: 0, capacity: 0 });
+  };
+
+  inputValue = (name) => {
+    const value = parseFloat(this.state[name])
+    if( isNaN(value) ){ return '' }
+    else if( value === 0 ){ return 0}
+    else { 
+      return value
+    }
+  };
+
+  onNumChange = (e) => {
+    const value = parseFloat(e.target.value)
+    if( isNaN(value) ){ return this.setState({ [e.target.name]: '' }) }
+    else if( value === 0 ){ return this.setState({ [e.target.name]: '' }) }
+    else {
+      const capacity = this.capacityValue(value)
+      const cycles = this.cyclesValue(capacity) 
+      return this.setState({ [e.target.name]: e.target.value, capacity, cycles });
+    }
+  };
+
+  capacityValue = (cycleTime) => {
+    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    if(!capacity){ return 0}
+    else {
+      const value = parseInt(3600/cycleTime*capacity.cavities)
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }
+  };
+
+  cyclesValue = (cap) => {
+    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    if(!capacity){ return 0}
+    else {
+      const value = cap/capacity.cavities
+      if( isNaN(value) ){ return 0 }
+      else if( cap % capacity.cavities !== 0 ){ return 0}
+      else if( value === 0 ){ return 0}
+      else {
+        return value
+      }
+    }
   };
 
   onSubmit = e =>{
@@ -37,8 +85,9 @@ class AddProgram extends Component {
   }
   renderModels(){
     return this.props.models.map(( model ) => 
-    <option key={model._id} value={model._id}>{model.partNumber}</option>);
+    <option key={model._id} value={model._id}>{model.partName}</option>);
   }
+
 
   render() {
 
@@ -70,7 +119,7 @@ class AddProgram extends Component {
               </td>
             </tr>
             <tr>
-              <td><label>Part Number: </label></td>
+              <td><label>Model Name: </label></td>
               <td>
                 <select onChange={this.onInputChange} name="model" defaultValue="" required>
                   <option disabled value="">select</option>
@@ -79,24 +128,33 @@ class AddProgram extends Component {
               </td>
             </tr>
             <tr>
-              <td><label>Cycles: </label></td>
+              <td><label>Cycle Time: </label></td>
               <td><input type="number"
-                name='cycles' 
-                value={this.state.cycles}
-                onChange={this.onInputChange} required></input></td>
+                name='cycleTime' 
+                value={this.inputValue('cycleTime')}
+                onChange={this.onNumChange} required></input></td>
             </tr>
             <tr>
               <td><label>Capacity: </label></td>
               <td><input type="number"
                 name='capacity' 
                 value={this.state.capacity}
-                onChange={this.onInputChange} required></input></td>
+                required disabled></input></td>
+            </tr>
+            <tr>
+              <td><label>Cycles: </label></td>
+              <td><input type="number"
+                name='cycles'
+                min='1' 
+                value={this.state.cycles}
+                required disabled></input></td>
             </tr>
             
             <tr>
             <td></td>
             <td><Link to="/programs"><button>Cancel</button></Link>
-            <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
+            <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
+            </td>
             </tr>
 
 

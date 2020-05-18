@@ -11,8 +11,9 @@ class Programs extends React.Component {
       <td className="table_data machineNumber">{ program.machineNumber.machineNumber}</td>
       <td className="table_data moldeNumber">{ program.moldeNumber.moldeNumber}</td>
       <td className="table_data partNumber">{ program.partNumber.partName}</td>
-      <td className="table_data cycles">{ program.cycles}</td>
+      <td className="table_data cycleTime">{ program.cycleTime.$numberDecimal }</td>
       <td className="table_data capacity">{ program.capacity}</td>
+      <td className="table_data cycles">{ program.cycles}</td>
       <td className="table_data add_program"><Link to={`/programs/update/${program._id}`}><button>Update</button></Link></td>
     </tr>)
   }
@@ -28,8 +29,9 @@ class Programs extends React.Component {
             <th className="table_header machineNumber_header">Machine Number</th>
             <th className="table_header moldeNumber_header">Mold Number</th>
             <th className="table_header partNumber_header">Part Number</th>
-            <th className="table_header cycles_header">Cycles (hr)</th>
+            <th className="table_header cycletime_header">Cycle Time (s)</th>
             <th className="table_header capacity_header">Capacity (pcs/hr)</th>
+            <th className="table_header cycles_header">Cycles (cyc/hr)</th>
             <th className="table_header add_program_header"><Link to="/programs/add"><button>Add Program</button></Link></th>
           </tr>
           </thead>

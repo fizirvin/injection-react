@@ -217,6 +217,7 @@ class App extends React.Component {
           partName
           family
         }
+        cycleTime
         cycles
         capacity
       }
@@ -857,6 +858,7 @@ class App extends React.Component {
       machineNumber: "${program.machine}"
       moldeNumber: "${program.molde}"
       partNumber: "${program.model}"
+      cycleTime: ${program.cycleTime}
       cycles: ${program.cycles}
       capacity: ${program.capacity}
     }) {
@@ -876,6 +878,7 @@ class App extends React.Component {
       partNumber
 
     }
+    cycleTime
     cycles
     capacity
     }}`;
