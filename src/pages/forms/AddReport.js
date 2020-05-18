@@ -884,7 +884,7 @@ class AddReport extends Component {
                 </select>
             </th>
             <th className="report_header">
-                <label>Shift Time (hrs): </label>
+                <label>Plan Time (hrs): </label>
                 <input type="number" 
                 className='time_input' 
                 name='time'
