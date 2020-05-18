@@ -39,6 +39,10 @@ class UpdateProgram extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  onMoldeChange = e => {
+    this.setState({ [e.target.name]: e.target.value,cycleTime: 0, cycles: 0, capacity: 0 });
+  };
+
   inputValue = (name) => {
     const value = parseFloat(this.state[name])
     if( isNaN(value) ){ return '' }
@@ -86,6 +90,14 @@ class UpdateProgram extends Component {
     }
   };
 
+  getCavities = () =>{
+    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    if(!capacity){ return 0}
+    else {
+      return capacity.cavities
+    }
+  }
+
   onSubmit = e =>{
     e.preventDefault();
     this.props.updateProgram(this.state);
@@ -105,9 +117,21 @@ class UpdateProgram extends Component {
     <option key={model._id} value={model._id}>{model.partName}</option>);
   }
 
+  renderCavities(){
+    const value = this.getCavities()
+    if(!value) { return null }
+    else{ return <label>Cavities: {value}</label>} 
+  }
+
+  renderSubmit = () =>{
+    const value = this.cyclesValue(this.state.capacity)
+    if(!value){ return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input> }
+    else{ return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input> }
+  }
+
   condition = () =>{
     if(!this.state._id){
-      return
+      return 
     } else{
       
     return (
@@ -127,10 +151,10 @@ class UpdateProgram extends Component {
     <tr>
       <td><label>Mold Number: </label></td>
       <td>
-        <select onChange={this.onInputChange} name="molde" defaultValue={this.state.molde} required>
+        <select onChange={this.onMoldeChange} name="molde" defaultValue={this.state.molde} required>
           
           {this.renderMoldes()}
-        </select>
+          </select> {this.renderCavities()} 
       </td>
     </tr>
     <tr>
@@ -153,21 +177,22 @@ class UpdateProgram extends Component {
               <td><input type="number"
                 name='capacity' 
                 value={this.state.capacity}
-                required disabled></input></td>
+                disabled 
+                required></input></td>
             </tr>
             <tr>
               <td><label>Cycles: </label></td>
               <td><input type="number"
                 name='cycles'
-                min='1' 
+                disabled 
                 value={this.state.cycles}
-                required disabled></input></td>
+                required></input></td>
             </tr>
     
     <tr>
     <td></td>
     <td><Link to="/programs"><button>Cancel</button></Link>
-    <input type="submit" onSubmit={this.onSubmit} value="Submit"></input></td>
+    {this.renderSubmit()}</td>
     </tr>
 
 
@@ -184,7 +209,7 @@ class UpdateProgram extends Component {
     return ReactDOM.createPortal(
     <div className="Modal">
         <div className="modal-content">
-          <h2>Update Injection Mold:</h2>
+          <h2>Update Injection Program:</h2>
           
            { this.condition()}
 

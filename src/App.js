@@ -872,10 +872,12 @@ class App extends React.Component {
       _id
       moldeNumber
       moldeSerial
+      cavities
     }
     partNumber {
       _id
       partNumber
+      partName
 
     }
     cycleTime
@@ -911,6 +913,7 @@ class App extends React.Component {
       machineNumber: "${program.machine}"
       moldeNumber: "${program.molde}"
       partNumber: "${program.model}"
+      cycleTime: ${program.cycleTime} 
       cycles: ${program.cycles}
       capacity: ${program.capacity}
     }) {
@@ -924,12 +927,15 @@ class App extends React.Component {
       _id
       moldeNumber
       moldeSerial
+      cavities
     }
     partNumber {
       _id
       partNumber
+      partName
 
     }
+    cycleTime
     cycles
     capacity
     }}`;
@@ -945,7 +951,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    
+    console.log(data)
     this.setState({programMessage: 'error'})
     } else{
       let program = data.data.updateProgram;
