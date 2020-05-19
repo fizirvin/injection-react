@@ -1,19 +1,22 @@
 .Reports{
-  
+  width: 100%;
   height: 95%;
+  
+}
+
+.reports_container{
+  
+  width: 100%;
 }
 
 .container_first_table{
-  
-  
-    width: 65%;
-  
-
+    width: 85%;
+    
 }
 .report_list_table{
   border-spacing: 1px;
     margin-bottom: 1px;
-    width: 97%;
+    width: 98.3%;
     margin-left: 3px;
     border: solid 2px;
     border-radius: 3px;
@@ -34,7 +37,7 @@
 
   .body_table_reports{
     border-spacing: 1px;
-    width: 99%;
+    width: 100%;
     table-layout: fixed;
     border: solid 2px;
     margin-top: 1px;
@@ -44,12 +47,12 @@
   }
 
   .date_data{
-    width: 14%;
+    width: 10%;
     font-size: 90%;
   }
 
   .body_date_table{
-    width: 14%;
+    width: 10%;
     font-size: 90%;
   }
   
@@ -64,100 +67,155 @@
   }
   
   .machine_data{
-    width: 9%;
+    width: 6%;
     font-size: 90%;
   }
 
   .body_machine_table{
-    width: 9%;
+    width: 6%;
     font-size: 90%;
   }
   
   .treal_data{
-    width: 9%;
+    width: 5%;
     font-size: 90%;
   }
 
   .body_real_table{
-    width: 9%;
+    width: 5%;
     font-size: 90%;
   }
   
   .ng_data{
-    width: 9%;
+    width: 5%;
     font-size: 90%;
   }
 
   .body_ng_table{
-    width: 9%;
+    width: 5%;
     font-size: 90%; 
   }
   
   .ok_data{
-    width: 9%;
+    width: 5%;
     font-size: 90%;
   }
 
   .body_ok_table{
-    width: 9%;
+    width: 5%;
     font-size: 90%;  
   }
   
-  .capacity_data{
-    width: 9%;
+  .plan_data{
+    width: 5%;
     font-size: 90%;
   }
 
-  .body_capacity_table{
-    width: 9%;
+  .body_plan_table{
+    width: 5%;
     font-size: 90%; 
   }
 
-  .oee_data{
-    width: 9%;
-    font-size: 90%;
+  .worktime_data{
+    width: 8%;
+    font-size: 85%;
   }
 
-  .body_efficiency_table{
-    width: 9%;
+  .body_worktime_table{
+    width: 8%;
     font-size: 90%;
   }
   
   .downtime_data{
-    width: 9%;
-    font-size: 90%;
+    width: 8%;
+    font-size: 85%;
   }
 
   .body_downtime_table{
-    width: 9%;
+    width: 8%;
     font-size: 90%;
   }
-  
-  .add_data{
+
+  .availability_data{
+    width: 9%;
+    font-size: 85%;
+  }
+
+  .body_availability_table{
     width: 9%;
     font-size: 90%;
   }
 
-  .body_update_table{
+  .performance_data{
     width: 9%;
-    font-size: 90%; 
+    font-size: 85%;
+    justify-items: center;
+  }
+
+  .body_performance_table{
+    width: 9%;
+    font-size: 90%;
+  }
+
+  .quality_data{
+    width: 7%;
+    font-size: 85%;
+  }
+
+  .body_quality_table{
+    width: 7%;
+    font-size: 90%;
+  }
+
+  .toee_data{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .body_toee_table{
+    width: 6%;
+    font-size: 90%;
   }
 
   .body_purge{
-    width: 9%;
+    width: 6%;
     font-size: 90%; 
   }
 
   .purge_data{
-    width: 9%;
+    width: 6%;
     font-size: 90%; 
   }
+  
+  .add_data{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .body_update_table{
+    background-color: green;
+    width: 6%;
+    font-size: 90%;
+    padding-left: 0;
+    margin-left: 0;
+    align-items: center;
+    text-align: center;
+     
+  }
+
+  .link-reports{
+    
+    align-items: center;
+    text-align: center;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  
 
 
   
-  .reports_container{
-    display: flex;
-  }
+  
   
   
   .report_detail{
@@ -241,7 +299,10 @@
   }
   
   .button_report_list{
+    width: 100%;
+    
     font-size: 85%;
+    justify-self: left;
   }
   
   .report_selected_list{

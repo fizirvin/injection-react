@@ -151,21 +151,28 @@ class Reports extends React.Component {
       
       return <tr><td>no reports find, add report</td></tr>
     } else {
-      return(this.props.reports.map( report => 
-        <tr key={report._id}>
-          <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(report.reportDate)}</td>
-          <td className={this.formatRow(report._id, 'body_shift_table')}>{ report.shift}</td>
-          <td className={this.formatRow(report._id, 'body_machine_table')}>{ report.machine.machineNumber}</td>
-          <td className={this.formatRow(report._id, 'body_real_table')}>{ report.totalReal}</td>
-          <td className={this.formatRow(report._id, 'body_ng_table')}>{ report.totalNG}</td>
-          <td className={this.formatRow(report._id, 'body_ok_table')}>{ report.totalOK}</td>
-          <td className={this.formatRow(report._id, 'body_capacity_table')}>{ report.totalCapacity}</td>
-          <td className={this.formatRow(report._id, 'body_efficiency_table')}>{ report.efficiency.$numberDecimal}</td>
-          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ report.downtime}</td>
-          <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(report.resines)}</td>
-          <td className={this.formatRow(report._id, 'body_update_table')}><Link to={`/reports/update/${report._id}`}><button className='button_report_list'>Update</button></Link>
-          <button className='button_report_list' name={report._id} onClick={this.openDetail}>Detail</button></td>
-        </tr>))
+      return( 
+        this.props.reports.map( report => {
+          const { _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, 
+            TAvailability, TPerformance, TQuality, TOEE, resines } = report 
+        return <tr key={report._id}>
+          <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(reportDate) }</td>
+          <td className={this.formatRow(report._id, 'body_shift_table')}>{ shift }</td>
+          <td className={this.formatRow(report._id, 'body_machine_table')}>{ machine.machineNumber }</td>
+          <td className={this.formatRow(report._id, 'body_real_table')}>{ TReal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_ng_table')}>{ TNG | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_ok_table')}>{ TOK | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_plan_table')}>{ TPlan | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_worktime_table')}>{ TWTime.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ TDTime.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_availability_table')}>{ TAvailability.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_performance_table')}>{ TPerformance.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_toee_table')}>{ TOEE.$numberDecimal | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(resines) }</td>
+          <td className={this.formatRow(report._id, 'body_update_table')}><Link className='link-reports' to={`/reports/update/${_id}`}><button className='button_report_list'>Update</button></Link></td>
+        </tr>})
+      )
     }
   }
 
@@ -187,9 +194,13 @@ class Reports extends React.Component {
             <th className="report_list_header treal_data">Real (pcs)</th>
             <th className="report_list_header ng_data">NG (pcs)</th>
             <th className="report_list_header ok_data">OK (pcs)</th>
-            <th className="report_list_header capacity_data">Capacity (pcs)</th>
-            <th className="report_list_header oee_data">OEE (%)</th>
-            <th className="report_list_header downtime_data">Downtime (mins)</th>
+            <th className="report_list_header plan_data">Plan (pcs)</th>
+            <th className="report_list_header worktime_data">Work Time (hrs)</th>
+            <th className="report_list_header downtime_data">Downtime (hrs)</th>
+            <th className="report_list_header availability_data">Availability (%)</th>
+            <th className="report_list_header performance_data">Performance (%)</th>
+            <th className="report_list_header quality_data">Quality (%)</th>
+            <th className="report_list_header toee_data">OEE (%)</th>
             <th className="report_list_header purge_data">Purge (g)</th>
             <th className="report_list_header add_data">
               <Link to="/reports/add"><button>Add Report</button></Link>
@@ -206,9 +217,9 @@ class Reports extends React.Component {
         </table>
         </div>
         </div>
-        <div className='report_detail'>
+        {/* <div className='report_detail'>
           {this.renderDetailTable()}
-        </div>
+        </div> */}
         </div>
       </div>
     )
