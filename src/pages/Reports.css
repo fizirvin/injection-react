@@ -25,6 +25,11 @@
     
   }
 
+  .header_table_report{
+    border-spacing: 1px;
+  }
+
+
   .body_reports{
   
     overflow-x: hidden;
@@ -213,7 +218,10 @@
 
   
 
-
+.total_yellow{
+  text-align: right;
+  padding-right: 20px;
+}
   
   
   
@@ -331,7 +339,7 @@
     background-color: white;
     border-radius: 2px;
     text-align: left;
-    padding-left: 1%;
+    padding-left: 3px;
     font-size: 90%;
     height: 4vh;
     
@@ -342,21 +350,54 @@
   }
   
   .model{
-    width: 18%;
+    width: 20%;
   }
   
   .pcs{
-    width: 10%;
+    font-size: 90%;
+    width: 6%;
   }
   .ng{
-    width: 10%;
+    font-size: 90%;
+    width: 6%;
   }
   .ok{
-    width: 10%;
+    font-size: 90%;
+    width: 6%;
+  }
+
+  .plan{
+    font-size: 90%;
+    width: 6%;
   }
 
   .time_table{
-    width: 12%;
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .downtime_table{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .availability{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .performance{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .quality{
+    width: 6%;
+    font-size: 90%;
+  }
+
+  .oee{
+    width: 6%;
     font-size: 90%;
   }
 
@@ -367,4 +408,5 @@
 
   .report-title{
     margin-top: 0;
+    
   }

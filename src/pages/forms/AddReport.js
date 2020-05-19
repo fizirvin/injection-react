@@ -694,7 +694,7 @@ class AddReport extends Component {
             <label>{program.moldeNumber.moldeNumber}</label>
           </td>
           <td className='production_row'>
-          <label>{program.partNumber.partNumber}</label>
+          <label>{program.partNumber.partName}</label>
           </td>
           <td className='production_row'>
             <input type='number' min="0" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
@@ -706,7 +706,22 @@ class AddReport extends Component {
           <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
+          <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
+          </td>
+          <td className='production_row'>
             <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+          </td>
+          <td className='production_row'>
+            <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+          </td>
+          <td className='production_row'>
+            <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+          </td>
+          <td className='production_row'>
+          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
+          </td>
+          <td className='production_row'>
+          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
           </td>
           <td className='production_row'>
           <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
@@ -831,8 +846,13 @@ class AddReport extends Component {
         <th className='production_table pcs'>Real (pcs)</th>
         <th className='production_table ng'>NG (pcs)</th>
         <th className='production_table ok'>OK (pcs)</th>
-        <th className='production_table time_table'>Work Time (hrs+min/60)</th>
-        <th className='production_table ok'>OEE%</th>
+        <th className='production_table plan'>Plan (pcs)</th>
+        <th className='production_table time_table'>WTime (hrs)</th>
+        <th className='production_table downtime_table'>Dtime (hrs)</th>
+        <th className='production_table availability'>Avail%</th>
+        <th className='production_table performance'>Perf%</th>
+        <th className='production_table quality'>Qlty%</th>
+        <th className='production_table oee'>OEE%</th>
       </tr>
       </thead>
       <tbody>
@@ -840,12 +860,16 @@ class AddReport extends Component {
       </tbody>
       <tfoot>
       <tr>
-        <th></th>
-        <th className='production_table model'>Total</th>
+        <th colSpan='2' className='production_table total_yellow'>Total</th>
       <th className='production_table pcs'><input type='number' className='production_input' name='real' value={this.totalReal()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalNG()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOK()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalTIME()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
         <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
       </tr>
       </tfoot>
@@ -863,7 +887,7 @@ class AddReport extends Component {
         <div className="modal-report-content report_modal">
           <h2 className='report-title'>Injection Production Report:</h2>
           <form onSubmit={this.onSubmit} className='report-form'>
-            <table>
+            <table className='header_table_report'>
           <tbody>
           <tr>
             <th className="report_header"><label>Date: </label> 
