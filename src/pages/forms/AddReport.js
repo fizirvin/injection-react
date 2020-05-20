@@ -28,11 +28,22 @@ class AddReport extends Component {
   }
 
 
-  onMins = (e) =>{
-    const value = parseInt(e.target.value)|0;
-    let downtime = [...this.state.downtime];
-    downtime[downtime.findIndex(el => el._id === e.target.name)].mins = value;
-    return this.setState({downtime});
+  onMins = async (e) =>{
+    const id = e.target.name
+    let value = parseInt(e.target.value);
+
+    if( isNaN(value) ){ value = '' }
+    else if( value === 0 ){ value = 0 }
+    else { value = value }
+
+    const downtime = this.state.downtime;
+    const items = downtime.filter( item => item.issueId !== id);
+    const getDowntime = downtime.find( item => item.issueId === id);
+
+    const item = {...getDowntime, mins: value}
+
+    const newItems = [...items, item]
+    return this.setState({downtime: newItems});
   }
 
   onRealProduction = async (e) =>{
@@ -96,27 +107,38 @@ class AddReport extends Component {
   }
 
   onDefect = (e) =>{
-    const value = parseInt(e.target.value)|0;
+    let value = parseInt(e.target.value)
     const programId = e.target.name;
     const id = e.target.id;
 
-    
+    if( isNaN(value) ){ value = '' }
+    else if( value === 0 ){ value = 0 }
+    else { value = value }
 
-    let defects = [...this.state.defects];
-    defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)].defectPcs = value
+    const defects = this.state.defects;
+    const items = defects.filter( defect => defect.program !== programId && defect.defect !== id);
+    const getDefect = defects.find(defect => defect.program === programId && defect.defect === id);
 
-    return this.setState({defects});
+    const item = {...getDefect, defectPcs: value}
+
+    const newItems = [...items, item]
+    return this.setState({defects: newItems});
   }
 
   onResine = (e) =>{
-    const value = parseInt(e.target.value)|0;
-    
-    let resines = [...this.state.resines];
+    let value = parseInt(e.target.value);
     const id = e.target.name;
 
-    resines[resines.findIndex(resine => resine.resine === id)].purge = value
-
-    return this.setState({resines});
+    if( isNaN(value) ){ value = '' }
+    else if( value === 0 ){ value = 0 }
+    else { value = value }
+    
+    const resines = this.state.resines;
+    const items = resines.filter( item => item.resine !== id);
+    const getResine = resines.find( item => item.resine === id);
+    const item = {...getResine, purge: value}
+    const newItems = [...items, item]
+    return this.setState({resines: newItems});
   }
 
   onNGProduction = async (e) =>{
@@ -239,14 +261,14 @@ class AddReport extends Component {
     }
   }
 
-  totalTIME = () =>{
-    let selected = [...this.state.selected];
-    const time = selected.reduce( (a, b) =>{
-      return a + b.production.time || 0
-    },0)
+  // totalTIME = () =>{
+  //   let selected = [...this.state.selected];
+  //   const time = selected.reduce( (a, b) =>{
+  //     return a + b.production.time || 0
+  //   },0)
 
-    return isNaN(time) ? 0 : time;
-  }
+  //   return isNaN(time) ? 0 : time;
+  // }
 
   totalReal = (array) =>{
     const value = array.reduce( (a, b) =>{
@@ -409,19 +431,18 @@ class AddReport extends Component {
   }
 
   getDefaultMins = (id) =>{
-
-    const getDowntime = this.state.downtime.find( item => item._id === id);
-
+    const getDowntime = this.state.downtime.find( item => item.issueId === id);
     if(!getDowntime){
       return 0
-  } else {
-    const { mins } = getDowntime
-    return isNaN(mins) ? 0 : mins;
-  }
-
-    // let downtime = [...this.state.downtime];
-    // const mins = downtime[downtime.findIndex(el => el._id === id)].mins
-    // return isNaN(mins) ? 0 : mins;
+    } else {
+      const { mins } = getDowntime
+      const value = mins
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }
   }
 
   getDefaultDefect = (programId, id) =>{
@@ -530,7 +551,7 @@ class AddReport extends Component {
   }
 
   findDowntime = (id) =>{
-    const select = this.state.downtime.find( downtime => downtime._id === id);
+    const select = this.state.downtime.find( downtime => downtime.issueId === id);
     return select ? true : false
   }
 
@@ -555,7 +576,7 @@ class AddReport extends Component {
   }
 
   disabledDownTime = (id) =>{
-    const select = this.state.downtime.find( downtime => downtime._id === id);
+    const select = this.state.downtime.find( downtime => downtime.issueId === id);
     return select ? false : true
   }
 
@@ -571,26 +592,20 @@ class AddReport extends Component {
   }
 
   onSelectIssue = e =>{
-    let downtime = [...this.state.downtime];
     const id = e.target.name 
-    //   machines.push(data.data.newMachine);
-    const select = this.state.downtime.find( downtime => downtime._id === id);
+    const select = this.state.downtime.find( downtime => downtime.issueId === id);
     if(!select){
       const getIssue = this.props.issues.find( issue => issue._id === id);
-      const { _id, issueName } = {...getIssue}
+      const { _id  } = getIssue
       const item ={
-        _id: _id,
-        issueName: issueName,
+        issueId: _id,
         mins: 0
       }
-
-      downtime.push(item);
-      this.setState({downtime: downtime});
-      
+      const downtime = [...this.state.downtime, item]
+      this.setState({downtime});
     } else{
-      const items = this.state.downtime.filter(downtime => downtime._id !== id);
-    this.setState({ downtime: items });
-      
+      const items = this.state.downtime.filter(downtime => downtime.issueId !== id);
+      this.setState({ downtime: items });
     }
   }
 
@@ -728,38 +743,27 @@ class AddReport extends Component {
 
 
   onSubmit = async (e) =>{
-    e.preventDefault();
-
-    const production = this.state.selected.map( item => item.production )
-    const defects = this.state.defects;
-    const resines = this.state.resines;
-    const downtime = this.state.downtime.map( item => {
-      return { issueId: item._id, mins: item.mins }
-    })
+    e.preventDefault();    
+    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = this.state;
     
-    const totalReal= this.totalReal();
-    const totalOK = this.totalOK();
-    const totalNG = this.totalNG();
-    const totalTime = this.totalTIME();
-    const totalMins = this.totalMins();
-    const totalOEE = this.totalOEE();
-    const totalCapacity = this.totalCapacity();
-    const date = this.state.date+'T00:00:00.000-06:00';
     const report = {
-      date,
-      shift: this.state.shift,
-      machine: this.state.machine,
-      totalReal,
-      totalOK,
-      totalNG,
-      totalTime,
-      totalMins,
-      totalOEE,
-      totalCapacity: totalCapacity,
+      date: date+'T00:00:00.000-06:00',
+      shift,
+      machine,
+      TReal,
+      TNG,
+      TOK,
+      TPlan,
+      TWTime,
+      TDTime,
+      TAvailability,
+      TPerformance,
+      TQuality,
+      TOEE,
       production,
       downtimeDetail: downtime,
-      defects: defects,
-      resines: resines
+      defects,
+      resines
     }
     
     return this.props.addReport(report)
@@ -790,33 +794,14 @@ class AddReport extends Component {
     }
   }
 
-  renderPrograms = () =>{
-    // if(this.state.show === 'molds'){
-    //   if(this.state.programs.length === 0){
-    //     return <div>program not found <Link to="/programs/add"><button>Add Program</button></Link></div>
-    //   }else{return (this.state.programs.map(( program ) => 
-    //     <div key={program._id} className='checkboxes'>
-    //       <input type='checkbox' className='checkbox-input' checked={this.findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
-    //       <label htmlFor={program._id}>{program.moldeNumber.moldeNumber} model: {program.partNumber.partNumber}</label>
-    //     </div>)
-    //   )}
-    // } 
-    // else 
+  renderPrograms = () =>{ 
     if(this.state.show === 'defects'){
-        // return (this.props.issues.map(( issue ) => 
-        // <div key={issue._id} className='checkboxes issuesboxes'>
-        // <input type='checkbox' className='checkbox-input' checked={this.findDowntime(issue._id)} onChange={this.onSelectIssue} value={issue._id} name={issue._id}></input>
-        // <label htmlFor={issue._id}>{issue.issueName}</label>
-        // </div>))
         return this.renderDefectsTable()
-        
     } else if(this.state.show === 'purge'){
       return this.renderResinesTable()
     } 
-    
     else{
       return this.renderDownTable()
-      
     }
   }
 
@@ -878,7 +863,7 @@ class AddReport extends Component {
         return(<table key={item.program} className='defect-table'>
           <thead>
             <tr>
-              <th colSpan='2' className='defect-table-molde'>{item.moldeNumber.moldeNumber}-{item.partNumber.partNumber}</th>
+              <th colSpan='2' className='defect-table-molde'>{item.moldeNumber.moldeNumber}-{item.partNumber.partName}</th>
             </tr>
             <tr>
               <th className='defect-header-table'>Defect</th>
@@ -1012,8 +997,8 @@ class AddReport extends Component {
           return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
         }
         else{
-          const totalTime = this.totalTIME()
-          const totalReal = this.totalReal()
+          const totalTime = this.state.TWTime
+          const totalReal = this.state.TReal
           if(totalReal <= 0 || totalTime <= 0){
             return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
           }
@@ -1027,13 +1012,12 @@ class AddReport extends Component {
 
 
   getDowntimeToReport = () =>{
-
-    const shiftTime = this.state.time
-    const totalTime = this.totalTIME();
+    const { time, TWTime } = this.state;
+    const totalTime = parseFloat(time * 60);
+    const totalW = parseFloat(TWTime * 60);
     const mins = this.totalMins();
-    const TotalInt = parseInt(totalTime * 60)
-    const time = (shiftTime * 60) - (TotalInt) - mins
-    return time
+    const minsToReport = totalTime - totalW - mins
+    return parseInt(minsToReport)
   }
 
   renderDownTable = () =>{
