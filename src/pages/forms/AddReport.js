@@ -8,6 +8,16 @@ class AddReport extends Component {
     shift: '',
     machine: '',
     time: 10,
+    TReal: 0,
+    TNG: 0,
+    TOK: 0,
+    TPlan: 0,
+    TWTime: 0,
+    TDTime: 0,
+    TAvailability: 0,
+    TPerformance: 0,
+    TQuality: 0,
+    TOEE: 0,
     programs: [],
     selected: [],
     show: 'molds',
@@ -26,24 +36,63 @@ class AddReport extends Component {
   }
 
   onRealProduction = async (e) =>{
+    const id = e.target.name
+    let value = parseInt(e.target.value);
 
-    const value = parseInt(e.target.value)|0;
+    if( isNaN(value) ){ value = '' }
+    else if( value === 0 ){ value = 0 }
+    else { value = value }
+      
     let selected = [...this.state.selected];
-    
-    const ok = value - selected[selected.findIndex(el => el.program === e.target.name)].production.ng;
-    const time = selected[selected.findIndex(el => el.program === e.target.name)].production.time;
-    const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
-    const production = ok;
-    const expected = capacity * time;
-    const preoee = (production/expected)*100
-    const oee = this.precise_round(preoee, 1)
-    // const oee = parseInt((production/expected)*100)|0;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.real = value;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
-    
-    
-    return this.setState({selected: selected});
+    const items = this.state.selected.filter( item => item.program !== id);
+    const getProduction = selected.find( item => item.program === id);
+
+    const { production, capacity } = await getProduction
+    const { ng } = production
+    const ok = value - ng
+    const prewtime = value/capacity
+    const wtime = this.precise_round(prewtime, 2)
+  
+    const TWTime = items.reduce( (a, b) =>{
+      return a + parseFloat(b.production.wtime)
+    },0)
+
+    const predtime = (this.state.time - TWTime - wtime)/this.state.selected.length
+    const dtime = this.precise_round(predtime, 2)
+
+    const item = { 
+      ...getProduction,
+      production: { ...getProduction.production, real: value, ok: ok, wtime: wtime, dtime: dtime}
+    }
+    const newSelected = [...items, item]
+    const newArray = newSelected.map( item => {
+      const { production, capacity } = item
+      const { wtime, real, ok } = production
+      const time = wtime + dtime
+      const preav = (wtime / time)*100
+      const preplan = time * capacity
+      const plan = this.precise_round(preplan, 0)
+      const preperf = (real/plan)*100
+      const performance = this.precise_round( preperf, 2) 
+      const availability = this.precise_round( preav, 2)
+      const preq = ( ok / real ) * 100
+      const quality = this.precise_round(preq, 2)
+      const preoee = (availability*performance*quality)/10000
+      const oee = this.precise_round(preoee, 2)
+      return { ...item, production: {...item.production, dtime: dtime, plan, availability, performance, quality, oee}}
+    })
+
+    const TOK = this.totalOK(newArray)
+    const TReal = this.totalReal(newArray)
+    const TPlan = this.totalPlan(newArray)
+    const totalWTime = this.precise_round(this.totalWTime(newArray), 2)
+    const TDTime = this.precise_round(this.totalDTime(newArray), 2)
+    const TAvailability = this.precise_round((totalWTime/(totalWTime + TDTime)*100),2)
+    const TPerformance = this.precise_round(((TReal/TPlan)*100),2)
+    const TQuality = this.precise_round(((TOK/TReal)*100),2)
+    const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
+    console.log(newArray, TWTime)
+    return this.setState({selected: newArray, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE});
   }
 
   onDefect = (e) =>{
@@ -70,22 +119,37 @@ class AddReport extends Component {
     return this.setState({resines});
   }
 
-  onNGProduction = (e) =>{
-    const value = parseInt(e.target.value)|0;
-    let selected = [...this.state.selected];
+  onNGProduction = async (e) =>{
+    const id = e.target.name
+    let value = parseInt(e.target.value);
 
-    const ok = selected[selected.findIndex(el => el.program === e.target.name)].production.real - value;
-    const time = selected[selected.findIndex(el => el.program === e.target.name)].production.time;
-    const capacity = selected[selected.findIndex(el => el.program === e.target.name)].capacity;
+    if( isNaN(value) ){ value = '' }
+    else if( value === 0 ){ value = 0 }
+    else { value = value }
+      
+    let selected = [...this.state.selected];
+    const items = this.state.selected.filter( item => item.program !== id);
+    const getProduction = selected.find( item => item.program === id);
+
+    const { production } = await getProduction
+    const { real, availability, performance } = production
+    const ok = real - value
+
+    const quality = this.precise_round(((ok/real)*100),2)
+    const oee = this.precise_round(((availability*performance*quality)/10000), 2)
+    const item = { 
+      ...getProduction,
+      production: { ...getProduction.production, ok, ng: value, quality, oee}
+    }
+    const newSelected = [...items, item]
+
+    const TNG = this.TNG(newSelected)
+    const TOK = this.totalOK(newSelected)
     
-    const expected = capacity * time;
-    const preoee = (ok/expected)*100
-    const oee = this.precise_round(preoee, 1)
-    // const oee = parseInt((ok/expected)*100)|0;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.oee = oee;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.ng = value;
-    selected[selected.findIndex(el => el.program === e.target.name)].production.ok = ok;
-    return this.setState({selected});
+    const TQuality = this.precise_round(((TOK/this.state.TReal)*100),2)
+    const TOEE = this.precise_round(((this.state.TAvailability*this.state.TPerformance*TQuality)/10000), 2)
+    
+    return this.setState({selected: newSelected, TOK, TNG, TQuality, TOEE});
   }
 
   onTimeProduction = (e) =>{
@@ -118,15 +182,151 @@ class AddReport extends Component {
 
   getOK = (id) =>{
     const getProgram = this.state.selected.find( item => item.program === id);
-    // let selected = [...this.state.selected];
-    // const real = selected[selected.findIndex(el => el.program === id)]
-    // const ng = selected[selected.findIndex(el => el.program === id)]
     if(!getProgram){
         return 0
     } else {
       const { production } = getProgram
-      const ok = production.real - production.ng
-      return isNaN(ok) ? 0 : ok;
+      const value = production.ok
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
+    }
+  }
+
+  totalOK = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return a + b.production.ok
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  TNG = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return a + b.production.ng
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  totalWTime = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return parseFloat(a + b.production.wtime)
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  totalDTime = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return parseFloat(a + b.production.dtime)
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  totalTIME = () =>{
+    let selected = [...this.state.selected];
+    const time = selected.reduce( (a, b) =>{
+      return a + b.production.time || 0
+    },0)
+
+    return isNaN(time) ? 0 : time;
+  }
+
+  totalReal = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return a + b.production.real
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  totalPlan = (array) =>{
+    const value = array.reduce( (a, b) =>{
+      return a + b.production.plan
+    },0)
+    if( isNaN(value) ){ return 0 }
+    else if( value === 0 ){ return 0 }
+    else { 
+      return value
+    }
+  }
+
+  getPlan = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+        return 0
+    } else {
+      const { production } = getProgram
+      const value = production.plan
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
+    }
+  }
+
+  getAva = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+        return 0
+    } else {
+      const { production } = getProgram
+      const value = production.availability
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
+    }
+  }
+
+  getPerformance = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+        return 0
+    } else {
+      const { production } = getProgram
+      const value = production.performance
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
+    }
+  }
+
+  getQuality = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+        return 0
+    } else {
+      const { production } = getProgram
+      const value = production.quality
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
     }
   }
 
@@ -138,39 +338,74 @@ class AddReport extends Component {
     if(!getProgram){
       return 0
     } else {
-    const { production } = getProgram
-    const real = production.real
-    return isNaN(real) ? 0 : real;
+      const { production } = getProgram
+      const value = production.real
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
     }
   }
 
   getDefaultNG = (id) =>{
-    // let selected = [...this.state.selected];
-    // const ng = selected[selected.findIndex(el => el._id === id)].production.ng
-    // return isNaN(ng) ? 0 : ng;
     const getProgram = this.state.selected.find( item => item.program === id);
     if(!getProgram){
       return 0
     } else {
-    const { production } = getProgram
-    const ng = production.ng
-    return isNaN(ng) ? 0 : ng;
+      const { production } = getProgram
+      const value = production.ng
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
     }
   }
 
-  getDefaultTime = (id) =>{
-    // let selected = [...this.state.selected];
-    // const time = selected[selected.findIndex(el => el._id === id)].production.time
-    // return isNaN(time) ? 0 : time;
+  getWTime = (id) =>{
     const getProgram = this.state.selected.find( item => item.program === id);
     if(!getProgram){
       return 0
     } else {
     const { production } = getProgram
-    const time = production.time
-    return isNaN(time) ? 0 : time;
+    const value = production.wtime
+    if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
     }
+  }
 
+  getOEE = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+        return 0
+    } else {
+      const { production } = getProgram
+      const value = production.oee
+      if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0 }
+      else { 
+        return value
+      }
+    }
+  }
+
+  getDTime = (id) =>{
+    const getProgram = this.state.selected.find( item => item.program === id);
+    if(!getProgram){
+      return 0
+    } else {
+    const { production } = getProgram
+    const value = production.dtime
+    if( isNaN(value) ){ return 0 }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }
   }
 
   getDefaultMins = (id) =>{
@@ -215,32 +450,6 @@ class AddReport extends Component {
     return value    
   }
 
-  getOEE = (id) =>{
-    // const selected = [...this.state.selected];
-    // const time = selected[selected.findIndex(el => el.program === id)].production.time
-    // const capacity = selected[selected.findIndex(el => el.program === id)].capacity
-    // const production = selected[selected.findIndex(el => el.program === id)].production.ok
-    const getProgram = this.state.selected.find( item => item.program === id);
-    if(!getProgram){ 
-        return 0
-    } else {
-      const { production, capacity } = getProgram
-      const expected = capacity * production.time
-      const preoee = (production.ok/expected)*100
-      const oee = this.precise_round(preoee, 1)
-      return isNaN(oee) ? 0 : oee;
-    }
-  }
-
-  totalReal = () =>{
-    let selected = [...this.state.selected];
-    const real = selected.reduce( (a, b) =>{
-      return a + b.production.real || 0
-    },0)
-    
-    return real
-  }
-
   totalMins = () =>{
     let downtime = [...this.state.downtime];
     const mins = downtime.reduce( (a, b) =>{
@@ -266,24 +475,6 @@ class AddReport extends Component {
     },0)
 
     return isNaN(pcs) ? 0 : pcs;
-  }
-
-  totalOK = () =>{
-    let selected = [...this.state.selected];
-    const ok = selected.reduce( (a, b) =>{
-      return a + b.production.ok || 0
-    },0)
-
-    return isNaN(ok) ? 0 : ok;
-  }
-
-  totalTIME = () =>{
-    let selected = [...this.state.selected];
-    const time = selected.reduce( (a, b) =>{
-      return a + b.production.time || 0
-    },0)
-
-    return isNaN(time) ? 0 : time;
   }
 
   totalOEE = () =>{
@@ -465,11 +656,12 @@ class AddReport extends Component {
     const selected = this.state.selected.find( program => program.program === id);
     if(!selected){
       const getProgram = this.state.programs.find( program => program._id === id);
-      const { _id, partNumber, moldeNumber, capacity } = {...getProgram}
+      const { _id, partNumber, moldeNumber, cycleTime, capacity } = getProgram
       const item ={
         program: _id, //id del programa
         moldeNumber: moldeNumber,
         partNumber: partNumber,
+        cycleTime: cycleTime,
         capacity: capacity,
         production: {
           program: _id,
@@ -478,9 +670,13 @@ class AddReport extends Component {
           real: 0,
           ng: 0,
           ok: 0,
-          time: 0,
-          oee: 0,
-          capacity: capacity
+          plan: 0,
+          wtime: 0,
+          dtime: 0,
+          availability: 0,
+          performance: 0,
+          quality: 0,
+          oee: 0
         }
       }
 
@@ -490,8 +686,43 @@ class AddReport extends Component {
     } else{
       const items = this.state.selected.filter(program => program.program !== id);
       const defects = this.state.defects.filter(defect => defect.program !== id);
-    this.setState({ selected: items, defects: defects });
-      
+
+      const newSelected = [...items]
+      const newArray = newSelected.map( item => {
+        const { production, capacity } = item
+        const { real, wtime, quality } = production
+        
+        const TWTime = items.reduce( (a, b) =>{
+          return a + parseFloat(b.production.wtime)
+        },0)
+        const predtime = (this.state.time - TWTime )/items.length
+        const dtime = this.precise_round(predtime, 2)
+
+        const time = wtime + dtime
+        const preav = (wtime / time)*100
+        const preplan = time * capacity
+        const plan = this.precise_round(preplan, 0)
+        const preperf = (real/plan)*100
+        const performance = this.precise_round( preperf, 2) 
+        const availability = this.precise_round( preav, 2)
+        const preoee = (availability*performance*quality)/10000
+        const oee = this.precise_round(preoee, 2)
+        return { ...item, production: {...item.production, dtime, plan, availability, performance, quality, oee}}
+      })
+
+      const TOK = this.totalOK(newArray)
+      const TReal = this.totalReal(newArray)
+      const TNG = this.TNG(newArray)
+      const TPlan = this.totalPlan(newArray)
+      const totalWTime = this.precise_round(this.totalWTime(newArray), 2)
+      const TDTime = this.precise_round(this.totalDTime(newArray), 2)
+      const TAvailability = this.precise_round((totalWTime/(totalWTime + TDTime)*100),2)
+      const TPerformance = this.precise_round(((TReal/TPlan)*100),2)
+      const TQuality = this.precise_round(((TOK/TReal)*100),2)
+      const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
+
+
+      this.setState({ selected: newArray, defects: defects, TNG, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     }
   }
 
@@ -690,11 +921,11 @@ class AddReport extends Component {
       return this.state.programs.map(( program ) =>
         <tr key={program._id}>
           <td className='production_row'>
-          <input type='checkbox' className='checkbox-input' checked={this.findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
+            <input type='checkbox' className='checkbox-input' checked={this.findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
             <label>{program.moldeNumber.moldeNumber}</label>
           </td>
           <td className='production_row'>
-          <label>{program.partNumber.partName}</label>
+            <label>{program.partNumber.partName}</label>
           </td>
           <td className='production_row'>
             <input type='number' min="0" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
@@ -703,28 +934,28 @@ class AddReport extends Component {
             <input type='number' min="0" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultNG(program._id)} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
+            <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOK(program._id)} disabled></input>
+            <input type='number' className='production_input' name={program._id} value={this.getPlan(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' className='production_input' name={program._id} value={this.getWTime(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' className='production_input' name={program._id} value={this.getDTime(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="14" disabled={this.disabledProduction(program._id)} value={this.getDefaultTime(program._id)} name={program._id} className='production_input' onChange={this.onTimeProduction}></input>
+            <input type='number' className='production_input' name={program._id} value={this.getAva(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
+            <input type='number' className='production_input' name={program._id} value={this.getPerformance(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
+            <input type='number' className='production_input' name={program._id} value={this.getQuality(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-          <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
+            <input type='number' className='production_input' name={program._id} value={this.getOEE(program._id)} disabled></input>
           </td>
         </tr>  
       );
@@ -848,7 +1079,7 @@ class AddReport extends Component {
         <th className='production_table ok'>OK (pcs)</th>
         <th className='production_table plan'>Plan (pcs)</th>
         <th className='production_table time_table'>WTime (hrs)</th>
-        <th className='production_table downtime_table'>Dtime (hrs)</th>
+        <th className='production_table downtime_table'>DTime (hrs)</th>
         <th className='production_table availability'>Avail%</th>
         <th className='production_table performance'>Perf%</th>
         <th className='production_table quality'>Qlty%</th>
@@ -861,16 +1092,16 @@ class AddReport extends Component {
       <tfoot>
       <tr>
         <th colSpan='2' className='production_table total_yellow'>Total</th>
-      <th className='production_table pcs'><input type='number' className='production_input' name='real' value={this.totalReal()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalNG()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOK()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalTIME()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
-        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.totalOEE()} disabled></input></th>
+      <th className='production_table pcs'><input type='number' className='production_input' name='real' value={this.state.TReal} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TNG} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TOK} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TPlan} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TWTime} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TDTime} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TAvailability} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TPerformance} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TQuality} disabled></input></th>
+        <th className='production_table ng'><input type='number' className='production_input' name='real' value={this.state.TOEE} disabled></input></th>
       </tr>
       </tfoot>
       </table>    
