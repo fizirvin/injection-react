@@ -115,13 +115,13 @@ class AddReport extends Component {
     else if( value === 0 ){ value = 0 }
     else { value = value }
 
-    const defects = this.state.defects;
-    const items = defects.filter( defect => defect.program !== programId && defect.defect !== id);
-    const getDefect = defects.find(defect => defect.program === programId && defect.defect === id);
-
+    const defects = [...this.state.defects];
+    const getDefect = defects.find( defect => defect.program === programId && defect.defect === id);
+    const items = defects.filter(item => item !== getDefect);
+      
     const item = {...getDefect, defectPcs: value}
-
     const newItems = [...items, item]
+    console.log(newItems)
     return this.setState({defects: newItems});
   }
 
@@ -446,29 +446,31 @@ class AddReport extends Component {
   }
 
   getDefaultDefect = (programId, id) =>{
-   
-    let value
     const getDefect = this.state.defects.find(defect => defect.program === programId && defect.defect === id);
-    if(!getDefect){ value = 0}
+    if(!getDefect){ return 0}
     else{
       const { defectPcs } = getDefect
-     
-      value = defectPcs
-    }
-    return value    
+      const value = defectPcs
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }  
   }
 
   getDefaultPurge = (id) =>{
-   
-    let value
     const getResine = this.state.resines.find(resine => resine.resine === id);
-    if(!getResine){ value = 0}
+    if(!getResine){ return 0}
     else{
       const { purge } = getResine
-     
-      value = purge
-    }
-    return value    
+      const value = purge
+      if( isNaN(value) ){ return '' }
+      else if( value === 0 ){ return 0}
+      else { 
+        return value
+      }
+    }   
   }
 
   totalMins = () =>{
@@ -545,8 +547,9 @@ class AddReport extends Component {
   onMachineChange = e =>{
 
     const selected = [];
+    const defects = [];
     const programs = this.filterPrograms(e.target.value)
-    this.setState({ [e.target.name]: e.target.value, programs, selected });
+    this.setState({ [e.target.name]: e.target.value, programs, selected, defects });
     
   }
 
@@ -610,7 +613,6 @@ class AddReport extends Component {
   }
 
   onSelectDefect = e =>{
-    let defects = [...this.state.defects];
     const id = e.target.value
     const programId = e.target.name 
     
@@ -626,12 +628,14 @@ class AddReport extends Component {
           defectPcs: 0
       }
 
-      defects.push(item);
-      this.setState({defects: defects});
+      const items = [...this.state.defects];
+      const newItems = [...items, item]
+      return this.setState({defects: newItems});
       
     } else{
 
-      const defect = defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)]
+      const defect = this.state.defects.find( defect => defect.program === programId && defect.defect === id);
+      // defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)]
       const items = this.state.defects.filter(item => item !== defect);
       
     this.setState({ defects: items });
@@ -696,7 +700,7 @@ class AddReport extends Component {
       }
 
       programs.push(item);
-      this.setState({selected: programs});
+      return this.setState({selected: programs});
       
     } else{
       const items = this.state.selected.filter(program => program.program !== id);
@@ -736,18 +740,21 @@ class AddReport extends Component {
       const TQuality = this.precise_round(((TOK/TReal)*100),2)
       const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
 
+      let resines = this.state.resines
+      if(newArray.length === 0 ){ resines = []}
+      else{ resines = resines}
 
-      this.setState({ selected: newArray, defects: defects, TNG, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
+      return this.setState({ selected: newArray, defects: defects, TNG, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
     }
   }
 
 
   onSubmit = async (e) =>{
     e.preventDefault();    
-    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = this.state;
-    
+    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, downtime  } = this.state;
+    const production = selected.map( item => item.production )
     const report = {
-      date: date+'T00:00:00.000-06:00',
+      reportDate: date+'T03:00:00.000-06:00',
       shift,
       machine,
       TReal,
@@ -761,7 +768,7 @@ class AddReport extends Component {
       TQuality,
       TOEE,
       production,
-      downtimeDetail: downtime,
+      downtime,
       defects,
       resines
     }
@@ -964,8 +971,7 @@ class AddReport extends Component {
   }
 
   showstate = () =>{
-    const defects = this.totalDefectPcs()
-    return console.log(this.state, defects)
+    return console.log(this.state)
   }
 
   renderTitle = () =>{
@@ -977,7 +983,7 @@ class AddReport extends Component {
             <button type='button' onClick={this.showIssues}>Downtime</button>
             <button type='button' onClick={this.showDefects}>Defects</button>
             <button type='button' onClick={this.showPurge}>Purge</button>
-            {/* <button type='button' onClick={this.showstate}>state</button> */}
+            <button type='button' onClick={this.showstate}>state</button>
            </div>
     )
   }
@@ -1093,6 +1099,42 @@ class AddReport extends Component {
     }
   }
 
+
+  renderTable = () => {
+    if(!this.props.machines){ return null}else{
+      return (<table className='header_table_report'>
+      <tbody>
+      <tr>
+        <th className="report_header"><label>Date: </label> 
+            <input type="date" name='date' className='date_input' onChange={this.onInputChange} required/>
+        </th>
+        <th className="report_header">
+            <label>Shift: </label> 
+            <select onChange={this.onInputChange} name="shift" defaultValue="" required>
+              <option disabled value="">select</option>
+              <option value='1'>1</option>
+              <option value='2'>2</option>
+            </select>
+        </th>
+        <th className="report_header"><label>Machine: </label>
+            <select onChange={this.onMachineChange} name="machine" defaultValue="" required>
+              <option disabled value="">select</option>
+              {this.renderMachines()}
+            </select>
+        </th>
+        <th className="report_header">
+            <label>Plan Time (hrs): </label>
+            <input type="number" 
+            className='time_input' 
+            name='time'
+            value={this.state.time}  min="0" max="14" onChange={this.onInputTimeChange} required/>
+        </th>
+      </tr>
+      </tbody>
+      </table>)
+    }
+  }
+
   render() {
 
   
@@ -1102,36 +1144,7 @@ class AddReport extends Component {
         <div className="modal-report-content report_modal">
           <h2 className='report-title'>Injection Production Report:</h2>
           <form onSubmit={this.onSubmit} className='report-form'>
-            <table className='header_table_report'>
-          <tbody>
-          <tr>
-            <th className="report_header"><label>Date: </label> 
-                <input type="date" name='date' className='date_input' onChange={this.onInputChange} required/>
-            </th>
-            <th className="report_header">
-                <label>Shift: </label> 
-                <select onChange={this.onInputChange} name="shift" defaultValue="" required>
-                  <option disabled value="">select</option>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                </select>
-            </th>
-            <th className="report_header"><label>Machine: </label>
-                <select onChange={this.onMachineChange} name="machine" defaultValue="" required>
-                  <option disabled value="">select</option>
-                  {this.renderMachines()}
-                </select>
-            </th>
-            <th className="report_header">
-                <label>Plan Time (hrs): </label>
-                <input type="number" 
-                className='time_input' 
-                name='time'
-                value={this.state.time}  min="0" max="14" onChange={this.onInputTimeChange} required/>
-            </th>
-          </tr>
-          </tbody>
-          </table>         
+           {this.renderTable()}          
           {this.renderChoose()}
            {this.renderTitle()}
           <div className='section_two'>

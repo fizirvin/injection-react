@@ -975,23 +975,9 @@ class App extends React.Component {
 
   addReport = async (report)=>{
 
-      const reportDate = report.date
-      const shift = report.shift
-      const machine = report.machine
-      const totalReal = report.totalReal
-      const totalOK = report.totalOK
-      const totalNG = report.totalNG
-      const totalCapacity = report.totalCapacity
-      const totalTime = report.totalTime
-      const downtime = report.totalMins
-      const efficiency = report.totalOEE
-      const production = report.production
-      const downtimeDetail = report.downtimeDetail
-      const defects = report.defects
-      const resines = report.resines
-
-      
-
+    const { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = report;
+    const downtimeDetail = downtime
+    
     const query = `mutation NewInjectionReport($input: NewInjectionReport ){
       newInjectionReport(input: $input){
         _id
@@ -1000,28 +986,37 @@ class App extends React.Component {
         machine{
           _id
           machineNumber
-          machineSerial}
-        totalReal
-        totalOK
-        totalNG
-        totalCapacity
-        totalTime
-        downtime
-        efficiency
+          machineSerial
+        }
+        TReal
+        TOK
+        TNG
+        TPlan
+        TWTime
+        TDTime
+        TAvailability
+        TPerformance
+        TQuality
+        TOEE
         production{
           _id
           real
           ng
           ok
-          time
+          plan
+          wtime
+          dtime
+          availability
+          performance
+          quality
           oee
-          capacity
           program {
             _id
           }
           partNumber {
             _id
             partNumber
+            partName
           }
           molde{
             _id
@@ -1058,6 +1053,7 @@ class App extends React.Component {
           partNumber{
             _id
             partNumber
+            partName
           }
           program{
             _id
@@ -1074,13 +1070,16 @@ class App extends React.Component {
             reportDate,
             shift,
             machine,
-            totalReal,
-            totalOK, 
-            totalNG,
-            totalCapacity ,
-            totalTime, 
-            downtime ,
-            efficiency,
+            TReal,
+            TNG, 
+            TOK,
+            TPlan,
+            TWTime, 
+            TDTime,
+            TAvailability,
+            TPerformance,
+            TQuality,
+            TOEE,
             production,
             downtimeDetail,
             defects,
@@ -1096,21 +1095,34 @@ class App extends React.Component {
     console.log(data)
     return this.setState({reportMessage: 'error'})
     } else{
-      let reports = [...this.state.reports];
-      let reportsDate = [...this.state.reportsDate]
-      let reportsByDate = [...this.state.reportsByDate]
+      const reports = [ data.data.newInjectionReport, ...this.state.reports]
+    
       const testArr = [data.data.newInjectionReport]
-      
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
       if(test){
-
         const convert = testArr.map( item => { 
         const date = this.formatDate(item.reportDate);
         const id = item._id
         const machine = item.machine._id
         const production = item.production.map( prod =>{
-          return { report: id, date: date, machine: machine, part: prod.partNumber._id, molde: prod.molde._id, ok: prod.ok, ng: prod.ng}
-          })
+          return { 
+            report: id, 
+            date: date, 
+            machine: machine, 
+            part: prod.partNumber._id, 
+            molde: prod.molde._id,
+            real: prod.real, 
+            ng: prod.ng, 
+            ok: prod.ok,
+            plan: prod.plan,   
+            wtime: prod.wtime,
+            dtime: prod.dtime, 
+            availability: prod.availability,
+            performance: prod.performance, 
+            quality: prod.quality,  
+            oee: prod.oee
+          }
+        })
           return production
         })
 
@@ -1120,109 +1132,107 @@ class App extends React.Component {
           const machine = item.machine._id
           const downtime = item.downtimeDetail.map( downtime =>{
             return { report: id, date: date, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
-            })
-            return downtime
           })
+          return downtime
+        })
           
-        reportsDate.push(...convert[0])
-        reportsByDate.push(...convertDowntime[0])
-      } 
-      else{}
-      reports.unshift(data.data.newInjectionReport);
-      this.setState({reports: reports, reportsDate: reportsDate, reportsByDate, reportMessage: 'sucess'});
-    }
+        const productionByDate= [...this.state.productionByDate, ...convert[0]]
+        const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
 
+        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, reportMessage: 'sucess'});
+      } 
+      else{
+        return this.setState({reports: reports, reportMessage: 'sucess'});
+      }  
+    }
   }
 
   updateReport = async (report)=>{
-    const _id = report._id
-    const reportDate = report.date
-    const shift = report.shift
-    const machine = report.machine
-    const totalReal = report.totalReal
-    const totalOK = report.totalOK
-    const totalNG = report.totalNG
-    const totalCapacity = report.totalCapacity
-    const totalTime = report.totalTime
-    const downtime = report.totalMins
-    const efficiency = report.totalOEE
-    const production = report.production
-    const downtimeDetail = report.downtimeDetail
-    const defects = report.defects
-    const resines = report.resines
+    const { _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = report;
+    const downtimeDetail = downtime
 
-
+   
   const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
     updateInjectionReport(_id: $_id, input: $input){
       _id
-      reportDate
-      shift
-      machine{
-        _id
-        machineNumber
-        machineSerial}
-      totalReal
-      totalOK
-      totalNG
-      totalCapacity
-      totalTime
-      downtime
-      efficiency
-      production{
-        _id
-        real
-        ng
-        ok
-        time
-        oee
-        capacity
-        program {
+        reportDate
+        shift
+        machine{
           _id
+          machineNumber
+          machineSerial
         }
-        partNumber {
+        TReal
+        TOK
+        TNG
+        TPlan
+        TWTime
+        TDTime
+        TAvailability
+        TPerformance
+        TQuality
+        TOEE
+        production{
           _id
-          partNumber
+          real
+          ng
+          ok
+          plan
+          wtime
+          dtime
+          availability
+          performance
+          quality
+          oee
+          program {
+            _id
+          }
+          partNumber {
+            _id
+            partNumber
+            partName
+          }
+          molde{
+            _id
+            moldeNumber
+            moldeSerial
+          }
         }
-        molde{
+        resines {
           _id
-          moldeNumber
-          moldeSerial
+          resine{
+            _id
+          }
+          purge
         }
-      }
-      resines {
-        _id
-        resine{
+        downtimeDetail {
           _id
+          issueId{
+            _id
+            issueName
+          }
+          mins
         }
-        purge
-      }
-      downtimeDetail {
-        _id
-        issueId{
+        defects{
           _id
-          issueName
+          defect{
+            _id
+            defectName
+          }
+          defectPcs
+          molde{
+            _id
+            moldeNumber
+          }
+          partNumber{
+            _id
+            partNumber
+            partName
+          }
+          program{
+            _id
+          }
         }
-        mins
-      }
-      defects{
-        _id
-        defect{
-          _id
-          defectName
-        }
-        defectPcs
-        molde{
-          _id
-          moldeNumber
-        }
-        partNumber{
-          _id
-          partNumber
-        }
-        program{
-          _id
-        }
-      }
   }}`;
 
   const url = this.state.server;
@@ -1235,17 +1245,20 @@ class App extends React.Component {
           reportDate,
           shift,
           machine,
-          totalReal,
-          totalOK, 
-          totalNG,
-          totalCapacity ,
-          totalTime, 
-          downtime ,
-          efficiency,
+          TReal,
+          TNG, 
+          TOK,
+          TPlan,
+          TWTime, 
+          TDTime,
+          TAvailability,
+          TPerformance,
+          TQuality,
+          TOEE,
           production,
           downtimeDetail,
           defects,
-          resines 
+          resines
         }
       } })
   };
@@ -1257,25 +1270,42 @@ class App extends React.Component {
   
   return this.setState({reportMessage: 'error'})
   } else{
+    
     let report = data.data.updateInjectionReport;
     let reports = [...this.state.reports];
 
-    let reportsDate = [...this.state.reportsDate].filter( reportDate => reportDate.report !== report._id)
-    let reportsByDate = [...this.state.reportsByDate].filter( reportDate => reportDate.report !== report._id)
+    let productionByDate = [...this.state.productionByDate].filter( reportDate => reportDate.report !== report._id)
+    let downtimeByDate = [...this.state.downtimeByDate].filter( reportDate => reportDate.report !== report._id)
       const testArr = [data.data.updateInjectionReport]
       
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
       if(test){
 
         const convert = testArr.map( item => { 
-        const date = this.formatDate(item.reportDate);
-        const id = item._id
-        const machine = item.machine._id
-        const production = item.production.map( prod =>{
-          return { report: id, date: date, machine: machine, part: prod.partNumber._id, molde: prod.molde._id, ok: prod.ok, ng: prod.ng}
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const production = item.production.map( prod =>{
+            return { 
+              report: id, 
+              date: date, 
+              machine: machine, 
+              part: prod.partNumber._id, 
+              molde: prod.molde._id,
+              real: prod.real, 
+              ng: prod.ng, 
+              ok: prod.ok,
+              plan: prod.plan,   
+              wtime: prod.wtime,
+              dtime: prod.dtime, 
+              availability: prod.availability,
+              performance: prod.performance, 
+              quality: prod.quality,  
+              oee: prod.oee
+            }
           })
-          return production
-        })
+            return production
+          })
 
         const convertDowntime = testArr.map( item => { 
           const date = this.formatDate(item.reportDate);
@@ -1287,15 +1317,15 @@ class App extends React.Component {
             return downtime
           })
           
-        reportsDate.push(...convert[0])
-        reportsByDate.push(...convertDowntime[0])
+        productionByDate.push(...convert[0])
+        downtimeByDate.push(...convertDowntime[0])
       } 
       else{}
 
 
 
     reports[reports.findIndex(el => el._id === report._id)] = report;
-    this.setState({reports: reports, reportsDate: reportsDate, reportsByDate, reportMessage: 'sucess'});
+    this.setState({reports, productionByDate, downtimeByDate, reportMessage: 'sucess'});
 
   }
 
