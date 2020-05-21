@@ -125,8 +125,8 @@ class Reports extends React.Component {
         <td  className='row_detail_production'>{production.real}</td>
         <td  className='row_detail_production'>{production.ng}</td>
         <td  className='row_detail_production'>{production.ok}</td>
-        <td  className='row_detail_production'>{production.time.$numberDecimal}</td>
-        <td  className='row_detail_production'>{production.oee.$numberDecimal}</td>
+        <td  className='row_detail_production'>{production.wtime.$numberDecimal}</td>
+        <td  className='row_detail_production'>{production.woee.$numberDecimal}</td>
       </tr>)
   }
 
@@ -145,6 +145,11 @@ class Reports extends React.Component {
     return purge
   }
 
+  returnValue = (val) =>{
+    const value = parseFloat(val)
+    return value
+  }
+
   renderList() {
     const reports = this.props.reports
     if(reports.length === 0){
@@ -160,16 +165,16 @@ class Reports extends React.Component {
           <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(reportDate) }</td>
           <td className={this.formatRow(report._id, 'body_shift_table')}>{ shift }</td>
           <td className={this.formatRow(report._id, 'body_machine_table')}>{ machine.machineNumber }</td>
-          <td className={this.formatRow(report._id, 'body_real_table')}>{ TReal | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_ng_table')}>{ TNG | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_ok_table')}>{ TOK | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_plan_table')}>{ TPlan | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_worktime_table')}>{ parseFloat(TWTime.$numberDecimal) | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ parseFloat(TDTime.$numberDecimal) | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_availability_table')}>{ parseFloat(TAvailability.$numberDecimal) | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_performance_table')}>{ parseFloat(TPerformance.$numberDecimal) | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_quality_table')}>{ parseFloat(TQuality.$numberDecimal) | 0 }</td>
-          <td className={this.formatRow(report._id, 'body_toee_table')}>{ parseFloat(TOEE.$numberDecimal) | 0 }</td>
+          <td className={this.formatRow(report._id, 'body_real_table')}>{ TReal }</td>
+          <td className={this.formatRow(report._id, 'body_ng_table')}>{ TNG }</td>
+          <td className={this.formatRow(report._id, 'body_ok_table')}>{ TOK }</td>
+          <td className={this.formatRow(report._id, 'body_plan_table')}>{ TPlan }</td>
+          <td className={this.formatRow(report._id, 'body_worktime_table')}>{TWTime.$numberDecimal}</td>
+          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ TDTime.$numberDecimal }</td>
+          <td className={this.formatRow(report._id, 'body_availability_table')}>{TAvailability.$numberDecimal }</td>
+          <td className={this.formatRow(report._id, 'body_performance_table')}>{ TPerformance.$numberDecimal}</td>
+          <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal }</td>
+          <td className={this.formatRow(report._id, 'body_toee_table')}>{ TOEE.$numberDecimal }</td>
           <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(resines) }</td>
           <td className={this.formatRow(report._id, 'body_update_table')}><Link className='link-reports' to={`/reports/update/${_id}`}><button className='button_report_list'>Update</button></Link></td>
         </tr>})

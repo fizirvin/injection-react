@@ -93,7 +93,7 @@ class UpdateReport extends Component {
         date: date,
         shift: shift,
         machine: machine._id,
-        time: 10,
+        time: parseInt(parseFloat(TWTime.$numberDecimal) + parseFloat(TDTime.$numberDecimal)),
         TReal, 
         TNG, 
         TOK, 
@@ -652,8 +652,19 @@ class UpdateReport extends Component {
     
     const prevalue = parseInt(e.target.value)
     const value = isNaN(prevalue)? 0 : prevalue
-    
-    this.setState({ [e.target.name]: value });
+    const selected = [];
+    const defects = [];
+    const TReal= 0
+    const TNG = 0
+    const TOK = 0
+    const TPlan = 0
+    const TWTime = 0
+    const TDTime = value
+    const TAvailability = 0
+    const TPerformance = 0
+    const TQuality = 0
+    const TOEE = 0
+    this.setState({ [e.target.name]: value, selected, defects, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   };
 
@@ -661,8 +672,18 @@ class UpdateReport extends Component {
 
     const selected = [];
     const defects = [];
+    const TReal= 0
+    const TNG = 0
+    const TOK = 0
+    const TPlan = 0
+    const TWTime = 0
+    const TDTime = this.state.time
+    const TAvailability = 0
+    const TPerformance = 0
+    const TQuality = 0
+    const TOEE = 0
     const programs = this.filterPrograms(e.target.value)
-    this.setState({ [e.target.name]: e.target.value, programs, selected, defects });
+    this.setState({ [e.target.name]: e.target.value, programs, selected, defects, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   }
 
@@ -847,14 +868,14 @@ class UpdateReport extends Component {
       const TNG = this.TNG(newArray)
       const TPlan = this.totalPlan(newArray)
       const totalWTime = this.precise_round(this.totalWTime(newArray), 2)
-      const TDTime = this.precise_round(this.totalDTime(newArray), 2)
+      let TDTime = this.precise_round(this.totalDTime(newArray), 2)
       const TAvailability = this.precise_round((totalWTime/(totalWTime + TDTime)*100),2)
       const TPerformance = this.precise_round(((TReal/TPlan)*100),2)
       const TQuality = this.precise_round(((TOK/TReal)*100),2)
       const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
 
       let resines = this.state.resines
-      if(newArray.length === 0 ){ resines = []}
+      if(newArray.length === 0 ){ resines = []; TDTime = this.state.time}
       else{ resines = resines}
 
       return this.setState({ selected: newArray, defects: defects, TNG, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
@@ -1097,7 +1118,7 @@ class UpdateReport extends Component {
             <button type='button' onClick={this.showIssues}>Downtime</button>
             <button type='button' onClick={this.showDefects}>Defects</button>
             <button type='button' onClick={this.showPurge}>Purge</button>
-            <button type='button' onClick={this.showstate}>state</button>
+            {/* <button type='button' onClick={this.showstate}>state</button> */}
            </div>
     )
   }
