@@ -1161,7 +1161,7 @@ validateSubmit = () =>{
   else if(TWTime !== 0 && TReal <= 0){ return false }
   else if(TOK < 0 ){ return false }
   else if(!validateNG){ return false }
-  else if(!validateNegative){ return false }
+  else if(!validateNegative){ return false, console.log('6') }
   else{ return true }
 }
 
