@@ -171,9 +171,9 @@ class Reports extends React.Component {
           <td className={this.formatRow(report._id, 'body_plan_table')}>{ TPlan }</td>
           <td className={this.formatRow(report._id, 'body_worktime_table')}>{TWTime.$numberDecimal}</td>
           <td className={this.formatRow(report._id, 'body_downtime_table')}>{ TDTime.$numberDecimal }</td>
-          <td className={this.formatRow(report._id, 'body_availability_table')}>{TAvailability.$numberDecimal }</td>
+          {/* <td className={this.formatRow(report._id, 'body_availability_table')}>{TAvailability.$numberDecimal }</td>
           <td className={this.formatRow(report._id, 'body_performance_table')}>{ TPerformance.$numberDecimal}</td>
-          <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal }</td>
+          <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal }</td> */}
           <td className={this.formatRow(report._id, 'body_toee_table')}>{ TOEE.$numberDecimal }</td>
           <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(resines) }</td>
           <td className={this.formatRow(report._id, 'body_update_table')}><Link className='link-reports' to={`/reports/update/${_id}`}><button className='button_report_list'>Update</button></Link></td>
@@ -203,9 +203,9 @@ class Reports extends React.Component {
             <th className="report_list_header plan_data">Plan (pcs)</th>
             <th className="report_list_header worktime_data">Work Time (hrs)</th>
             <th className="report_list_header downtime_data">Downtime (hrs)</th>
-            <th className="report_list_header availability_data">Availability (%)</th>
+            {/* <th className="report_list_header availability_data">Availability (%)</th>
             <th className="report_list_header performance_data">Performance (%)</th>
-            <th className="report_list_header quality_data">Quality (%)</th>
+            <th className="report_list_header quality_data">Quality (%)</th> */}
             <th className="report_list_header toee_data">OEE (%)</th>
             <th className="report_list_header purge_data">Purge (g)</th>
             <th className="report_list_header add_data">

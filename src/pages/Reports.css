@@ -10,7 +10,7 @@
 }
 
 .container_first_table{
-    width: 85%;
+    width: 65%;
     
 }
 .report_list_table{
@@ -72,76 +72,76 @@
   }
   
   .machine_data{
-    width: 6%;
+    width: 8%;
     font-size: 90%;
   }
 
   .body_machine_table{
-    width: 6%;
+    width: 8%;
     font-size: 90%;
   }
   
   .treal_data{
-    width: 5%;
+    width: 7%;
     font-size: 90%;
   }
 
   .body_real_table{
-    width: 5%;
+    width: 7%;
     font-size: 90%;
   }
   
   .ng_data{
-    width: 5%;
+    width: 7%;
     font-size: 90%;
   }
 
   .body_ng_table{
-    width: 5%;
+    width: 7%;
     font-size: 90%; 
   }
   
   .ok_data{
-    width: 5%;
+    width: 7%;
     font-size: 90%;
   }
 
   .body_ok_table{
-    width: 5%;
+    width: 7%;
     font-size: 90%;  
   }
   
   .plan_data{
-    width: 5%;
+    width: 7%;
     font-size: 90%;
   }
 
   .body_plan_table{
-    width: 5%;
+    width: 7%;
     font-size: 90%; 
   }
 
   .worktime_data{
-    width: 8%;
+    width: 10%;
     font-size: 85%;
   }
 
   .body_worktime_table{
-    width: 8%;
+    width: 10%;
     font-size: 90%;
   }
   
   .downtime_data{
-    width: 8%;
+    width: 10%;
     font-size: 85%;
   }
 
   .body_downtime_table{
-    width: 8%;
+    width: 10%;
     font-size: 90%;
   }
 
-  .availability_data{
+  /* .availability_data{
     width: 9%;
     font-size: 85%;
   }
@@ -170,36 +170,36 @@
   .body_quality_table{
     width: 7%;
     font-size: 90%;
-  }
+  } */
 
   .toee_data{
-    width: 6%;
+    width: 8%;
     font-size: 90%;
   }
 
   .body_toee_table{
-    width: 6%;
+    width: 8%;
     font-size: 90%;
   }
 
   .body_purge{
-    width: 6%;
+    width: 8%;
     font-size: 90%; 
   }
 
   .purge_data{
-    width: 6%;
+    width: 8%;
     font-size: 90%; 
   }
   
   .add_data{
-    width: 6%;
+    width: 8%;
     font-size: 90%;
   }
 
   .body_update_table{
     background-color: green;
-    width: 6%;
+    width: 8%;
     font-size: 90%;
     padding-left: 0;
     margin-left: 0;
