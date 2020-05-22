@@ -102,7 +102,7 @@ class AddReport extends Component {
     const TPerformance = this.precise_round(((TReal/TPlan)*100),2)
     const TQuality = this.precise_round(((TOK/TReal)*100),2)
     const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
-    console.log(newArray, TWTime)
+    
     return this.setState({selected: newArray, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE});
   }
 
@@ -121,7 +121,7 @@ class AddReport extends Component {
       
     const item = {...getDefect, defectPcs: value}
     const newItems = [...items, item]
-    console.log(newItems)
+    
     return this.setState({defects: newItems});
   }
 
@@ -941,7 +941,7 @@ class AddReport extends Component {
             <label>{program.partNumber.partName}</label>
           </td>
           <td className='production_row'>
-            <input type='number' min="0" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
+            <input type='number' min="1" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultReal(program._id)} name={program._id} className='production_input' onChange={this.onRealProduction} ></input>
           </td>
           <td className='production_row'>
             <input type='number' min="0" max="12000" disabled={this.disabledProduction(program._id)} value={this.getDefaultNG(program._id)} name={program._id} className='production_input' onChange={this.onNGProduction}></input>
@@ -1010,33 +1010,52 @@ class AddReport extends Component {
   }
 }
 
-  renderButton= ()=>{
-    const time = this.getDowntimeToReport();
-    if(time !== 0){ return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input> }
-    else{
-      const selected = this.state.selected.length
-      if( selected === 0){
-        return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
-      } else{
-        const defects = this.totalDefectPcs()
-        const totalNG = this.state.TNG
-        if(defects !== totalNG){
-          return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
-        }
-        else{
-          const totalTime = this.state.TWTime
-          const totalReal = this.state.TReal
-          if(totalReal <= 0 || totalTime <= 0){
-            return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>
-          }
-          else {
-            return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
-          }
-        }
-      }
-    }
-  }
+validateNegative = () =>{
+  const production = this.state.selected.find( item => item.production.real <= 0 | item.production.ng < 0 | item.production.ng === '' | item.production.ok < 0 | item.production.wtime <= 0 | item.production.real % item.moldeNumber.cavities !== 0)
+  const defects = this.state.defects.find( item => item.defectPcs <= 0 )
+  const downtime = this.state.downtime.find( item => item.mins <= 0 )
+  const purge = this.state.resines.find( item => item.purge <= 0 )
+  return !production && !defects && !downtime && !purge ? true : false
+}
 
+validateNG = () =>{
+  const production = this.state.selected.map(item => {
+    return { program: item.production.program, ng: item.production.ng }
+  }).sort((a, b) => (a.program > b.program ) ? 1 : -1 )
+  const defects = production.map( item => {
+    const reduceDefects = this.state.defects.filter( defect => defect.program === item.program)
+    .reduce( (a, b) =>{
+      return a + b.defectPcs
+    },0)
+    return { program: item.program, ng: reduceDefects }
+  }).sort((a, b) => (a.program > b.program ) ? 1 : -1 )
+  return JSON.stringify(production) === JSON.stringify(defects) ? true : false
+}
+
+validateSubmit = () =>{
+  const timeToReport = this.getDowntimeToReport();
+  const TWTime = this.state.TWTime
+
+  const validateNG = this.validateNG()
+  const validateNegative = this.validateNegative()
+  const TReal = this.state.TReal
+  const TOK = this.state.TOK
+  const TNG = this.state.TNG
+  const defects = this.totalDefectPcs()
+  if( timeToReport !== 0){ return false }
+  else if(defects !== TNG){ return false }
+  else if(TWTime !== 0 && TReal <= 0){ return false }
+  else if(TOK < 0 ){ return false }
+  else if(!validateNG){ return false }
+  else if(!validateNegative){ return false }
+  else{ return true }
+}
+
+  renderButton= ()=>{
+    const validateSubmit = this.validateSubmit()
+    if(!validateSubmit){ return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input> }
+    else{ return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input> }
+  }
 
   getDowntimeToReport = () =>{
     const { time, TWTime } = this.state;

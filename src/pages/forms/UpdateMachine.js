@@ -38,7 +38,7 @@ class UpdateMachine extends Component {
       if( isNaN(value) ){ return this.setState({ [e.target.name]: '' }) }
       else if( value === 0 ){ return this.setState({ [e.target.name]: '' }) }
       else { 
-        console.log('meti')
+        
         return this.setState({ [e.target.name]: e.target.value });
       }
     };

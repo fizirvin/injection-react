@@ -265,6 +265,7 @@ class App extends React.Component {
             _id
             moldeNumber
             moldeSerial
+            cavities
           }
         }
         downtimeDetail {
@@ -533,7 +534,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data)
+    
     this.setState({moldeMessage: 'error'})
     } else{
       let molde = data.data.updateMolde;
@@ -962,7 +963,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data)
+    
     this.setState({programMessage: 'error'})
     } else{
       let program = data.data.updateProgram;
@@ -1092,7 +1093,7 @@ class App extends React.Component {
     const data = await res.json();
     
     if(data.errors){
-    console.log(data)
+    
     return this.setState({reportMessage: 'error'})
     } else{
       const reports = [ data.data.newInjectionReport, ...this.state.reports]
