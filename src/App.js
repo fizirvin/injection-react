@@ -29,7 +29,7 @@ import UpdateReport from './pages/forms/UpdateReport.js'
 import Toolbar from './pages/Toolbar.js'
 import Production from './pages/Production.js'
 import Downtime from './pages/Downtime.js'
-import Efficiency from './pages/Efficiency.js'
+
 
 
 import './App.css';
@@ -43,7 +43,7 @@ import './pages/Issues.css'
 import './pages/Reports.css'
 import './pages/Production.css'
 import './pages/Downtime.css'
-import './pages/Efficiency.css'
+
 
 class App extends React.Component {
   state = { 
@@ -1424,25 +1424,26 @@ class App extends React.Component {
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
-              <Route path="/efficiency" exact component={ props => ( <Production {...props} 
+              {/* <Route path="/efficiency" exact component={ props => ( <Production {...props} 
               models={this.state.models} 
               machines={this.state.machines}
               moldes={this.state.moldes}  
               reportsDate={this.state.reportsDate} 
               initial49={this.state.initial49}
               end={this.state.end}
-              /> )} />
+              /> )} /> */}
               <Route path="/downtime" exact component={ props => ( <Downtime {...props}
               issues={this.state.issues}
               machines={this.state.machines}
               reports={this.state.downtimeByDate}
               /> )} />
 
-              <Route path="/production" exact component={ props => ( <Efficiency {...props}
+              <Route path="/production" exact component={ props => ( <Production {...props}
               issues={this.state.issues}
               machines={this.state.machines}
               models={this.state.models}
-              moldes={this.state.moldes}  
+              moldes={this.state.moldes}
+              reports={this.state.reports}  
               downtime={this.state.downtimeByDate}
               production={this.state.productionByDate}
               purge={this.state.resinesByDate}

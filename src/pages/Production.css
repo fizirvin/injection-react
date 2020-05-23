@@ -1,128 +1,198 @@
-.production_container{ 
+.downtime_header{
+    margin-left: 2%;
     display: flex;
-    
-  }
+}
 
-  .production_tables{
-    width: 70%;
-    height: 95%;
-  }
-
-.production_table_list{
-  table-layout: fixed;
-    margin-bottom: 3px;
-    width: 96%;
-    margin-left: 5px;
-    border: solid 2px;
-    border-radius: 3px;
-    font-size: 80%;
-  }
-
-  .body_production_table{
-    width: 98%;
-    margin-left: 5px;
-    overflow-y: scroll;
-    margin-bottom: 0;
-    border: solid 2px;
-   height: 60vh;
-  }
-
-  .body_table_body{
-    width: 100%;
-    
-  }
-
-  .report_chart{
-    width: 400px;
-    margin-left: 5px;
-    margin-right: 5px;
-    border: solid;
-    background-color: tomato;
-  }
-
-  .graphics{
-    display: block;
-  }
-
-  .production_header{
-    margin-left: 3%;
-    
-  }
-
-  .production_nav{
-    display: flex;
-    margin-top: 1%;
-  }
-
-  .production_controls{
+.downtime_controlls{
     margin-left: 5%;
-  }
+}
 
-  .right_data{
+.downtime_container{
+    display: block;
+    width: 65%;
+    height: 100vh;
+    min-height: 91vh;
+    max-height: 91vh;
+    
+}
+
+.svg_downtime{
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.efficiency_tablehader{
+    border: solid 2px;
+    margin-left: 2%;
+    width: 96%;
+    border-spacing: 1px;
+}
+
+.efficiency_tableTotal{
+    margin-top: 2px;
+    border: solid 2px;
+    margin-left: 2%;
+    width: 96%;
+    border-spacing: 1px;
+}
+
+.downtime_table_body{
+    margin-top: 2px;
+    margin-left: 2%;
+    overflow-y: scroll;
+    min-height: 49%;
+    max-height: 49%;
+}
+
+.efficiency_body_table{
+    border-collapse: separate ;
+    border-spacing: 1px;
+    width: 100%;
+   border: solid 2px; 
+   margin-bottom: 2px;
+}
+
+.efficiency_header_machine{
+    background-color: rgba(5, 131, 53, 0.404);
+    font-size: 90%;
+    font-size: 70%;
+    width: 20%;
+    border: solid 1px;
+    
+}
+
+.efficiency_header_week{
+    background-color: rgba(5, 131, 53, 0.404);
+    font-size: 75%;
+    width: 10%;
+    border: solid 1px;
+}
+
+.downtime_header_graphic{
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 5%;
+    border: solid 1px;
+    font-size: 60%;
+}
+
+.efficiency_header_day{
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 10%;
+    border: solid 1px;
+    font-size: 68%;
+}
+
+.efficiency_header_highest{
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 7%;
+    border: solid 1px;
+    font-size: 70%;
+}
+
+.efficiency_header_item{
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 22%;
+    border: solid 1px;
+    font-size: 90%;
+}
+
+
+.efficiency_body_machine{
+    background-color: rgb(252, 252, 252);
     text-align: right;
-  }
-
-  .graph_class{
-    font-size: 70%;
-  }
-
-  .production_model_table{
-    width: 15%;
-    border-collapse: collapse;
-  }
-
-  .production_model{
-    width: 10%;
-    border-collapse: collapse;
-  }
-
-  .production_model_total{
-    width: 10%;
-  }
-
-  .production_model_detail{
-    width: 5%;
-  }
-
-  .production_model_ok{
-    width: 5%;
-  }
-
-  .production_list_row{
-    width: 15%;
-    background-color: rgba(5, 131, 53, 0.404);
+    width: 20%;
     border: solid 1px;
-    border-radius: 2px;
-    padding-left: 5px;
     font-weight: bold;
-    font-size: 70%;
-  }
-  
-  .production_normal_row{
-    width: 5%;
-    background-color: white;
-    border: solid 1px;
-    border-radius: 2px;
-    padding-left: 3px;
     font-size: 85%;
-  }
+}
 
-  .production_list_header{
+.efficiency_total_machine{
+    /* background-color: rgba(0, 2, 139, 0.808); */
     background-color: rgba(5, 131, 53, 0.404);
+    text-align: right;
+    width: 20%;
     border: solid 1px;
-    border-radius: 2px;
-    
-  }
+    font-weight: bold;
+    font-size: 80%;
+}
 
-  .button_displaygraph{
+.efficiency_total_day{
+    font-size: 85%;
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 10%;
+    text-align: center;
+    border: solid 1px;
+    font-size: 80%; 
     
-    padding-left: 1px;
-    padding-right: 1px;
-    font-size: 70%;
-  }
+}
 
-  .normal_button{
+.efficiency_total_week{
+    font-size: 85%;
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 10%;
+    text-align: center;
+    border: solid 1px;
+    font-weight: bolder;
+}
+
+.efficiency_body_day{
+    font-size: 85%;
+    background-color: white;
+    width: 10%;
+    text-align: center;
+    border: solid 1px; 
+}
+
+.efficiency_body_week{
+    font-size: 85%;
+    background-color: white;
+    width: 10%;
+    text-align: center;
+    border: solid 1px;
+    font-weight: bolder;
+}
+
+.downtime_body_highest{
+    width: 7%;
+    text-align: center;
+    border: solid 1px; 
+}
+
+.downtime_body_item{
+    padding-left: 2px;
+    width: 22%;
+    font-size: 85%;
+    text-align: left;
+    border: solid 1px; 
+}
+.downtime_body_graph{
     width: 5%;
-    margin-left: 0;
-    margin-right: 0;
-  }
+    text-align: center;
+    border: solid 1px; 
+}
+
+.downtime_body_graphic{
+    width: 80%;
+    
+    text-align: center;
+    border: solid 1px;
+    
+}
+
+.downtime_graphs{
+    display: flex;
+}
+.graphics_container{
+    
+    width: 35%;
+}
+
+.hola{
+    border: solid 1px;
+}
+
+.shiftActive{
+    background-color: tomato;
+}
