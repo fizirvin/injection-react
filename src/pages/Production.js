@@ -1067,16 +1067,15 @@ renderDowntimeByMachineGraphic = () =>{
   renderHeader(){
     return (
       <div className='downtime_header'>
-        <h2>Injection Production</h2>
+        <h2 className='production_title_header'>Injection Production</h2>
         <div className='downtime_controlls'>
-          <table>
+          <table className='controls_table'>
             <tbody>
               <tr>
+                <td>Shifts:</td>
+                <td><button name='12' className={this.shiftActive('12')} onClick={this.changeShift}>Shift 1&2</button><button name='1' className={this.shiftActive('1')} onClick={this.changeShift}>Shift 1</button><button name='2' className={this.shiftActive('2')} onClick={this.changeShift}>Shift 2</button></td>
                 <td>Filter By:</td>
                 <td><button onClick={this.showReports}>Machine</button><button>Model</button><button>Molde</button></td>
-                <td>Shifts:</td><td><button name='12' className={this.shiftActive('12')} onClick={this.changeShift}>Shift 1&2</button><button name='1' className={this.shiftActive('1')} onClick={this.changeShift}>Shift 1</button><button name='2' className={this.shiftActive('2')} onClick={this.changeShift}>Shift 2</button></td>
-              </tr>
-              <tr>
                 <td>Change Week:</td>
                 <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
                 <td>Go to Date:</td>
@@ -1288,23 +1287,22 @@ renderDowntimeByMachineGraphic = () =>{
     return (
       <div className="Downtime">
           {/* {this.renderHeader()} */}
-          <div className='downtime_graphs'>
-        <div className='downtime_container'>
           {this.renderHeader()}
-          {this.renderHeaderTable()}
-          {this.renderTotalRow()}
-          <div className='downtime_table_body'>
-            {this.renderBodyRow()}
+        <div className='downtime_graphs'>
+          <div className='downtime_container'>
+            
+            {this.renderHeaderTable()}
+            {this.renderTotalRow()}
+            <div className='downtime_table_body'>
+              {this.renderBodyRow()}
+            </div>
           </div>
-          
-        </div>
-        <div className='graphics_container'>
-          {this.renderGraphic()}
-          {this.renderModelGraphic()}
+          <div className='graphics_container'>
+            {this.renderGraphic()}
+            {this.renderModelGraphic()}
             {/* {this.renderDowntimeWeekGraphic()}
             {this.renderDowntimeByMachineGraphic()} */}
-
-        </div>
+          </div>
         </div>
       </div>
     )

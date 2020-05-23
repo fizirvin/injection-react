@@ -1104,11 +1104,13 @@ class App extends React.Component {
         const convert = testArr.map( item => { 
         const date = this.formatDate(item.reportDate);
         const id = item._id
+        const shift = item.shift
         const machine = item.machine._id
         const production = item.production.map( prod =>{
           return { 
             report: id, 
-            date: date, 
+            date: date,
+            shift: shift, 
             machine: machine, 
             part: prod.partNumber._id, 
             molde: prod.molde._id,
@@ -1131,16 +1133,45 @@ class App extends React.Component {
           const date = this.formatDate(item.reportDate);
           const id = item._id
           const machine = item.machine._id
+          const shift = item.shift
           const downtime = item.downtimeDetail.map( downtime =>{
-            return { report: id, date: date, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
+            return { 
+              report: id, 
+              date: date,
+              shift: shift, 
+              machine: machine, 
+              issue: downtime.issueId._id, 
+              issueName: downtime.issueId.issueName, 
+              mins: downtime.mins 
+            }
           })
           return downtime
+        })
+
+        const convertResine = testArr.map( item => { 
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const shift = item.shift
+          const resines = item.resines.map( resine =>{
+            return { 
+              report: id, 
+              date: date,
+              shift: shift, 
+              machine: machine, 
+              resine: resine.resine._id, 
+              resineName: resine.resine.description, 
+              purge: resine.purge
+            }
+          })
+          return resines
         })
           
         const productionByDate= [...this.state.productionByDate, ...convert[0]]
         const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
+        const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
 
-        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, reportMessage: 'sucess'});
+        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -1151,93 +1182,94 @@ class App extends React.Component {
   updateReport = async (report)=>{
     const { _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = report;
     const downtimeDetail = downtime
+    const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
+      updateInjectionReport(_id: $_id, input: $input){
+        _id
+          reportDate
+          shift
+          machine{
+            _id
+            machineNumber
+            machineSerial
+          }
+          TReal
+          TOK
+          TNG
+          TPlan
+          TWTime
+          TDTime
+          TAvailability
+          TPerformance
+          TQuality
+          TOEE
+          production{
+            _id
+            real
+            ng
+            ok
+            plan
+            wtime
+            dtime
+            availability
+            performance
+            quality
+            oee
+            program {
+              _id
+            }
+            partNumber {
+              _id
+              partNumber
+              partName
+              family
+            }
+            molde{
+              _id
+              moldeNumber
+              moldeSerial
+              cavities
+            }
+          }
+          resines {
+            _id
+            resine{
+              _id
+            }
+            purge
+          }
+          downtimeDetail {
+            _id
+            issueId{
+              _id
+              issueName
+            }
+            mins
+          }
+          defects{
+            _id
+            defect{
+              _id
+              defectName
+            }
+            defectPcs
+            molde{
+              _id
+              moldeNumber
+            }
+            partNumber{
+              _id
+              partNumber
+              partName
+              family
+            }
+            program{
+              _id
+            }
+          }
+    }}`;
 
-   
-  const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
-    updateInjectionReport(_id: $_id, input: $input){
-      _id
-        reportDate
-        shift
-        machine{
-          _id
-          machineNumber
-          machineSerial
-        }
-        TReal
-        TOK
-        TNG
-        TPlan
-        TWTime
-        TDTime
-        TAvailability
-        TPerformance
-        TQuality
-        TOEE
-        production{
-          _id
-          real
-          ng
-          ok
-          plan
-          wtime
-          dtime
-          availability
-          performance
-          quality
-          oee
-          program {
-            _id
-          }
-          partNumber {
-            _id
-            partNumber
-            partName
-          }
-          molde{
-            _id
-            moldeNumber
-            moldeSerial
-          }
-        }
-        resines {
-          _id
-          resine{
-            _id
-          }
-          purge
-        }
-        downtimeDetail {
-          _id
-          issueId{
-            _id
-            issueName
-          }
-          mins
-        }
-        defects{
-          _id
-          defect{
-            _id
-            defectName
-          }
-          defectPcs
-          molde{
-            _id
-            moldeNumber
-          }
-          partNumber{
-            _id
-            partNumber
-            partName
-          }
-          program{
-            _id
-          }
-        }
-  }}`;
-
-  const url = this.state.server;
-  const opts = {
+    const url = this.state.server;
+    const opts = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query, variables:{
@@ -1261,35 +1293,32 @@ class App extends React.Component {
           defects,
           resines
         }
-      } })
-  };
-
-  const res = await fetch(url, opts);
-  const data = await res.json();
+      }})
+    };
+    const res = await fetch(url, opts);
+    const data = await res.json();
  
-  if(data.errors){
-  
-  return this.setState({reportMessage: 'error'})
-  } else{
-    
-    let report = data.data.updateInjectionReport;
-    let reports = [...this.state.reports];
-
-    let productionByDate = [...this.state.productionByDate].filter( reportDate => reportDate.report !== report._id)
-    let downtimeByDate = [...this.state.downtimeByDate].filter( reportDate => reportDate.report !== report._id)
-      const testArr = [data.data.updateInjectionReport]
-      
+    if(data.errors){
+      return this.setState({reportMessage: 'error'})
+    } 
+    else{
+      const report = data.data.updateInjectionReport;
+      const oldReports = this.state.reports.filter( reports => reports._id !== report._id)
+      const reports = [ report, ...oldReports]
+      const testArr = [report]
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
       if(test){
 
         const convert = testArr.map( item => { 
           const date = this.formatDate(item.reportDate);
           const id = item._id
+          const shift = item.shift
           const machine = item.machine._id
           const production = item.production.map( prod =>{
             return { 
               report: id, 
-              date: date, 
+              date: date,
+              shift: shift, 
               machine: machine, 
               part: prod.partNumber._id, 
               molde: prod.molde._id,
@@ -1311,26 +1340,48 @@ class App extends React.Component {
         const convertDowntime = testArr.map( item => { 
           const date = this.formatDate(item.reportDate);
           const id = item._id
+          const shift = item.shift
           const machine = item.machine._id
           const downtime = item.downtimeDetail.map( downtime =>{
-            return { report: id, date: date, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
+            return { report: id, date: date, shift, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
             })
             return downtime
           })
+
+        const convertResine = testArr.map( item => { 
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const shift = item.shift
+          const resines = item.resines.map( resine =>{
+            return { 
+              report: id, 
+              date: date,
+              shift: shift, 
+              machine: machine, 
+              resine: resine.resine._id, 
+              resineName: resine.resine.description, 
+              purge: resine.purge
+            }
+          })
+          return resines
+        })
+
+        const oldProductionByDate = this.state.productionByDate.filter( reportDate => reportDate.report !== report._id)
+        const oldDowntimeByDate = this.state.downtimeByDate.filter( reportDate => reportDate.report !== report._id)
+        const oldResinesByDate = this.state.resinesByDate.filter( reportDate => reportDate.report !== report._id)
+
+        const productionByDate= [...oldProductionByDate, ...convert[0]]
+        const downtimeByDate = [...oldDowntimeByDate, ...convertDowntime[0]]
+        const resinesByDate = [...oldResinesByDate, ...convertResine[0]]
           
-        productionByDate.push(...convert[0])
-        downtimeByDate.push(...convertDowntime[0])
+        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
-      else{}
-
-
-
-    reports[reports.findIndex(el => el._id === report._id)] = report;
-    this.setState({reports, productionByDate, downtimeByDate, reportMessage: 'sucess'});
-
+      else{
+        return this.setState({reports: reports, reportMessage: 'sucess'});
+      }
+    }
   }
-
-}
 
 
   render(){

@@ -27,8 +27,25 @@ class UpdateReport extends Component {
       return null
     } else {
 
-      
-      const { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, downtimeDetail, defects, resines } = await getReport
+      const { 
+        reportDate, 
+        shift, 
+        machine, 
+        TReal, 
+        TNG, 
+        TOK, 
+        TPlan, 
+        TWTime, 
+        TDTime, 
+        TAvailability, 
+        TPerformance, 
+        TQuality, 
+        TOEE, 
+        production, 
+        downtimeDetail, 
+        defects, 
+        resines 
+      } = await getReport
       const date = this.formatDate(reportDate)
       const programs = this.filterPrograms(machine._id)
       
