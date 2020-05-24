@@ -511,8 +511,21 @@ renderDowntimeByMachineGraphic = () =>{
     return filter
   }
 
+  filterModelDate = (date, id) => {
+    const array = [...this.state.production]
+    const filter = array.filter( item => item.date === date).filter( item => item.part === id)
+    return filter
+  }
+
   reduceReal = (date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
+      return a + b.real || 0
+    },0)
+    return reduce
+  }
+
+  reduceRealModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + b.real || 0
     },0)
     return reduce
@@ -533,6 +546,13 @@ renderDowntimeByMachineGraphic = () =>{
 
   reduceNG = (date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
+      return a + b.ng || 0
+    },0)
+    return reduce
+  }
+
+  reduceNGModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + b.ng || 0
     },0)
     return reduce
@@ -560,6 +580,13 @@ renderDowntimeByMachineGraphic = () =>{
 
   reduceOK = (date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
+      return a + b.ok || 0
+    },0)
+    return reduce
+  }
+
+  reduceOKModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + b.ok || 0
     },0)
     return reduce
@@ -806,8 +833,22 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
+  reduceTimeModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
+      return a + parseFloat(b.wtime.$numberDecimal) || 0
+    },0)
+    return reduce
+  }
+
   reduceDownTime = ( date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
+      return a + parseFloat(b.dtime.$numberDecimal) || 0
+    },0)
+    return reduce
+  }
+
+  reduceDownTimeModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
     return reduce
@@ -826,8 +867,28 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
+  filterTotalDTime = (id) =>{
+    const array = [...this.state.production]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+    const reduce = filter.reduce( (a, b) =>{
+      return a + parseFloat(b.dtime.$numberDecimal) || 0
+    },0)
+
+    return reduce
+  }
+
   reducePlan = (date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
+      return a + b.plan || 0
+    },0)
+    return reduce
+  }
+
+  reducePlanModel = (date, id) =>{
+    const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + b.plan || 0
     },0)
     return reduce
@@ -845,14 +906,6 @@ renderDowntimeByMachineGraphic = () =>{
 
     return reduce
   }
-
-  // reduceEfficiency = (date, id) =>{
-  //   const length = this.filterMachineDate(date, id).length
-  //   const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
-  //     return a + parseFloat(b.oee.$numberDecimal) || 0
-  //   },0)
-  //   return reduce/length || 0
-  // }
 
   reduceOEE = (date, id) =>{
     const real = this.reduceReal(date, id)
@@ -885,11 +938,21 @@ renderDowntimeByMachineGraphic = () =>{
   //   return reduce/length || 0
   // }
 
-  filterTotalEfficiency = (id) =>{
+  filterTotalOEE = (id) =>{
+    const real = this.filterTotalReal(id)
     const ok = this.filterTotalOK(id)
-    const capacity = this.filterTotalCapacity(id)
-    const value = parseFloat(ok/capacity)*100
-    return this.precise_round(value, 1) || 0
+    const plan = this.filterTotalPlan(id)
+    const wtime = this.filterTotalTime(id)
+    const dtime = this.filterTotalDTime(id)
+    const time = parseInt(wtime + dtime)
+
+    
+    const availability = this.precise_round(( wtime / time )*100, 2)
+    const performance = this.precise_round(( real / plan )*100, 2)
+    const quality = this.precise_round(( ok / real )*100, 2)
+    const oee = this.precise_round( ((availability*performance*quality)/10000), 2 )
+     
+    return oee
   }
 
   filterMins = (date, id) => {
@@ -898,8 +961,21 @@ renderDowntimeByMachineGraphic = () =>{
     return filter
   }
 
+  filterModelMins = (date, id) => {
+    const array = [...this.state.downtime]
+    const filter = array.filter( item => item.date === date).filter( item => item.part === id)
+    return filter
+  }
+
   reduceMins = (date, id) =>{
     const reduce = this.filterMins(date, id).reduce( (a, b) =>{
+      return a + b.mins || 0
+    },0)
+    return reduce
+  }
+
+  reduceModelMins = (date, id) =>{
+    const reduce = this.filterModelMins(date, id).reduce( (a, b) =>{
       return a + b.mins || 0
     },0)
     return reduce
@@ -1005,16 +1081,19 @@ renderDowntimeByMachineGraphic = () =>{
 
   changeTo = (e) =>{
     if( e.target.name === 'Machine'){
-      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine')
-      this.setState({render: e.target.name, data, week: []})
+      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine')
+      // this.setState({render: e.target.name, data, week: []})
+      return this.setState({render: e.target.name})
     }
     else if(e.target.name === 'Molde'){
-      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde')
-      this.setState({render: e.target.name, data, week: []})
+      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde')
+      // this.setState({render: e.target.name, data, week: []})
+      return this.setState({render: e.target.name})
     }
     else if(e.target.name === 'Model'){
-      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model')
-      this.setState({render: e.target.name, data, week: []})
+      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model')
+      // this.setState({render: e.target.name, data, week: []})
+      return this.setState({render: e.target.name})
     }
     else{ return }
   }
@@ -1040,6 +1119,10 @@ renderDowntimeByMachineGraphic = () =>{
 
   shiftActive = (name) =>{
     return name === this.state.shift ? 'shiftActive' : null 
+  }
+
+  filterActive = (name) =>{
+    return name === this.state.render ? 'shiftActive' : null 
   }
 
   renderHeaderTable(){
@@ -1075,7 +1158,7 @@ renderDowntimeByMachineGraphic = () =>{
                 <td>Shifts:</td>
                 <td><button name='12' className={this.shiftActive('12')} onClick={this.changeShift}>Shift 1&2</button><button name='1' className={this.shiftActive('1')} onClick={this.changeShift}>Shift 1</button><button name='2' className={this.shiftActive('2')} onClick={this.changeShift}>Shift 2</button></td>
                 <td>Filter By:</td>
-                <td><button onClick={this.showReports}>Machine</button><button>Model</button><button>Molde</button></td>
+                <td><button name='Machine' className={this.filterActive('Machine')} onClick={this.changeTo}>Machine</button><button name='Model' className={this.filterActive('Model')} onClick={this.changeTo}>Model</button><button name='Molde' className={this.filterActive('Molde')} onClick={this.changeTo}>Molde</button></td>
                 <td>Change Week:</td>
                 <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
                 <td>Go to Date:</td>
@@ -1088,8 +1171,7 @@ renderDowntimeByMachineGraphic = () =>{
     )
   }
 
-  renderBodyRow = () =>{
-    if(!this.state.machines) return null
+  renderMachineBody = () =>{
     return this.state.machines.map( machine =>
       <table key={machine._id} className='efficiency_body_table'>
         <tbody>
@@ -1168,7 +1250,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_day'>{this.reduceOEE(this.state.friday, machine._id)}</td>
             <td className='efficiency_body_day'>{this.reduceOEE(this.state.saturday, machine._id)}</td>
             <td className='efficiency_body_day'>{this.reduceOEE(this.state.sunday, machine._id)}</td>
-            <td className='efficiency_body_week'>{0} </td>
+            <td className='efficiency_body_week'>{this.filterTotalOEE(machine._id)} </td>
           </tr>
           <tr>
             <td className='efficiency_body_machine'>Purge (g)</td>
@@ -1184,6 +1266,109 @@ renderDowntimeByMachineGraphic = () =>{
         </tbody>
       </table>
     )
+  }
+
+  renderModelBody = () =>{
+    return this.state.models.map( model =>
+      <table key={model._id} className='efficiency_body_table'>
+        <tbody>
+          <tr>
+            <td className='efficiency_body_machine'>{model.partName} Real (pcs)</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceRealModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>NG (pcs)</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceNGModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>OK (pcs)</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceOKModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>Plan (pcs)</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reducePlanModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>Worktime (hrs)</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceTimeModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>Downtime (hrs)</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.monday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.tuesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.wednesday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.thursday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.friday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.saturday, model._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTimeModel(this.state.sunday, model._id)}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>OEE (%)</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+          <tr>
+            <td className='efficiency_body_machine'>Purge (g)</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_day'>{0}</td>
+            <td className='efficiency_body_week'>{0}</td>
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
+
+  renderBodyRow = () =>{
+    if(!this.state.machines) { return null } 
+    else if(this.state.render === 'Machine'){ return this.renderMachineBody()}
+    else if(this.state.render === 'Model'){ return this.renderModelBody()}
   }
 
   renderTotalRow = () =>{

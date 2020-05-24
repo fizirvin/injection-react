@@ -21,9 +21,8 @@
     display: block;
     width: 65%;
     height: 100vh;
-    min-height: 91vh;
-    max-height: 91vh;
-    
+    min-height: 86vh;
+    max-height: 86vh;
 }
 
 .svg_downtime{
@@ -52,8 +51,8 @@
     margin-top: 2px;
     margin-left: 2%;
     overflow-y: scroll;
-    min-height: 55%;
-    max-height: 55%;
+    min-height: 50vh;
+    max-height: 50vh;
 }
 
 .efficiency_body_table{
