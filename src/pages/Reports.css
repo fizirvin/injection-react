@@ -5,8 +5,9 @@
 }
 
 .reports_container{
-  
+ 
   width: 100%;
+  display: flex;
 }
 
 .container_first_table{
@@ -227,54 +228,76 @@
   
   
   .report_detail{
-    width: 30%;
+    width: 44%;
     margin-left: 5px;
     margin-right: 5px;
   }
   
   .detail_table{
     border: solid;
-    width: 100%;
+    min-width: 100%;
     border-radius: 2px;
   }
   
   .detail_mold{
-    width: 35%;
+    font-size: 85%;
+    width: 37%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
   }
   
   .detail_real{
-    width: 12%;
+    width: 8%;
+    font-size: 85%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
   }
   
   .detail_ng{
-    width: 12%;
+    font-size: 85%;
+    width: 8%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
   }
   
   .detail_ok{
-    width: 12%;
+    font-size: 85%;
+    width: 8%;
+    border: solid 1px;
+    background-color: tomato;
+    border-radius: 2px;
+  }
+
+  .detail_plan{
+    font-size: 85%;
+    width: 8%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
   }
   
   .detail_hrs{
-    width: 12%;
+    font-size: 85%;
+    width: 8%;
+    border: solid 1px;
+    background-color: tomato;
+    border-radius: 2px;
+  }
+
+  .detail_dtime{
+    font-size: 85%;
+    width: 8%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
   }
   
   .detail_oee{
-    width: 12%;
+    font-size: 85%;
+    width: 8%;
     border: solid 1px;
     background-color: tomato;
     border-radius: 2px;
@@ -306,11 +329,38 @@
     background-color: white;
   }
   
-  .button_report_list{
-    width: 100%;
-    
-    font-size: 85%;
+  .button_report_list_gold{
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    font-size: 70%;
     justify-self: left;
+    border: solid 1px;
+    background-color: gold;
+    cursor: pointer;
+  }
+
+  .button_report_list_tomato{
+    margin-left: 7px;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    font-size: 70%;
+    justify-self: left;
+    border: solid 1px;
+    background-color: tomato;
+    cursor: pointer;
+  }
+
+  .button_report_list_blue{
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    font-size: 70%;
+    justify-self: left;
+    border: solid 1px;
+    background-color: blue;
+    cursor: pointer;
   }
   
   .report_selected_list{
@@ -318,9 +368,9 @@
     background-color: tomato;
     border-radius: 2px;
     text-align: left;
-    padding-left: 1%;
+    padding-left: 3px;
     font-size: 90%;
-    height: 4vh;
+    
   }
 
   .report_list_title{
@@ -341,7 +391,7 @@
     text-align: left;
     padding-left: 3px;
     font-size: 90%;
-    height: 4vh;
+    
     
   }
 

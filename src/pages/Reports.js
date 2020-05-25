@@ -73,14 +73,21 @@ class Reports extends React.Component {
     if(this.state._id === id){ return null}
     else {
       const getDetail = this.props.reports.find( report => report._id === e.target.name );
-      const { _id, production, downtimeDetail } = await getDetail
+      const { _id, production, downtimeDetail, defects } = await getDetail
       this.setState({
         _id: _id, 
         production: production,
         downtimeDetail: downtimeDetail,
+        defects: defects,
         target: id
       })
     }
+  }
+
+  renderButtonOption = (id) =>{
+    if(this.state._id === id){ return <td className={this.formatRow(id, 'body_update_table')}><button className='button_report_list_blue' onClick={this.closeDetail}></button></td> }
+    else{ return <td className={this.formatRow(id, 'body_update_table')}><Link className='link-reports' to={`/reports/update/${id}`}><button className='button_report_list_gold'></button>
+    </Link><button name={id} className='button_report_list_tomato' onClick={this.openDetail}></button></td> }
   }
 
   renderDetailTable = () =>{
@@ -92,11 +99,13 @@ class Reports extends React.Component {
       return(<table className='detail_table'>
       <thead>
         <tr>
-          <th className="detail_mold">Mold</th>
+          <th className="detail_mold">Mold - Part Name</th>
           <th className="detail_real">Real</th>
           <th className="detail_ng">NG</th>
           <th className="detail_ok">OK</th>
-          <th className="detail_hrs">Hrs</th>
+          <th className="detail_plan">Plan</th>
+          <th className="detail_hrs">WT</th>
+          <th className="detail_dtime">WD</th>
           <th className="detail_oee">OEE</th>
         </tr>
       </thead>
@@ -105,9 +114,9 @@ class Reports extends React.Component {
       </tbody>
       <thead>
         <tr>
-          <th className="detail_downtime" colSpan="3">Downtime</th>
+          <th className="detail_downtime" colSpan="4">Downtime</th>
           <th className="detail_mins">Mins</th>
-          <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th>
+          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
       <tbody>
@@ -121,19 +130,21 @@ class Reports extends React.Component {
   renderDetailProduction = () => {
     return this.state.production.map( production => 
       <tr key={production._id}>
-        <td  className='row_detail_production'>{production.molde.moldeNumber}</td>
+        <td  className='row_detail_production'>{production.molde.moldeNumber} {production.partNumber.partName}</td>
         <td  className='row_detail_production'>{production.real}</td>
         <td  className='row_detail_production'>{production.ng}</td>
         <td  className='row_detail_production'>{production.ok}</td>
+        <td  className='row_detail_production'>{production.plan}</td>
         <td  className='row_detail_production'>{production.wtime.$numberDecimal}</td>
-        <td  className='row_detail_production'>{production.woee.$numberDecimal}</td>
+        <td  className='row_detail_production'>{production.dtime.$numberDecimal}</td>
+        <td  className='row_detail_production'>{production.oee.$numberDecimal}</td>
       </tr>)
   }
 
   renderDetailDowntime = () => {
     return this.state.downtimeDetail.map( downtime => 
       <tr key={downtime._id}>
-        <td  className='row_detail_production' colSpan="3">{ downtime.issueId.issueName}</td>
+        <td  className='row_detail_production' colSpan="4">{ downtime.issueId.issueName}</td>
         <td  className='row_detail_production'>{ downtime.mins}</td>
       </tr>)
   }
@@ -176,7 +187,7 @@ class Reports extends React.Component {
           <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal }</td> */}
           <td className={this.formatRow(report._id, 'body_toee_table')}>{ TOEE.$numberDecimal }</td>
           <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(resines) }</td>
-          <td className={this.formatRow(report._id, 'body_update_table')}><Link className='link-reports' to={`/reports/update/${_id}`}><button className='button_report_list'>Update</button></Link></td>
+          {this.renderButtonOption(report._id)}
         </tr>})
       )
     }
@@ -185,47 +196,45 @@ class Reports extends React.Component {
 
 
   render(){
-    
     return (
       <div className="Reports">
         <h2 className="section_header report_list_title">Injection Production Reports:</h2>
         <div className='reports_container'>
           <div className='container_first_table'>
-        <table className="report_list_table">
-        <thead>
-          <tr>
-            <th className="report_list_header date_data">Date</th>
-            <th className="report_list_header shift_data">Shift</th>
-            <th className="report_list_header machine_data">Machine</th>
-            <th className="report_list_header treal_data">Real (pcs)</th>
-            <th className="report_list_header ng_data">NG (pcs)</th>
-            <th className="report_list_header ok_data">OK (pcs)</th>
-            <th className="report_list_header plan_data">Plan (pcs)</th>
-            <th className="report_list_header worktime_data">Work Time (hrs)</th>
-            <th className="report_list_header downtime_data">Downtime (hrs)</th>
-            {/* <th className="report_list_header availability_data">Availability (%)</th>
-            <th className="report_list_header performance_data">Performance (%)</th>
-            <th className="report_list_header quality_data">Quality (%)</th> */}
-            <th className="report_list_header toee_data">OEE (%)</th>
-            <th className="report_list_header purge_data">Purge (g)</th>
-            <th className="report_list_header add_data">
-              <Link to="/reports/add"><button>Add Report</button></Link>
-              </th>
-          </tr>
-          </thead> 
-
-          </table>
-          <div className='body_reports'>
-          <table className='body_table_reports'> 
-          <tbody>
-          {this.renderList()}
-          </tbody>
-        </table>
-        </div>
-        </div>
-        {/* <div className='report_detail'>
-          {this.renderDetailTable()}
-        </div> */}
+            <table className="report_list_table">
+              <thead>
+                <tr>
+                  <th className="report_list_header date_data">Date</th>
+                  <th className="report_list_header shift_data">Shift</th>
+                  <th className="report_list_header machine_data">Machine</th>
+                  <th className="report_list_header treal_data">Real (pcs)</th>
+                  <th className="report_list_header ng_data">NG (pcs)</th>
+                  <th className="report_list_header ok_data">OK (pcs)</th>
+                  <th className="report_list_header plan_data">Plan (pcs)</th>
+                  <th className="report_list_header worktime_data">Work Time (hrs)</th>
+                  <th className="report_list_header downtime_data">Downtime (hrs)</th>
+                  {/* <th className="report_list_header availability_data">Availability (%)</th>
+                  <th className="report_list_header performance_data">Performance (%)</th>
+                  <th className="report_list_header quality_data">Quality (%)</th> */}
+                  <th className="report_list_header toee_data">OEE (%)</th>
+                  <th className="report_list_header purge_data">Purge (g)</th>
+                  <th className="report_list_header add_data">
+                    <Link to="/reports/add"><button>Add Report</button></Link>
+                  </th>
+                </tr>
+              </thead> 
+            </table>
+            <div className='body_reports'>
+              <table className='body_table_reports'> 
+                <tbody>
+                  {this.renderList()}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div className='report_detail'>
+            {this.renderDetailTable()}
+          </div>
         </div>
       </div>
     )
