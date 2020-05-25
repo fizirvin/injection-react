@@ -86,8 +86,15 @@ class Reports extends React.Component {
   }
 
   renderButtonOption = (id) =>{
-    if(this.state._id === id){ return <td className={this.formatRow(id, 'body_update_table')}><button className='button_report_list_blue' onClick={this.closeDetail}></button></td> }
-    else{ return <td className={this.formatRow(id, 'body_update_table')}><button name={id} className='button_report_list_tomato' onClick={this.openDetail}></button><Link className='link-reports' to={`/reports/update/${id}`}><button className='button_report_list_gold'></button>
+    if(this.state._id === id){ return <td className={this.formatRow(id, 'body_update_table')}>
+      <button className='button_report_list_blue' onClick={this.closeDetail}></button>
+      <Link className='link-reports' to={`/reports/update/${id}`}>
+        <button className='button_report_list_gold'></button>
+    </Link></td> }
+    else{ return <td className={this.formatRow(id, 'body_update_table')}>
+      <button name={id} className='button_report_list_tomato' onClick={this.openDetail}></button>
+      <Link className='link-reports' to={`/reports/update/${id}`}>
+        <button className='button_report_list_gold'></button>
     </Link></td> }
   }
 
