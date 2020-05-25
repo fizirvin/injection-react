@@ -330,6 +330,7 @@
   }
   
   .button_report_list_gold{
+    margin-left: 7px;
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -341,7 +342,6 @@
   }
 
   .button_report_list_tomato{
-    margin-left: 7px;
     width: 15px;
     height: 15px;
     border-radius: 15px;
