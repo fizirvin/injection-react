@@ -707,7 +707,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce,2)
   }
 
   filterWeekTotalWTime = ( ) =>{
@@ -719,7 +719,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce,2)
   }
 
   filterDayTotalDTime = (day) =>{
@@ -729,7 +729,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce,2)
   }
 
   filterWeekTotalDTime = ( ) =>{
@@ -741,7 +741,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce,2)
   }
 
   filterDayTotalMins = (day) =>{

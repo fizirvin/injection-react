@@ -73,12 +73,13 @@ class Reports extends React.Component {
     if(this.state._id === id){ return null}
     else {
       const getDetail = this.props.reports.find( report => report._id === e.target.name );
-      const { _id, production, downtimeDetail, defects } = await getDetail
+      const { _id, production, downtimeDetail, defects, resines } = await getDetail
       this.setState({
         _id: _id, 
         production: production,
         downtimeDetail: downtimeDetail,
         defects: defects,
+        resines: resines, 
         target: id
       })
     }
@@ -122,6 +123,28 @@ class Reports extends React.Component {
       <tbody>
       {this.renderDetailDowntime()}
       </tbody>
+      <thead>
+        <tr>
+          <th className="detail_downtime" colSpan="4">Defect</th>
+          <th className="detail_mins">Pcs</th>
+          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
+        </tr>
+      </thead>
+      <tbody>
+      {this.renderDetailDefects()}
+      </tbody>
+      <thead>
+        <tr>
+          <th className="detail_downtime" colSpan="4">Purge</th>
+          <th className="detail_mins">g</th>
+          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
+        </tr>
+      </thead>
+      <tbody>
+      {this.renderDetailPurge()}
+      </tbody>
+      
+      
     </table>)
     }
 
@@ -146,6 +169,22 @@ class Reports extends React.Component {
       <tr key={downtime._id}>
         <td  className='row_detail_production' colSpan="4">{ downtime.issueId.issueName}</td>
         <td  className='row_detail_production'>{ downtime.mins}</td>
+      </tr>)
+  }
+
+  renderDetailDefects = () => {
+    return this.state.defects.map( defect => 
+      <tr key={defect._id}>
+        <td  className='row_detail_production' colSpan="4">{ defect.defect.defectName}</td>
+        <td  className='row_detail_production'>{ defect.defectPcs}</td>
+      </tr>)
+  }
+
+  renderDetailPurge = () => {
+    return this.state.resines.map( resine => 
+      <tr key={resine._id}>
+        <td  className='row_detail_production' colSpan="4">{ resine.resine.description}</td>
+        <td  className='row_detail_production'>{ resine.purge}</td>
       </tr>)
   }
 

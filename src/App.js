@@ -151,7 +151,7 @@ class App extends React.Component {
   async componentDidMount(){
 
     const date = new Date();
-    const today = this.formatDate(date)+'T01:00:00.000-06:00'
+    const today = this.formatDate(date)+'T00:00:00.000-06:00'
     // const initial = this.getDateofTable(1, today);
     const end = this.getDateofTable(7, today);
     const initial49 = this.getDateofTable49(1, today);
@@ -280,7 +280,7 @@ class App extends React.Component {
           _id
           resine{
             _id
-            
+            description
           }
           purge
         }
@@ -306,7 +306,7 @@ class App extends React.Component {
           }
         }
       }
-      productionByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      productionByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
         report
         date
         machine
@@ -324,7 +324,7 @@ class App extends React.Component {
         quality
         oee
       }
-      downtimeByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      downtimeByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
         report
         date
         shift
@@ -333,7 +333,7 @@ class App extends React.Component {
         issueName
         mins
       }
-      resinesByDate(initial: "${initial49}T00:30:00.000+00:00", end: "${end}T23:00:00.000+00:00"){
+      resinesByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
         report
         date
         shift
@@ -1023,12 +1023,14 @@ class App extends React.Component {
             _id
             moldeNumber
             moldeSerial
+            cavities
           }
         }
         resines {
           _id
           resine{
             _id
+            description
           }
           purge
         }
@@ -1234,6 +1236,7 @@ class App extends React.Component {
             _id
             resine{
               _id
+              description
             }
             purge
           }
