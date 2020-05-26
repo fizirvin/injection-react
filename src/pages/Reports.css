@@ -234,9 +234,10 @@
   }
   
   .detail_table{
-    border: solid;
+    border-spacing: 1px;
+    border: solid 2px;
     min-width: 100%;
-    border-radius: 2px;
+    border-radius: 0px;
   }
   
   .detail_mold{

@@ -1125,19 +1125,32 @@ renderDowntimeByMachineGraphic = () =>{
     return name === this.state.render ? 'shiftActive' : null 
   }
 
+  formatDateField = (day, style) =>{
+    const date = new Date();
+    const today = this.formatDate(date)
+    const normal = `${style}`;
+    const selected = `${style} production_today_field`
+    console.log('today', today, 'day', day)
+    if( today === day){
+      return selected
+    } else{
+      return normal
+    }
+  }
+
   renderHeaderTable(){
     return (
       <table className='efficiency_tablehader'>
         <thead>
           <tr>
-            <th className='efficiency_header_machine' colSpan='3' rowSpan='2'>Production By Machine</th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Mon</div><div>{this.state.monday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Tue</div><div>{this.state.tuesday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Wed</div><div>{this.state.wednesday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Thu</div><div>{this.state.thursday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Fri</div><div>{this.state.friday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
-            <th className='efficiency_header_day' colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
+    <th className='efficiency_header_machine' colSpan='3' rowSpan='2'>Production By {this.state.render}</th>
+            <th className={this.formatDateField(this.state.monday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Mon</div><div>{this.state.monday}</div></th>
+            <th className={this.formatDateField(this.state.tuesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Tue</div><div>{this.state.tuesday}</div></th>
+            <th className={this.formatDateField(this.state.wednesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Wed</div><div>{this.state.wednesday}</div></th>
+            <th className={this.formatDateField(this.state.thursday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Thu</div><div>{this.state.thursday}</div></th>
+            <th className={this.formatDateField(this.state.friday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Fri</div><div>{this.state.friday}</div></th>
+            <th className={this.formatDateField(this.state.saturday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
+            <th className={this.formatDateField(this.state.sunday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
             <th className='efficiency_header_week' colSpan='2' rowSpan='1'>Total</th>
             {/* <th className='efficiency_header_highest'>Highest (mins)</th>
             <th className='efficiency_header_item'>Indicator Item</th> */}
@@ -1231,15 +1244,15 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_week'>{this.filterTotalTime(machine._id)}</td>
           </tr>
           <tr>
-            <td className='efficiency_body_machine'>Downtime (mins)</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.monday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.tuesday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.wednesday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.thursday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.friday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.saturday, machine._id)}</td>
-            <td className='efficiency_body_day'>{this.reduceMins(this.state.sunday, machine._id)}</td>
-            <td className='efficiency_body_week'>{this.filterTotalMins(machine._id)}</td>
+            <td className='efficiency_body_machine'>Downtime (hrs)</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.monday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.tuesday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.wednesday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.thursday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.friday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.saturday, machine._id)}</td>
+            <td className='efficiency_body_day'>{this.reduceDownTime(this.state.sunday, machine._id)}</td>
+            <td className='efficiency_body_week'>{this.filterTotalDTime(machine._id)}</td>
           </tr>
           <tr>
             <td className='efficiency_body_machine'>OEE (%)</td>
@@ -1431,15 +1444,15 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalWTime()}</td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'>Total Downtime (mins)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalMins(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalMins()}</td>
+            <td className='efficiency_total_machine'>Total Downtime (hrs)</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.monday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.tuesday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.wednesday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.thursday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.friday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.saturday)}</td>
+            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.sunday)}</td>
+            <td className='efficiency_total_week'>{this.filterWeekTotalDTime()}</td>
           </tr>
           <tr>
             <td className='efficiency_total_machine'>Total OEE (%)</td>

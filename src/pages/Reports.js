@@ -113,7 +113,7 @@ class Reports extends React.Component {
           <th className="detail_ok">OK</th>
           <th className="detail_plan">Plan</th>
           <th className="detail_hrs">WT</th>
-          <th className="detail_dtime">WD</th>
+          <th className="detail_dtime">DT</th>
           <th className="detail_oee">OEE</th>
         </tr>
       </thead>
@@ -122,8 +122,8 @@ class Reports extends React.Component {
       </tbody>
       <thead>
         <tr>
-          <th className="detail_downtime" colSpan="4">Downtime</th>
-          <th className="detail_mins">Mins</th>
+          <th className="detail_downtime" colSpan="6">Downtime</th>
+          <th className="detail_mins" colSpan="2">Mins</th>
           {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
@@ -132,8 +132,8 @@ class Reports extends React.Component {
       </tbody>
       <thead>
         <tr>
-          <th className="detail_downtime" colSpan="4">Defect</th>
-          <th className="detail_mins">Pcs</th>
+          <th className="detail_downtime" colSpan="6">Defect</th>
+          <th className="detail_mins" colSpan="2">Pcs</th>
           {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
@@ -142,8 +142,8 @@ class Reports extends React.Component {
       </tbody>
       <thead>
         <tr>
-          <th className="detail_downtime" colSpan="4">Purge</th>
-          <th className="detail_mins">g</th>
+          <th className="detail_downtime" colSpan="6">Purge</th>
+          <th className="detail_mins" colSpan="2">g</th>
           {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
@@ -174,24 +174,24 @@ class Reports extends React.Component {
   renderDetailDowntime = () => {
     return this.state.downtimeDetail.map( downtime => 
       <tr key={downtime._id}>
-        <td  className='row_detail_production' colSpan="4">{ downtime.issueId.issueName}</td>
-        <td  className='row_detail_production'>{ downtime.mins}</td>
+        <td  className='row_detail_production' colSpan="6">{ downtime.issueId.issueName}</td>
+        <td  className='row_detail_production' colSpan="2">{ downtime.mins}</td>
       </tr>)
   }
 
   renderDetailDefects = () => {
     return this.state.defects.map( defect => 
       <tr key={defect._id}>
-        <td  className='row_detail_production' colSpan="4">{ defect.defect.defectName}</td>
-        <td  className='row_detail_production'>{ defect.defectPcs}</td>
+        <td  className='row_detail_production' colSpan="6">{ defect.defect.defectName}</td>
+        <td  className='row_detail_production' colSpan="2">{ defect.defectPcs}</td>
       </tr>)
   }
 
   renderDetailPurge = () => {
     return this.state.resines.map( resine => 
       <tr key={resine._id}>
-        <td  className='row_detail_production' colSpan="4">{ resine.resine.description}</td>
-        <td  className='row_detail_production'>{ resine.purge}</td>
+        <td  className='row_detail_production' colSpan="6">{ resine.resine.description}</td>
+        <td  className='row_detail_production' colSpan="2">{ resine.purge}</td>
       </tr>)
   }
 
