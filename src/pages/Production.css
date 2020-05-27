@@ -209,3 +209,11 @@
 .production_today_field{
     background-color: blue;
 }
+
+.title_body_model{
+    font-size: 85%;
+    
+    border: solid 1px;
+    background-color: white;
+    
+}
