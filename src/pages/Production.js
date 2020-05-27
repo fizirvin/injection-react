@@ -5,6 +5,7 @@ import DowntimeWeekChart from './charts/DowntimeWeekChart.js'
 import DownTimeWeekByMachine from './charts/DowntimeWeekByMachine.js'
 
 import WeekChart from './charts/WeekChart'
+import WeekChartVertical from './charts/WeekChartVertical'
 import BarChart from './charts/BarCharts'
 
 class Production extends React.Component {
@@ -44,9 +45,9 @@ class Production extends React.Component {
     saturday: this.getDateofTable(6, today),
     sunday: this.getDateofTable(7, today)
     }
-
+    const render = this.state.render
     const production = this.props.production
-    const data = this.setGraphicFilter(state.monday, state.sunday, 'Machine', production )
+    const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     // const data = this.setGraphicFirst(state.monday, state.sunday)
     // const week = this.setGraphicFirstMachine(state.monday, state.sunday)
@@ -69,8 +70,9 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
      
+    const render = this.state.render
     const production = this.state.production
-    const data = this.setGraphicFilter(state.monday, state.sunday, 'Machine', production )
+    const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     // const data = this.setGraphicFirst(state.monday, state.sunday)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     return this.setState({...state, week, data})
@@ -94,9 +96,10 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
     
+    const render = this.state.render
     const production = this.state.production
     // const data = this.setGraphicFirst(state.monday, state.sunday)
-    const data = this.setGraphicFilter(state.monday, state.sunday, 'Machine', production )
+    const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     return this.setState({...state, week, data})
   }
@@ -118,8 +121,9 @@ class Production extends React.Component {
       saturday: this.getDateofTable(6, today),
       sunday: this.getDateofTable(7, today),
     }
+    const render = this.state.render
     const production = this.state.production
-    const data = this.setGraphicFilter(state.monday, state.sunday, 'Machine', production )
+    const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     return this.setState({...state, week, data})
   }
@@ -251,11 +255,20 @@ renderModelGraphic = () =>{
     return 
   }
   else { 
-    return (
-      <div className='Graphic'>  
-        <WeekChart data={this.state.data}></WeekChart>
-      </div>
-    )
+    if(this.state.render === 'Machine'){
+      return (
+        <div className='Graphic'>  
+          <WeekChart data={this.state.data}></WeekChart>
+        </div>
+      )
+    }
+    else{
+      return (
+        <div className='Graphic'>  
+          <WeekChartVertical data={this.state.data}></WeekChartVertical>
+        </div>
+      )
+    }
   }
 }
 
@@ -410,7 +423,7 @@ renderDowntimeByMachineGraphic = () =>{
       const data = this.state.models.map(model =>{  
         const ok = this.forGraphOK(model._id, mon, sun, array)
         const ng = this.forGraphNG(model._id, mon, sun, array)
-        return {part: model.partNumber, ok: ok, ng: ng}
+        return {part: model.partName, ok: ok, ng: ng}
       })
       return data
     }
@@ -1353,20 +1366,21 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   changeTo = (e) =>{
+    const production = this.state.production
     if( e.target.name === 'Machine'){
-      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine')
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name})
+      return this.setState({render: e.target.name, data})
     }
     else if(e.target.name === 'Molde'){
-      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde')
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name})
+      return this.setState({render: e.target.name, data})
     }
     else if(e.target.name === 'Model'){
-      // const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model')
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name})
+      return this.setState({render: e.target.name, data})
     }
     else{ return }
   }
@@ -1377,14 +1391,16 @@ renderDowntimeByMachineGraphic = () =>{
       const production = [...this.props.production]
       const purge = [...this.props.purge]
       const downtime = [...this.props.downtime]
-      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production )
+      const render = this.state.render
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
       return this.setState({production, downtime, purge, shift, week, data})
     } else{
       const production = [...this.props.production].filter(item => item.shift === shift)
       const purge = [...this.props.purge].filter(item => item.shift === shift)
       const downtime = [...this.props.downtime].filter(item => item.shift === shift)
-      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production )
+      const render = this.state.render
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
       return this.setState({production, downtime, purge, shift, week, data})
     }
