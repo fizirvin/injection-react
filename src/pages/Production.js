@@ -347,9 +347,10 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   setGraphicFirst = (mon, sun, arr) =>{ 
-    const data = this.props.issues.map(issue =>{  
-      const mins = this.FilterDataForGraph(issue._id, mon, sun, arr)
-      return {issue: issue.issueName, mins: mins}
+    const data = this.props.issues.map(({_id, issueCode, issueName}) =>{  
+      const mins = this.FilterDataForGraph(_id, mon, sun, arr)
+      const issue = `${issueCode} ${issueName}`
+      return {issue, mins}
     })
     return data.sort((x, y)  => y.mins - x.mins)
   }
@@ -1328,13 +1329,12 @@ renderDowntimeByMachineGraphic = () =>{
     return isFinite(valid) ? valid : 0
   }
 
-  filterHighest = (id) =>{
+  filterHighest = (id, day) =>{
     const array = [...this.state.downtime]
     const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-      .filter( item => item.machine === id)
-
+      item => item.machine === id)
+      .filter( item => item.date === day ) 
+      // const issues = [...new Set(filter)];
       const issues = [...this.props.issues]
       const mapping = issues.map( issue =>
         {
@@ -1342,10 +1342,20 @@ renderDowntimeByMachineGraphic = () =>{
           .reduce( (a, b) =>{
             return a + b.mins || 0
           },0)
-          return {issue: issue.issueName, mins: reduceMins }
+          return {issue: issue.issueCode, mins: reduceMins }
         })
-   
-    return mapping.sort((x, y)  => y.mins - x.mins)[0].mins
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.mins || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return '0'
+        } else {
+          const issue = mapping.sort((x, y)  => y.mins - x.mins)[0].issue
+          const mins =  mapping.sort((x, y)  => y.mins - x.mins)[0].mins
+          return `${issue} ${mins}`
+        }
   }
 
   filterHighestIndicator = (id) =>{
@@ -1362,7 +1372,7 @@ renderDowntimeByMachineGraphic = () =>{
           .reduce( (a, b) =>{
             return a + b.mins || 0
           },0)
-          return {issue: issue.issueName, mins: reduceMins }
+          return {issue: issue.issueCode, mins: reduceMins }
         })
 
         const reduceMapping = mapping.reduce( (a, b) =>{
@@ -1370,9 +1380,11 @@ renderDowntimeByMachineGraphic = () =>{
         },0)
 
         if(reduceMapping === 0){
-          return 'no downtime'
+          return '0 mins'
         } else {
-          return mapping.sort((x, y)  => y.mins - x.mins)[0].issue
+          const issue = mapping.sort((x, y)  => y.mins - x.mins)[0].issue
+          const mins =  mapping.sort((x, y)  => y.mins - x.mins)[0].mins
+          return `${issue} ${mins}`
         }
   }
 
@@ -1578,6 +1590,8 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_day'>{this.reduceDownTime(this.state.sunday, machine._id)}</td>
             <td className='efficiency_body_week'>{this.filterTotalDTime(machine._id)}</td>
           </tr>
+          {this.renderDowntimeDetail(machine._id)}
+          {this.renderIndicator(machine._id)}
           <tr>
             <td className='efficiency_body_machine'>OEE (%)</td>
             <td className='efficiency_body_day'>{this.reduceOEE(this.state.monday, machine._id)}</td>
@@ -1692,6 +1706,44 @@ renderDowntimeByMachineGraphic = () =>{
         </tbody>
       </table>
     )
+  }
+
+  renderDowntimeDetail = (id) =>{
+    if(this.state.render === 'Downtime'){
+      return (  
+        <tr>
+          <td className='efficiency_body_machine'>Downtime (mins)</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.monday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.tuesday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.wednesday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.thursday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.friday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.saturday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceMins(this.state.sunday, id)}</td>
+          <td className='efficiency_body_week'>{this.filterTotalMins( id)}</td>
+        </tr>
+      )
+    } else {
+      return null
+    }
+  }
+
+  renderIndicator = (id) =>{
+    if(this.state.render === 'Downtime'){
+      return (
+        <tr>
+          <td className='efficiency_body_machine'>Indicator (mins)</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.monday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.tuesday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.wednesday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.thursday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.friday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.saturday)}</td>
+          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.sunday)}</td>
+          <td className='efficiency_body_week'>{this.filterHighestIndicator(id)}</td>
+        </tr>
+      )
+    } else{ return null }
   }
 
   renderMoldeBody = () =>{

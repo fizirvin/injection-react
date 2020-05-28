@@ -289,6 +289,7 @@ class App extends React.Component {
           defect{
             _id
             defectName
+            defectCode
           }
           defectPcs
           molde{
