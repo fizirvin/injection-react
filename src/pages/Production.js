@@ -28,7 +28,9 @@ class Production extends React.Component {
     downtime: [...this.props.downtime],
     reports: [...this.props.reports],
     shift: '12',
-    render: 'Machine'
+    render: 'Machine',
+    data2: [],
+    week2: []
   }
 
   async componentDidMount (){
@@ -47,11 +49,13 @@ class Production extends React.Component {
     }
     const render = this.state.render
     const production = this.props.production
+    const downtime = this.state.downtime
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
+    const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     // const data = this.setGraphicFirst(state.monday, state.sunday)
-    // const week = this.setGraphicFirstMachine(state.monday, state.sunday)
-    return this.setState({...state, week, data})
+    const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
+    return this.setState({...state, week, data, week2})
   }
 //-------------------------------------
   goToDate = (e) =>{
@@ -72,10 +76,13 @@ class Production extends React.Component {
      
     const render = this.state.render
     const production = this.state.production
+    const downtime = this.state.downtime
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
+    const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     // const data = this.setGraphicFirst(state.monday, state.sunday)
+    const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data})
+    return this.setState({...state, week, data, data2, week2})
   }
 
   goBack = async () =>{
@@ -98,10 +105,13 @@ class Production extends React.Component {
     
     const render = this.state.render
     const production = this.state.production
+    const downtime = this.state.downtime
     // const data = this.setGraphicFirst(state.monday, state.sunday)
+    const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
+    const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data})
+    return this.setState({...state, week, data, data2, week2})
   }
 
   goForward = async () =>{
@@ -123,9 +133,12 @@ class Production extends React.Component {
     }
     const render = this.state.render
     const production = this.state.production
+    const downtime = this.state.downtime
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
+    const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
+    const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data})
+    return this.setState({...state, week, data, data2, week2})
   }
   
 //----------------------------------------------------  
@@ -238,37 +251,39 @@ setDataForGraph = ( id ) =>{
 }
 
 renderGraphic = () =>{
-  if(this.state.week.length === 0){
-    return 
+  if(this.state.render === 'Downtime'){
+    return (<div className='Graphic'>   
+        <DownTimeWeekByMachine data={this.state.week2}> </DownTimeWeekByMachine>
+    </div>)
   }
   else { 
-    
-    return (<div className='Graphic'>
-          
+    return (<div className='Graphic'> 
     <BarChart data={this.state.week}></BarChart>
     </div>)
   }
 }
 
 renderModelGraphic = () =>{
-  if(this.state.data.length === 0){
-    return 
+  if(this.state.render === 'Machine'){
+    return (
+      <div className='Graphic'>  
+        <WeekChart data={this.state.data}></WeekChart>
+      </div>
+    )
   }
-  else { 
-    if(this.state.render === 'Machine'){
-      return (
-        <div className='Graphic'>  
-          <WeekChart data={this.state.data}></WeekChart>
-        </div>
-      )
-    }
-    else{
-      return (
-        <div className='Graphic'>  
-          <WeekChartVertical data={this.state.data}></WeekChartVertical>
-        </div>
-      )
-    }
+  else if(this.state.render === 'Downtime'){
+    return (
+      <div className='Graphic'>  
+        <DowntimeWeekChart data={this.state.data2}></DowntimeWeekChart>
+      </div>
+    )
+  }
+  else{
+    return (
+      <div className='Graphic'>  
+        <WeekChartVertical data={this.state.data}></WeekChartVertical>
+      </div>
+    )
   }
 }
 
@@ -299,8 +314,8 @@ renderDowntimeByMachineGraphic = () =>{
 }
 
 //---------------------------
-  FilterDataForGraphByMachine = (id, mon, sun) =>{
-    const array = [...this.props.reports]
+  FilterDataForGraphByMachine = (id, mon, sun, arr) =>{
+    const array = [...arr]
     const filter = array.filter( 
       item => item.date >= mon 
       && item.date <= sun).filter( item => item.machine === id)
@@ -311,16 +326,16 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
-  setGraphicFirstMachine = (mon, sun) =>{ 
+  setGraphicFirstMachine = (mon, sun, arr) =>{ 
     const data = this.props.machines.map(machine =>{  
-      const mins = this.FilterDataForGraphByMachine(machine._id, mon, sun)
+      const mins = this.FilterDataForGraphByMachine(machine._id, mon, sun, arr)
       return {machine: machine.machineNumber, mins: mins}
     })
     return data.sort((x, y)  => y.mins - x.mins)
   }
 
-  FilterDataForGraph = (id, mon, sun) =>{
-    const array = [...this.props.reports]
+  FilterDataForGraph = (id, mon, sun, arr) =>{
+    const array = [...arr]
     const filter = array.filter( 
       item => item.date >= mon 
       && item.date <= sun).filter( item => item.issue === id)
@@ -331,9 +346,9 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
-  setGraphicFirst = (mon, sun) =>{ 
+  setGraphicFirst = (mon, sun, arr) =>{ 
     const data = this.props.issues.map(issue =>{  
-      const mins = this.FilterDataForGraph(issue._id, mon, sun)
+      const mins = this.FilterDataForGraph(issue._id, mon, sun, arr)
       return {issue: issue.issueName, mins: mins}
     })
     return data.sort((x, y)  => y.mins - x.mins)
@@ -1393,16 +1408,21 @@ renderDowntimeByMachineGraphic = () =>{
       const downtime = [...this.props.downtime]
       const render = this.state.render
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
+      const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
+      const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
-      return this.setState({production, downtime, purge, shift, week, data})
+      return this.setState({production, downtime, purge, shift, week, data, data2, week2})
     } else{
       const production = [...this.props.production].filter(item => item.shift === shift)
       const purge = [...this.props.purge].filter(item => item.shift === shift)
       const downtime = [...this.props.downtime].filter(item => item.shift === shift)
+      
       const render = this.state.render
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
+      const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
+      const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
-      return this.setState({production, downtime, purge, shift, week, data})
+      return this.setState({production, downtime, purge, shift, week, data, data2, week2})
     }
   }
 
@@ -1412,6 +1432,18 @@ renderDowntimeByMachineGraphic = () =>{
 
   filterActive = (name) =>{
     return name === this.state.render ? 'shiftActive' : null 
+  }
+
+  detailActive = (name) =>{
+    return name === this.state.render ? 'downarrow_button_selected' : 'downarrow_button'
+  }
+
+  detailDowntime = (e) =>{
+    const render = e.target.name
+    const downtime = this.state.downtime
+    const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
+    const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
+    return this.setState({render, data2, week2})
   }
 
   formatDateField = (day, style) =>{
@@ -1753,9 +1785,9 @@ renderDowntimeByMachineGraphic = () =>{
 
   renderBodyRow = () =>{
     if(!this.state.machines) { return null } 
-    else if(this.state.render === 'Machine'){ return this.renderMachineBody()}
     else if(this.state.render === 'Model'){ return this.renderModelBody()}
     else if(this.state.render === 'Molde'){ return this.renderMoldeBody()}
+    else { return this.renderMachineBody()}
   }
 
   renderTotalRow = () =>{
@@ -1818,7 +1850,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalWTime()}</td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'>Total Downtime (hrs)</td>
+            <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}>▼</button> Total Downtime (hrs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.wednesday)}</td>
