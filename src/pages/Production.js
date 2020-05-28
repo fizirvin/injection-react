@@ -1263,6 +1263,12 @@ renderDowntimeByMachineGraphic = () =>{
     return filter
   }
 
+  filterMinsByIssue = (date, id, issue) => {
+    const array = [...this.state.downtime]
+    const filter = array.filter( item => item.date === date).filter( item => item.machine === id).filter( item => item.issue === issue)
+    return filter
+  }
+
   filterModelMins = (date, id) => {
     const array = [...this.state.downtime]
     const filter = array.filter( item => item.date === date).filter( item => item.part === id)
@@ -1271,6 +1277,13 @@ renderDowntimeByMachineGraphic = () =>{
 
   reduceMins = (date, id) =>{
     const reduce = this.filterMins(date, id).reduce( (a, b) =>{
+      return a + b.mins || 0
+    },0)
+    return reduce
+  }
+
+  reduceMinsByIssue = (date, id, issue) =>{
+    const reduce = this.filterMinsByIssue(date, id, issue).reduce( (a, b) =>{
       return a + b.mins || 0
     },0)
     return reduce
@@ -1329,16 +1342,14 @@ renderDowntimeByMachineGraphic = () =>{
     return isFinite(valid) ? valid : 0
   }
 
-  filterHighest = (id, day) =>{
+  filterHighest = (day) =>{
     const array = [...this.state.downtime]
-    const filter = array.filter( 
-      item => item.machine === id)
-      .filter( item => item.date === day ) 
+    const filter = array.filter( item => item.date === day ) 
       // const issues = [...new Set(filter)];
-      const issues = [...this.props.issues]
+      const issues = [...filter]
       const mapping = issues.map( issue =>
         {
-          const reduceMins = filter.filter( item => item.issue === issue._id)
+          const reduceMins = filter.filter( item => item.issue === issue.issue)
           .reduce( (a, b) =>{
             return a + b.mins || 0
           },0)
@@ -1358,17 +1369,37 @@ renderDowntimeByMachineGraphic = () =>{
         }
   }
 
-  filterHighestIndicator = (id) =>{
+  filterArrayDowntime = (id) =>{
     const array = [...this.state.downtime]
     const filter = array.filter( 
       item => item.date >= this.state.monday 
       && item.date <= this.state.sunday)
       .filter( item => item.machine === id)
-
-      const issues = [...this.props.issues]
+      // const issues = [...new Set(filter)];
+      const issues = [...filter]
       const mapping = issues.map( issue =>
         {
-          const reduceMins = filter.filter( item => item.issue === issue._id)
+          const reduceMins = filter.filter( item => item.issue === issue.issue)
+          .reduce( (a, b) =>{
+            return a + b.mins || 0
+          },0)
+          return {issue: issue.issue, issueCode: issue.issueCode, mins: reduceMins }
+        })
+
+    return mapping.sort((x, y)  => y.mins - x.mins)
+  }
+
+  filterHighestIndicator = () =>{
+    const array = [...this.state.downtime]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      
+
+      const issues = [...filter]
+      const mapping = issues.map( issue =>
+        {
+          const reduceMins = filter.filter( item => item.issue === issue.issue)
           .reduce( (a, b) =>{
             return a + b.mins || 0
           },0)
@@ -1591,7 +1622,6 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_week'>{this.filterTotalDTime(machine._id)}</td>
           </tr>
           {this.renderDowntimeDetail(machine._id)}
-          {this.renderIndicator(machine._id)}
           <tr>
             <td className='efficiency_body_machine'>OEE (%)</td>
             <td className='efficiency_body_day'>{this.reduceOEE(this.state.monday, machine._id)}</td>
@@ -1710,40 +1740,23 @@ renderDowntimeByMachineGraphic = () =>{
 
   renderDowntimeDetail = (id) =>{
     if(this.state.render === 'Downtime'){
-      return (  
-        <tr>
-          <td className='efficiency_body_machine'>Downtime (mins)</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.monday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.tuesday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.wednesday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.thursday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.friday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.saturday, id)}</td>
-          <td className='efficiency_body_day'>{this.reduceMins(this.state.sunday, id)}</td>
-          <td className='efficiency_body_week'>{this.filterTotalMins( id)}</td>
+      const array = this.filterArrayDowntime(id)
+      return array.map( issue =>
+        <tr key={issue.issue}>
+          <td className='efficiency_body_machine'>{issue.issueCode} (mins)</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.monday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.tuesday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.wednesday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.thursday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.friday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.saturday, id, issue.issue)}</td>
+          <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.sunday, id, issue.issue)}</td>
+          <td className='efficiency_body_week'>{issue.mins}</td>
         </tr>
-      )
+      )  
     } else {
       return null
     }
-  }
-
-  renderIndicator = (id) =>{
-    if(this.state.render === 'Downtime'){
-      return (
-        <tr>
-          <td className='efficiency_body_machine'>Indicator (mins)</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.monday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.tuesday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.wednesday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.thursday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.friday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.saturday)}</td>
-          <td className='efficiency_body_day'>{this.filterHighest(id, this.state.sunday)}</td>
-          <td className='efficiency_body_week'>{this.filterHighestIndicator(id)}</td>
-        </tr>
-      )
-    } else{ return null }
   }
 
   renderMoldeBody = () =>{
@@ -1912,6 +1925,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalDTime()}</td>
           </tr>
+          {this.renderIndicator()}
           <tr>
             <td className='efficiency_total_machine'>Total OEE (%)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.monday)}</td>
@@ -1937,6 +1951,24 @@ renderDowntimeByMachineGraphic = () =>{
         </tbody>
       </table>
     )
+  }
+
+  renderIndicator = () =>{
+    if(this.state.render === 'Downtime'){
+      return (
+        <tr>
+          <td className='efficiency_total_machine'>Indicator (mins)</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.monday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.tuesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.wednesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.thursday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.friday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.saturday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighest(this.state.sunday)}</td>
+          <td className='efficiency_total_week'>{this.filterHighestIndicator()}</td>
+        </tr>
+      )
+    } else{ return null }
   }
 
   render(){

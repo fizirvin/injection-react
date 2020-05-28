@@ -332,6 +332,7 @@ class App extends React.Component {
         machine
         issue
         issueName
+        issueCode
         mins
       }
       resinesByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
