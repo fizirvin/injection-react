@@ -180,6 +180,7 @@ class App extends React.Component {
         identification
         type
         unit
+        color
       } 
       parts {
         _id
@@ -575,6 +576,7 @@ class App extends React.Component {
       identification: "${newMaterial.identification}"
       type: "${newMaterial.type}"
       unit: "${newMaterial.unit}"
+      color: "black"
     }) {
       _id
       number
@@ -584,6 +586,7 @@ class App extends React.Component {
       identification
       type
       unit
+      color
     }}`;
 
     const url = this.state.server;
@@ -617,6 +620,7 @@ class App extends React.Component {
       identification: "${updateMaterial.identification}"
       type: "${updateMaterial.type}"
       unit: "${updateMaterial.unit}"
+      color: "black"
     }) {
       _id
       number
@@ -626,6 +630,7 @@ class App extends React.Component {
       identification
       type
       unit
+      color
     }}`;
 
     const url = this.state.server;
@@ -1035,6 +1040,8 @@ class App extends React.Component {
           resine{
             _id
             description
+            color
+            acronym
           }
           purge
         }
@@ -1167,7 +1174,9 @@ class App extends React.Component {
               machine: machine, 
               resine: resine.resine._id, 
               resineName: resine.resine.description, 
-              purge: resine.purge
+              purge: resine.purge,
+              color: resine.resine.color,
+              acronym: resine.resine.acronym
             }
           })
           return resines
@@ -1241,6 +1250,8 @@ class App extends React.Component {
             resine{
               _id
               description
+              acronym
+              color
             }
             purge
           }
@@ -1368,7 +1379,9 @@ class App extends React.Component {
               machine: machine, 
               resine: resine.resine._id, 
               resineName: resine.resine.description, 
-              purge: resine.purge
+              purge: resine.purge,
+              color: resine.resine.color,
+              acronym: resine.resine.acronym
             }
           })
           return resines
@@ -1500,6 +1513,7 @@ class App extends React.Component {
               issues={this.state.issues}
               machines={this.state.machines}
               models={this.state.models}
+              materials={this.state.materials}
               moldes={this.state.moldes}
               reports={this.state.reports}  
               downtime={this.state.downtimeByDate}
