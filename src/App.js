@@ -343,6 +343,8 @@ class App extends React.Component {
         resine
         resineName
         purge
+        acronym
+        color
       }
     }`
 
@@ -1175,7 +1177,7 @@ class App extends React.Component {
         const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
         const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
 
-        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        return this.setState({reports, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -1380,7 +1382,7 @@ class App extends React.Component {
         const downtimeByDate = [...oldDowntimeByDate, ...convertDowntime[0]]
         const resinesByDate = [...oldResinesByDate, ...convertResine[0]]
           
-        return this.setState({reports, productionByDate, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        return this.setState({reports, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});

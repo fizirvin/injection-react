@@ -29,6 +29,8 @@ class Production extends React.Component {
     reports: [...this.props.reports],
     shift: '12',
     render: 'Machine',
+    graphic: 'Machine',
+    detail: [],
     data2: [],
     week2: []
   }
@@ -251,9 +253,15 @@ setDataForGraph = ( id ) =>{
 }
 
 renderGraphic = () =>{
-  if(this.state.render === 'Downtime'){
+
+  if(this.state.graphic === 'Downtime'){
     return (<div className='Graphic'>   
         <DownTimeWeekByMachine data={this.state.week2}> </DownTimeWeekByMachine>
+    </div>)
+  }
+  else if(this.state.graphic === 'Purge'){
+    return (<div className='Graphic'>   
+        purge
     </div>)
   }
   else { 
@@ -264,17 +272,24 @@ renderGraphic = () =>{
 }
 
 renderModelGraphic = () =>{
-  if(this.state.render === 'Machine'){
+  if(this.state.graphic === 'Machine'){
     return (
       <div className='Graphic'>  
         <WeekChart data={this.state.data}></WeekChart>
       </div>
     )
   }
-  else if(this.state.render === 'Downtime'){
+  else if(this.state.graphic === 'Downtime'){
     return (
       <div className='Graphic'>  
         <DowntimeWeekChart data={this.state.data2}></DowntimeWeekChart>
+      </div>
+    )
+  }
+  else if(this.state.graphic === 'Purge'){
+    return (
+      <div className='Graphic'>  
+        purge 
       </div>
     )
   }
@@ -1269,6 +1284,12 @@ renderDowntimeByMachineGraphic = () =>{
     return filter
   }
 
+  filterPurgeByResine = (date, id, resine) => {
+    const array = [...this.state.purge]
+    const filter = array.filter( item => item.date === date).filter( item => item.machine === id).filter( item => item.resine === resine)
+    return filter
+  }
+
   filterModelMins = (date, id) => {
     const array = [...this.state.downtime]
     const filter = array.filter( item => item.date === date).filter( item => item.part === id)
@@ -1285,6 +1306,13 @@ renderDowntimeByMachineGraphic = () =>{
   reduceMinsByIssue = (date, id, issue) =>{
     const reduce = this.filterMinsByIssue(date, id, issue).reduce( (a, b) =>{
       return a + b.mins || 0
+    },0)
+    return reduce
+  }
+
+  reducePurgeByResine = (date, id, resine) =>{
+    const reduce = this.filterPurgeByResine(date, id, resine).reduce( (a, b) =>{
+      return a + b.purge || 0
     },0)
     return reduce
   }
@@ -1389,6 +1417,26 @@ renderDowntimeByMachineGraphic = () =>{
     return mapping.sort((x, y)  => y.mins - x.mins)
   }
 
+  filterArrayPurge = (id) =>{
+    const array = [...this.state.purge]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+      // const issues = [...new Set(filter)];
+      const resines = [...filter]
+      const mapping = resines.map( resine =>
+        {
+          const reducePurge = filter.filter( item => item.resine === resine.resine)
+          .reduce( (a, b) =>{
+            return a + b.purge || 0
+          },0)
+          return {resine: resine.resine, acronym: resine.acronym, color: resine.color, purge: reducePurge }
+        })
+
+    return mapping.sort((x, y)  => y.purge - x.purge)
+  }
+
   filterHighestIndicator = () =>{
     const array = [...this.state.downtime]
     const filter = array.filter( 
@@ -1419,6 +1467,87 @@ renderDowntimeByMachineGraphic = () =>{
         }
   }
 
+  filterHighestPurge = () =>{
+    const array = [...this.state.purge]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      
+
+      const resines = [...filter]
+      const mapping = resines.map( resine =>
+        {
+          const reducePurge = filter.filter( item => item.resine === resine.resine)
+          .reduce( (a, b) =>{
+            return a + b.purge || 0
+          },0)
+          return {resine: resine.resine, purge: reducePurge }
+        })
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.purge || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return '0 purge'
+        } else {
+          const resine = mapping.sort((x, y)  => y.purge - x.purge)[0].resine
+          
+          const hightesResine = filter.filter( element => element.resine === resine ).map( item => {
+            const reduceResine = filter.filter( it => it.machine === item.machine)
+            .reduce( (a, b) =>{
+              return a + b.purge || 0
+            },0)
+            return {machine: item.machine, purge: reduceResine}
+          })
+
+          const machine = hightesResine.sort((x, y)  => y.purge - x.purge)[0].machine
+          const purge =  hightesResine.sort((x, y)  => y.purge - x.purge)[0].purge
+          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
+          return `#${machineNumber} ${purge}`
+        }
+  }
+
+  filterHighestPurgeByDay = (day) =>{
+    const array = [...this.state.purge]
+    const filter = array.filter( 
+      item => item.date === day)
+      
+
+      const resines = [...filter]
+      const mapping = resines.map( resine =>
+        {
+          const reducePurge = filter.filter( item => item.resine === resine.resine)
+          .reduce( (a, b) =>{
+            return a + b.purge || 0
+          },0)
+          return {resine: resine.resine, purge: reducePurge }
+        })
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.purge || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return '0'
+        } else {
+          const resine = mapping.sort((x, y)  => y.purge - x.purge)[0].resine
+          
+          const hightesResine = filter.filter( element => element.resine === resine ).map( item => {
+            const reduceResine = filter.filter( it => it.machine === item.machine)
+            .reduce( (a, b) =>{
+              return a + b.purge || 0
+            },0)
+            return {machine: item.machine, purge: reduceResine}
+          })
+
+          const machine = hightesResine.sort((x, y)  => y.purge - x.purge)[0].machine
+          const purge =  hightesResine.sort((x, y)  => y.purge - x.purge)[0].purge
+          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
+          return `#${machineNumber} ${purge}`
+        }
+  }
+
   showReports = () =>{
     console.log(this.state, this.props)
   }
@@ -1428,17 +1557,17 @@ renderDowntimeByMachineGraphic = () =>{
     if( e.target.name === 'Machine'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data})
     }
     else if(e.target.name === 'Molde'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data})
     }
     else if(e.target.name === 'Model'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data})
     }
     else{ return }
   }
@@ -1478,15 +1607,27 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   detailActive = (name) =>{
-    return name === this.state.render ? 'downarrow_button_selected' : 'downarrow_button'
+    const detail = [...this.state.detail].find(element => element === name)
+    return detail ? 'downarrow_button_selected' : 'downarrow_button'
   }
 
   detailDowntime = (e) =>{
-    const render = e.target.name
-    const downtime = this.state.downtime
-    const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
-    const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
-    return this.setState({render, data2, week2})
+    const item = [...this.state.detail].find( element => element === e.target.name)
+    if(item){
+      const production = [...this.state.production]
+      const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production )
+      const detail = [...this.state.detail].filter( element => element !== e.target.name)
+      const graphic = 'Machine'
+      return this.setState({graphic, detail, data})
+    }
+    else{
+      const detail = [...this.state.detail, e.target.name]
+      const graphic = e.target.name
+      const downtime = this.state.downtime
+      const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
+      const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
+      return this.setState({graphic, detail, data2, week2})
+    }
   }
 
   formatDateField = (day, style) =>{
@@ -1644,6 +1785,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_day'>{this.reducePurge(this.state.sunday, machine._id)}</td>
             <td className='efficiency_body_week'>{this.filterTotalPurge(machine._id)}</td>
           </tr>
+          {this.renderPurgeDetail(machine._id)}
         </tbody>
       </table>
     )
@@ -1739,7 +1881,8 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderDowntimeDetail = (id) =>{
-    if(this.state.render === 'Downtime'){
+    const detail = [...this.state.detail].find( element => element === 'Downtime')
+    if(detail){
       const array = this.filterArrayDowntime(id)
       return array.map( issue =>
         <tr key={issue.issue}>
@@ -1752,6 +1895,28 @@ renderDowntimeByMachineGraphic = () =>{
           <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.saturday, id, issue.issue)}</td>
           <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.sunday, id, issue.issue)}</td>
           <td className='efficiency_body_week'>{issue.mins}</td>
+        </tr>
+      )  
+    } else {
+      return null
+    }
+  }
+
+  renderPurgeDetail = (id) =>{
+    const detail = [...this.state.detail].find( element => element === 'Purge')
+    if(detail){
+      const array = this.filterArrayPurge(id)
+      return array.map( resine =>
+        <tr key={resine.resine}>
+          <td className='efficiency_body_machine'>{resine.acronym} {resine.color} (g)</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.monday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.tuesday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.wednesday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.thursday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.friday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.saturday, id, resine.resine)}</td>
+          <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.sunday, id, resine.resine)}</td>
+          <td className='efficiency_body_week'>{resine.purge}</td>
         </tr>
       )  
     } else {
@@ -1938,7 +2103,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalOEE()} </td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'>Total Purge (g)</td>
+            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}>▼</button>Total Purge (g)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.wednesday)}</td>
@@ -1948,13 +2113,15 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalPurge()}</td>
           </tr>
+          {this.renderPurgeIndicator()}
         </tbody>
       </table>
     )
   }
 
   renderIndicator = () =>{
-    if(this.state.render === 'Downtime'){
+    const detail = [...this.state.detail].find( element => element === 'Downtime')
+    if(detail){
       return (
         <tr>
           <td className='efficiency_total_machine'>Indicator (mins)</td>
@@ -1966,6 +2133,25 @@ renderDowntimeByMachineGraphic = () =>{
           <td className='efficiency_total_day'>{this.filterHighest(this.state.saturday)}</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.sunday)}</td>
           <td className='efficiency_total_week'>{this.filterHighestIndicator()}</td>
+        </tr>
+      )
+    } else{ return null }
+  }
+
+  renderPurgeIndicator = () =>{
+    const detail = [...this.state.detail].find( element => element === 'Purge')
+    if(detail){
+      return (
+        <tr>
+          <td className='efficiency_total_machine'>Indicator (g)</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.monday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.tuesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.wednesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.thursday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.friday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.saturday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.sunday)}</td>
+          <td className='efficiency_total_week'>{this.filterHighestPurge()}</td>
         </tr>
       )
     } else{ return null }
