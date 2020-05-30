@@ -27,6 +27,7 @@ class Production extends React.Component {
     production: [...this.props.production],
     purge: [...this.props.purge],
     downtime: [...this.props.downtime],
+    ng: [...this.props.ng],
     reports: [...this.props.reports],
     shift: '12',
     render: 'Machine',
@@ -1075,7 +1076,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalModelTime = (id) =>{
@@ -1485,6 +1486,54 @@ renderDowntimeByMachineGraphic = () =>{
     return mapping.sort((x, y)  => y.purge - x.purge)
   }
 
+  filterArrayDefect = (id) =>{
+    const array = [...this.state.ng]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+      // const issues = [...new Set(filter)];
+      const defects = [...filter]
+      const mapping = defects.map( defect =>
+        {
+          const reduce = filter.filter( item => item.partNumber === defect.partNumber && item.molde === defect.molde && item.defect === defect.defect)
+          .reduce( (a, b) =>{
+            return a + b.defectPcs || 0
+          },0)
+          return { partName: defect.partName, moldeNumber: defect.moldeNumber, defectCode: defect.defectCode, defectPcs: reduce }
+        })
+
+    return mapping.sort((x, y)  => y.defectPcs - x.defectPcs)
+  }
+
+  filterArrayDefectModelMolde = (id) =>{
+    const array = [...this.state.ng]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      .filter( item => item.machine === id)
+      // const issues = [...new Set(filter)];
+
+      const items = [...filter]; // Some array I got from async call
+
+      const uniqueMoldeModels = Array.from(new Set(items.map( ({moldeNumber, partName})  =>{ 
+        const reduce = filter.find( item => item.partName === partName && item.moldeNumber === moldeNumber )
+        return reduce })))
+
+      const mapping = uniqueMoldeModels.map( item =>{
+        const items = filter.filter( i => i.partNumber === item.partNumber && i.molde === item.molde)
+        const defects = items.map( d =>{
+          return {defectCode: d.defectCode, pcs: d.defectPcs}
+        })
+        const reduce = items.reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+          return { partName: item.partName, moldeNumber: item.moldeNumber, defects: [...defects], defectPcs: reduce }
+      })
+      return mapping
+     
+  }
+
   filterHighestIndicator = () =>{
     const array = [...this.state.downtime]
     const filter = array.filter( 
@@ -1773,6 +1822,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_day'>{this.reduceNG(this.state.sunday, machine._id)}</td>
             <td className='efficiency_body_week'>{this.filterTotalNG(machine._id)}</td>
           </tr>
+          {this.renderDefectDetail(machine._id)}
           <tr>
             <td className='efficiency_body_machine'>OK (pcs)</td>
             <td className='efficiency_body_day'>{this.reduceOK(this.state.monday, machine._id)}</td>
@@ -1979,6 +2029,22 @@ renderDowntimeByMachineGraphic = () =>{
     }
   }
 
+  renderDefectDetail = (id) =>{
+    const detail = [...this.state.detail].find( element => element === 'NG')
+    if(detail){
+      const array = this.filterArrayDefectModelMolde(id)
+      console.log(array)
+      return array.map( (defect, index) =>
+        <tr key={index}>
+          <td className='efficiency_body_machine' colSpan='8'>{defect.partName} {defect.moldeNumber}</td>
+          <td className='efficiency_body_machine' colSpan='1'>{defect.defectPcs}</td>
+        </tr>
+      )  
+    } else {
+      return null
+    }
+  }
+
   renderMoldeBody = () =>{
     return this.state.moldes.map( molde =>
       <table key={molde._id} className='efficiency_body_table'>
@@ -2091,7 +2157,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalReal()}</td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'>Total NG (pcs)</td>
+            <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}>▼</button> Total NG (pcs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.wednesday)}</td>
@@ -2101,6 +2167,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalNG()}</td>
           </tr>
+          {this.renderDefectIndicator()}
           <tr>
             <td className='efficiency_total_machine'>Total OK (pcs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.monday)}</td>
@@ -2158,7 +2225,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalOEE()} </td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}>▼</button>Total Purge (g)</td>
+            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}>▼</button> Total Purge (g)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.wednesday)}</td>
@@ -2179,7 +2246,7 @@ renderDowntimeByMachineGraphic = () =>{
     if(detail){
       return (
         <tr>
-          <td className='efficiency_total_machine'>Indicator (mins)</td>
+          <td className='efficiency_total_machine_indicator'>Indicator (mins)</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.monday)}</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.tuesday)}</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.wednesday)}</td>
@@ -2207,6 +2274,25 @@ renderDowntimeByMachineGraphic = () =>{
           <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.saturday)}</td>
           <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.sunday)}</td>
           <td className='efficiency_total_week'>{this.filterHighestPurge()}</td>
+        </tr>
+      )
+    } else{ return null }
+  }
+
+  renderDefectIndicator = () =>{
+    const defect = [...this.state.detail].find( element => element === 'NG')
+    if(defect){
+      return (
+        <tr>
+          <td className='efficiency_total_machine'>Indicator (g)</td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_day'></td>
+          <td className='efficiency_total_week'></td>
         </tr>
       )
     } else{ return null }

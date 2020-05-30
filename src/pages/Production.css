@@ -125,6 +125,17 @@
     border: solid 1px;
     font-weight: bold;
     font-size: 80%;
+    align-content: space-between;
+}
+
+.efficiency_total_machine_indicator{
+    /* background-color: rgba(0, 2, 139, 0.808); */
+    background-color: #52b6ca;
+    text-align: right;
+    width: 20%;
+    border: solid 1px;
+    font-weight: bold;
+    font-size: 80%;
 }
 
 .efficiency_total_day{

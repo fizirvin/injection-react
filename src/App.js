@@ -64,6 +64,7 @@ class App extends React.Component {
     programs: [],
     reports: [],
     downtimeByDate: [],
+    defectsByDate: [],
     productionByDate: [],
     resinesByDate: [],
     initial49:'',
@@ -336,6 +337,20 @@ class App extends React.Component {
         issueCode
         mins
       }
+      defectsByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
+        report
+        date
+        shift
+        machine
+        defect
+        defectCode
+        defectName
+        partNumber
+        partName
+        molde
+        moldeNumber
+        defectPcs
+      }
       resinesByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
         report
         date
@@ -369,6 +384,7 @@ class App extends React.Component {
       reports: data.data.reports,
       productionByDate: data.data.productionByDate,
       downtimeByDate: data.data.downtimeByDate,
+      defectsByDate: data.data.defectsByDate,
       resinesByDate: data.data.resinesByDate,
       initial49: initial49,
       end: end
@@ -1161,6 +1177,30 @@ class App extends React.Component {
           return downtime
         })
 
+        const convertDefects = testArr.map( item => { 
+          const date = this.formatDate(item.reportDate);
+          const id = item._id
+          const machine = item.machine._id
+          const shift = item.shift
+          const defects = item.defects.map( defect =>{
+            return { 
+              report: id, 
+              date: date,
+              shift: shift, 
+              machine: machine, 
+              defect: defect.defect._id,
+              defectCode: defect.defect.defectCode,
+              defectName: defect.defect.defectName,
+              partNumber: defect.partNumber._id,
+              partName: defect.partNumber.partName,
+              molde: defect.molde._id,
+              moldeNumber: defect.molde.moldeNumber,
+              defectPcs: defect.defectPcs 
+            }
+          })
+          return defects
+        })
+
         const convertResine = testArr.map( item => { 
           const date = this.formatDate(item.reportDate);
           const id = item._id
@@ -1185,8 +1225,9 @@ class App extends React.Component {
         const productionByDate= [...this.state.productionByDate, ...convert[0]]
         const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
         const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
+        const defectsByDate = [...this.state.defectsByDate, ...convertDefects[0]]
 
-        return this.setState({reports, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -1366,6 +1407,30 @@ class App extends React.Component {
             return downtime
           })
 
+          const convertDefects = testArr.map( item => { 
+            const date = this.formatDate(item.reportDate);
+            const id = item._id
+            const machine = item.machine._id
+            const shift = item.shift
+            const defects = item.defects.map( defect =>{
+              return { 
+                report: id, 
+                date: date,
+                shift: shift, 
+                machine: machine, 
+                defect: defect.defect._id,
+                defectCode: defect.defect.defectCode,
+                defectName: defect.defect.defectName,
+                partNumber: defect.partNumber._id,
+                partName: defect.partNumber.partName,
+                molde: defect.molde._id,
+                moldeNumber: defect.molde.moldeNumber,
+                defectPcs: defect.defectPcs 
+              }
+            })
+            return defects
+          })  
+
         const convertResine = testArr.map( item => { 
           const date = this.formatDate(item.reportDate);
           const id = item._id
@@ -1389,13 +1454,15 @@ class App extends React.Component {
 
         const oldProductionByDate = this.state.productionByDate.filter( reportDate => reportDate.report !== report._id)
         const oldDowntimeByDate = this.state.downtimeByDate.filter( reportDate => reportDate.report !== report._id)
+        const oldDefectsByDate = this.state.defectsByDate.filter( reportDate => reportDate.report !== report._id)
         const oldResinesByDate = this.state.resinesByDate.filter( reportDate => reportDate.report !== report._id)
 
         const productionByDate= [...oldProductionByDate, ...convert[0]]
         const downtimeByDate = [...oldDowntimeByDate, ...convertDowntime[0]]
+        const defectsByDate = [...oldDefectsByDate, ...convertDefects[0]]
         const resinesByDate = [...oldResinesByDate, ...convertResine[0]]
           
-        return this.setState({reports, productionByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -1515,7 +1582,8 @@ class App extends React.Component {
               models={this.state.models}
               materials={this.state.materials}
               moldes={this.state.moldes}
-              reports={this.state.reports}  
+              reports={this.state.reports}
+              ng={this.state.defectsByDate}  
               downtime={this.state.downtimeByDate}
               production={this.state.productionByDate}
               purge={this.state.resinesByDate}
