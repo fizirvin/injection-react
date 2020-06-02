@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 
 
 const width = 450;
-const height = 330;
-const margin = {top: 10, right: 5, bottom: 150, left: 35};
+const height = 400;
+const margin = {top: 10, right: 5, bottom: 220, left: 35};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 

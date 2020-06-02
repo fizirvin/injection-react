@@ -32,11 +32,13 @@ class Production extends React.Component {
     shift: '12',
     render: 'Machine',
     graphic: 'Machine',
-    detail: [],
+    detail: 'off',
     data2: [],
     data3: [],
     week2: [],
-    week3: []
+    week3: [],
+    data4: [],
+    week4: []
   }
 
   async componentDidMount (){
@@ -53,9 +55,8 @@ class Production extends React.Component {
     saturday: this.getDateofTable(6, today),
     sunday: this.getDateofTable(7, today)
     }
-    const render = this.state.render
-    const production = this.props.production
-    const {purge, downtime } = this.state
+
+    const {render, production, downtime } = this.state
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
@@ -82,15 +83,17 @@ class Production extends React.Component {
     }
      
     
-    const { render, production, downtime, purge } = this.state
+    const { render, production, downtime, purge, ng } = this.state
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const data3 = this.setGraphicFirstPurge(state.monday, state.sunday, purge)
+    const data4 = this.setGraphicFirstDefect(state.monday, state.sunday, ng)
     // const data = this.setGraphicFirst(state.monday, state.sunday)
     const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week3 = this.setGraphicFirstMachinePurge(state.monday, state.sunday, purge)
+    const week4 = this.setGraphicFirstMachineDefect(state.monday, state.sunday, ng)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data, data2, week2, data3, week3})
+    return this.setState({...state, week, data, data2, week2, data3, week3, data4, week4})
   }
 
   goBack = async () =>{
@@ -112,15 +115,17 @@ class Production extends React.Component {
     }
     
   
-    const { render, production, downtime, purge } = this.state
+    const { render, production, downtime, purge, ng } = this.state
     // const data = this.setGraphicFirst(state.monday, state.sunday)
     const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const data3 = this.setGraphicFirstPurge(state.monday, state.sunday, purge)
+    const data4 = this.setGraphicFirstDefect(state.monday, state.sunday, ng)
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week3 = this.setGraphicFirstMachinePurge(state.monday, state.sunday, purge)
+    const week4 = this.setGraphicFirstMachineDefect(state.monday, state.sunday, ng)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data, data2, week2, data3, week3})
+    return this.setState({...state, week, data, data2, week2, data3, week3, data4, week4})
   }
 
   goForward = async () =>{
@@ -141,14 +146,16 @@ class Production extends React.Component {
       sunday: this.getDateofTable(7, today),
     }
     
-    const { render, production, downtime, purge } = this.state
+    const { render, production, downtime, purge, ng } = this.state
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
     const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const data3 = this.setGraphicFirstPurge(state.monday, state.sunday, purge)
+    const data4 = this.setGraphicFirstDefect(state.monday, state.sunday, ng)
     const week2 = this.setGraphicFirstMachine(state.monday, state.sunday, downtime)
     const week3 = this.setGraphicFirstMachinePurge(state.monday, state.sunday, purge)
+    const week4 = this.setGraphicFirstMachinePurge(state.monday, state.sunday, ng)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
-    return this.setState({...state, week, data, data2, data3, week2, week3})
+    return this.setState({...state, week, data, data2, data3, week2, week3, data4, week4})
   }
   
 //----------------------------------------------------  
@@ -272,6 +279,11 @@ renderGraphic = () =>{
         <DownTimeWeekByMachine data={this.state.week3}> </DownTimeWeekByMachine>
     </div>)
   }
+  else if(this.state.graphic === 'NG'){
+    return (<div className='Graphic'>   
+        <DownTimeWeekByMachine data={this.state.week4}> </DownTimeWeekByMachine>
+    </div>)
+  }
   else { 
     return (<div className='Graphic'> 
     <BarChart data={this.state.week}></BarChart>
@@ -298,6 +310,13 @@ renderModelGraphic = () =>{
     return (
       <div className='Graphic'>  
         <DowntimeWeekChart data={this.state.data3}></DowntimeWeekChart>
+      </div>
+    )
+  }
+  else if(this.state.graphic === 'NG'){
+    return (
+      <div className='Graphic'>  
+        <DowntimeWeekChart data={this.state.data4}></DowntimeWeekChart>
       </div>
     )
   }
@@ -361,6 +380,18 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
+  FilterDataForGraphByMachineDefect = (id, mon, sun, arr) =>{
+    const array = [...arr]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun).filter( item => item.machine === id)
+      const reduce = filter.reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+
+    return reduce
+  }
+
   setGraphicFirstMachine = (mon, sun, arr) =>{ 
     const data = this.props.machines.map(machine =>{  
       const mins = this.FilterDataForGraphByMachine(machine._id, mon, sun, arr)
@@ -377,6 +408,14 @@ renderDowntimeByMachineGraphic = () =>{
     return data.sort((x, y)  => y.mins - x.mins)
   }
 
+  setGraphicFirstMachineDefect = (mon, sun, arr) =>{ 
+    const data = this.props.machines.map(machine =>{  
+      const mins = this.FilterDataForGraphByMachineDefect(machine._id, mon, sun, arr)
+      return {machine: machine.machineNumber, mins: mins}
+    })
+    return data.sort((x, y)  => y.mins - x.mins)
+  }
+
   FilterDataForGraphPurge = (id, mon, sun, arr) =>{
     const array = [...arr]
     const filter = array.filter( 
@@ -384,6 +423,18 @@ renderDowntimeByMachineGraphic = () =>{
       && item.date <= sun).filter( item => item.resine === id)
       const reduce = filter.reduce( (a, b) =>{
         return a + b.purge || 0
+      },0)
+
+    return reduce
+  }
+
+  FilterDataForGraphDefect = (id, mon, sun, arr) =>{
+    const array = [...arr]
+    const filter = array.filter( 
+      item => item.date >= mon 
+      && item.date <= sun).filter( item => item.defect === id)
+      const reduce = filter.reduce( (a, b) =>{
+        return a + b.defectPcs || 0
       },0)
 
     return reduce
@@ -417,6 +468,16 @@ renderDowntimeByMachineGraphic = () =>{
       return {issue, mins}
     })
     return data.sort((x, y)  => y.mins - x.mins)
+  }
+
+  setGraphicFirstDefect = (mon, sun, arr) =>{ 
+    const data = this.props.defects.map(({_id, defectCode, defectName }) =>{  
+      const mins = this.FilterDataForGraphDefect(_id, mon, sun, arr)
+      console.log(mins)
+      const issue = `${defectCode} ${defectName}`
+      return {issue, mins}
+    })
+    return data.filter( item => item.mins > 0).sort((x, y)  => y.mins - x.mins)
   }
   //-----------------------------------
 
@@ -1089,7 +1150,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalMoldeTime = (id) =>{
@@ -1102,7 +1163,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalDTime = (id) =>{
@@ -1115,7 +1176,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalModelDTime = (id) =>{
@@ -1128,7 +1189,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalMoldeDTime = (id) =>{
@@ -1141,7 +1202,7 @@ renderDowntimeByMachineGraphic = () =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reducePlan = (date, id) =>{
@@ -1675,27 +1736,33 @@ renderDowntimeByMachineGraphic = () =>{
       const production = [...this.props.production]
       const purge = [...this.props.purge]
       const downtime = [...this.props.downtime]
+      const ng = [...this.props.ng]
       const render = this.state.render
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
       const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
       const data3 = this.setGraphicFirstPurge(this.state.monday, this.state.sunday, purge)
+      const data4 = this.setGraphicFirstDefect(this.state.monday, this.state.sunday, ng)
       const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
       const week3 = this.setGraphicFirstMachinePurge(this.state.monday, this.state.sunday, purge)
-      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3})
+      const week4 = this.setGraphicFirstMachineDefect(this.state.monday, this.state.sunday, ng)
+      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3, data4, week4})
     } else{
       const production = [...this.props.production].filter(item => item.shift === shift)
       const purge = [...this.props.purge].filter(item => item.shift === shift)
       const downtime = [...this.props.downtime].filter(item => item.shift === shift)
+      const ng = [...this.props.ng].filter(item => item.shift === shift)
       
       const render = this.state.render
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, render, production )
       const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
       const data3 = this.setGraphicFirstPurge(this.state.monday, this.state.sunday, purge)
+      const data4 = this.setGraphicFirstDefect(this.state.monday, this.state.sunday, ng)
       const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
-      const week3 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, purge)
+      const week3 = this.setGraphicFirstMachinePurge(this.state.monday, this.state.sunday, purge)
+      const week4 = this.setGraphicFirstMachineDefect(this.state.monday, this.state.sunday, ng)
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
-      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3})
+      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3, data4, week4})
     }
   }
 
@@ -1707,30 +1774,39 @@ renderDowntimeByMachineGraphic = () =>{
     return name === this.state.render ? 'shiftActive' : null 
   }
 
+  indicatorActive = (name) =>{
+    return this.state.detail === name ? 'shiftActive' : null 
+  }
+
   detailActive = (name) =>{
-    const detail = [...this.state.detail].find(element => element === name)
+    const detail = this.state.graphic === name
     return detail ? 'downarrow_button_selected' : 'downarrow_button'
   }
 
+  turnOnIndicators = () =>{
+    return this.state.detail === 'off' ? this.setState({detail: 'on'}) : this.setState({detail: 'off'})
+  }
+
   detailDowntime = (e) =>{
-    const item = [...this.state.detail].find( element => element === e.target.name)
-    if(item){
+    const item = this.state.graphic
+    if(item === e.target.name){
       const production = [...this.state.production]
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production )
-      const detail = [...this.state.detail].filter( element => element !== e.target.name)
       const graphic = 'Machine'
-      return this.setState({graphic, detail, data})
+      return this.setState({graphic, data})
     }
     else{
-      const detail = [...this.state.detail, e.target.name]
+      
       const graphic = e.target.name
-      const downtime = this.state.downtime
-      const { purge } = this.state
+      
+      const { purge, downtime, ng } = this.state
       const data2 = this.setGraphicFirst(this.state.monday, this.state.sunday, downtime)
       const data3 = this.setGraphicFirstPurge(this.state.monday, this.state.sunday, purge)
+      const data4 = this.setGraphicFirstDefect(this.state.monday, this.state.sunday, ng)
       const week2 = this.setGraphicFirstMachine(this.state.monday, this.state.sunday, downtime)
       const week3 = this.setGraphicFirstMachinePurge(this.state.monday, this.state.sunday, purge)
-      return this.setState({graphic, detail, data2, week2, data3, week3})
+      const week4 = this.setGraphicFirstMachineDefect(this.state.monday, this.state.sunday, ng)
+      return this.setState({graphic, data2, week2, data3, week3, data4, week4})
     }
   }
 
@@ -1782,7 +1858,8 @@ renderDowntimeByMachineGraphic = () =>{
                 <td>Change Week:</td>
                 <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
                 <td>Filter By:</td>
-                <td><button name='Machine' className={this.filterActive('Machine')} onClick={this.changeTo}>Machine</button><button name='Model' className={this.filterActive('Model')} onClick={this.changeTo}>Model</button><button name='Molde' className={this.filterActive('Molde')} onClick={this.changeTo}>Molde</button></td>
+                <td><button name='Machine' className={this.filterActive('Machine')} onClick={this.changeTo}>Machine</button><button name='Model' className={this.filterActive('Model')} onClick={this.changeTo}>Model</button><button name='Molde' className={this.filterActive('Molde')} onClick={this.changeTo}>Molde</button>
+                <button name='Machine' className={this.indicatorActive('on')} onClick={this.turnOnIndicators}>Indicators ▼</button></td>
                 <td>Go to Date:</td>
                 <td><input type='date' onChange={this.goToDate}></input></td>
               </tr>
@@ -2033,7 +2110,7 @@ renderDowntimeByMachineGraphic = () =>{
     const detail = [...this.state.detail].find( element => element === 'NG')
     if(detail){
       const array = this.filterArrayDefectModelMolde(id)
-      console.log(array)
+     
       return array.map( (defect, index) =>
         <tr key={index}>
           <td className='efficiency_body_machine' colSpan='8'>{defect.partName} {defect.moldeNumber}</td>
@@ -2157,7 +2234,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalReal()}</td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}>▼</button> Total NG (pcs)</td>
+            <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}></button> Total NG (pcs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.wednesday)}</td>
@@ -2167,7 +2244,6 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalNG()}</td>
           </tr>
-          {this.renderDefectIndicator()}
           <tr>
             <td className='efficiency_total_machine'>Total OK (pcs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.monday)}</td>
@@ -2202,7 +2278,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalWTime()}</td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}>▼</button> Total Downtime (hrs)</td>
+            <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}></button> Total Downtime (hrs)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.wednesday)}</td>
@@ -2212,7 +2288,6 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalDTime()}</td>
           </tr>
-          {this.renderIndicator()}
           <tr>
             <td className='efficiency_total_machine'>Total OEE (%)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.monday)}</td>
@@ -2225,7 +2300,7 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_week'>{this.filterWeekTotalOEE()} </td>
           </tr>
           <tr>
-            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}>▼</button> Total Purge (g)</td>
+            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}></button> Total Purge (g)</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.monday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.tuesday)}</td>
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.wednesday)}</td>
@@ -2235,18 +2310,20 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.sunday)}</td>
             <td className='efficiency_total_week'>{this.filterWeekTotalPurge()}</td>
           </tr>
+          {this.renderIndicator()}
           {this.renderPurgeIndicator()}
+          {this.renderDefectIndicator()}
         </tbody>
       </table>
     )
   }
 
   renderIndicator = () =>{
-    const detail = [...this.state.detail].find( element => element === 'Downtime')
+    const detail = this.state.detail === 'on'
     if(detail){
       return (
         <tr>
-          <td className='efficiency_total_machine_indicator'>Indicator (mins)</td>
+          <td className='efficiency_total_machine'>DT Indicator (mins)</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.monday)}</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.tuesday)}</td>
           <td className='efficiency_total_day'>{this.filterHighest(this.state.wednesday)}</td>
@@ -2261,11 +2338,11 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderPurgeIndicator = () =>{
-    const detail = [...this.state.detail].find( element => element === 'Purge')
+    const detail = this.state.detail === 'on'
     if(detail){
       return (
         <tr>
-          <td className='efficiency_total_machine'>Indicator (g)</td>
+          <td className='efficiency_total_machine'>Purge Indicator (g)</td>
           <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.monday)}</td>
           <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.tuesday)}</td>
           <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.wednesday)}</td>
@@ -2280,11 +2357,11 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderDefectIndicator = () =>{
-    const defect = [...this.state.detail].find( element => element === 'NG')
-    if(defect){
+    const detail = this.state.detail === 'on'
+    if(detail){
       return (
         <tr>
-          <td className='efficiency_total_machine'>Indicator (g)</td>
+          <td className='efficiency_total_machine'>Defect Indicator (pcs)</td>
           <td className='efficiency_total_day'></td>
           <td className='efficiency_total_day'></td>
           <td className='efficiency_total_day'></td>

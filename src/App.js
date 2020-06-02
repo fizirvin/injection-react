@@ -152,7 +152,7 @@ class App extends React.Component {
   async componentDidMount(){
 
     const date = new Date();
-    const today = this.formatDate(date)+'T00:00:00.000-06:00'
+    const today = this.formatDate(date)+'T23:59:00.000-06:00'
     // const initial = this.getDateofTable(1, today);
     const end = this.getDateofTable(7, today);
     const initial49 = this.getDateofTable49(1, today);
@@ -1581,6 +1581,7 @@ class App extends React.Component {
               machines={this.state.machines}
               models={this.state.models}
               materials={this.state.materials}
+              defects={this.state.defects}
               moldes={this.state.moldes}
               reports={this.state.reports}
               ng={this.state.defectsByDate}  

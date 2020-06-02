@@ -13,7 +13,7 @@
 }
 
 .downtime_controlls{
-    margin-left: 2px;
+    margin-left: 10px;
     margin-top: 0;
 }
 
@@ -51,8 +51,8 @@
     margin-top: 2px;
     margin-left: 2%;
     overflow-y: scroll;
-    min-height: 43vh;
-    max-height: 43vh;
+    min-height: 40vh;
+    max-height: 40vh;
 }
 
 .efficiency_body_table{
@@ -205,8 +205,10 @@
     display: flex;
 }
 .graphics_container{
-    
+    overflow-y: scroll;
     width: 35%;
+    min-height: 86vh;
+    max-height: 86vh;
 }
 
 .hola{
@@ -230,12 +232,15 @@
 }
 
 .downarrow_button{
-   padding: 0; 
-   align-items: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+   
 }
 
 .downarrow_button_selected{
-    padding: 0; 
-    align-items: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
     background-color: tomato;
  }
