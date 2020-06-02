@@ -1,7 +1,7 @@
 
 
 .downtime_header{
-    margin-left: 2%;
+    margin-left: 1%;
     display: flex;
     margin-top: 0;
 }
@@ -13,7 +13,7 @@
 }
 
 .downtime_controlls{
-    margin-left: 10px;
+    margin-left: 5px;
     margin-top: 0;
 }
 
@@ -243,4 +243,14 @@
     height: 15px;
     border-radius: 15px;
     background-color: tomato;
+ }
+
+ .efficiency_body_machine_defect{
+    background-color: rgb(252, 252, 252);
+    padding-right: 25px;
+    text-align: right;
+    width: 20%;
+    border: solid 1px;
+    font-weight: bold;
+    font-size: 75%;
  }

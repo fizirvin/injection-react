@@ -1584,7 +1584,7 @@ renderDowntimeByMachineGraphic = () =>{
       const mapping = uniqueMoldeModels.map( item =>{
         const items = filter.filter( i => i.partNumber === item.partNumber && i.molde === item.molde)
         const defects = items.map( d =>{
-          return {defectCode: d.defectCode, pcs: d.defectPcs}
+          return {defectCode: d.defectCode, pcs: d.defectPcs, defectName: d.defectName, date: d.date, id: d.defect}
         })
         const reduce = items.reduce( (a, b) =>{
           return a + b.defectPcs || 0
@@ -1663,6 +1663,91 @@ renderDowntimeByMachineGraphic = () =>{
           const purge =  hightesResine.sort((x, y)  => y.purge - x.purge)[0].purge
           const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
           return `#${machineNumber} ${purge}`
+        }
+  }
+
+  filterHighestDefect = () =>{
+    const array = [...this.state.ng]
+    const filter = array.filter( 
+      item => item.date >= this.state.monday 
+      && item.date <= this.state.sunday)
+      
+
+      const defects = [...filter]
+      const mapping = defects.map( defect =>
+        {
+          const reduceDefect = filter.filter( item => item.defect === defect.defect && item.partNumber === defect.partNumber)
+          .reduce( (a, b) =>{
+            return a + b.defectPcs || 0
+          },0)
+          return {defect: defect.defect, pcs: reduceDefect, partNumber: defect.partNumber }
+        })
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.pcs || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return '0 defect'
+        } else {
+          const defect = mapping.sort((x, y)  => y.pcs - x.pcs)[0].defect
+          const partNumber = mapping.sort((x, y)  => y.pcs - x.pcs)[0].partNumber
+          
+          const hightesDefect= filter.filter( element => element.defect === defect ).map( item => {
+            const reduceDefect = filter.filter( it => it.machine === item.machine && it.partNumber === partNumber && it.defect === defect)
+            .reduce( (a, b) =>{
+              return a + b.defectPcs || 0
+            },0)
+            return {machine: item.machine, pcs: reduceDefect, code: item.defectCode}
+          })
+
+          const machine = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].machine
+          const code = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].code
+          const pcs =  hightesDefect.sort((x, y)  => y.pcs- x.pcs)[0].pcs
+          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
+          return `${code} #${machineNumber} ${pcs}`
+        }
+  }
+
+  filterHighestDefectByDay = (day) =>{
+    const array = [...this.state.ng]
+    const filter = array.filter( 
+      item => item.date === day)
+      
+
+      const defects = [...filter]
+      const mapping = defects.map( defect =>
+        {
+          const reduceDefect = filter.filter( item => item.defect === defect.defect && item.partNumber === defect.partNumber)
+          .reduce( (a, b) =>{
+            return a + b.defectPcs || 0
+          },0)
+          return {defect: defect.defect, pcs: reduceDefect, partNumber: defect.partNumber }
+        })
+
+        const reduceMapping = mapping.reduce( (a, b) =>{
+          return a + b.pcs || 0
+        },0)
+
+        if(reduceMapping === 0){
+          return '0'
+        } else {
+          const defect = mapping.sort((x, y)  => y.pcs - x.pcs)[0].defect
+          const partNumber = mapping.sort((x, y)  => y.pcs - x.pcs)[0].partNumber
+          
+          const hightesDefect= filter.filter( element => element.defect === defect ).map( item => {
+            const reduceDefect = filter.filter( it => it.machine === item.machine && it.partNumber === partNumber && it.defect === defect)
+            .reduce( (a, b) =>{
+              return a + b.defectPcs || 0
+            },0)
+            return {machine: item.machine, pcs: reduceDefect, code: item.defectCode}
+          })
+
+          const machine = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].machine
+          const code = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].code
+          const pcs =  hightesDefect.sort((x, y)  => y.pcs- x.pcs)[0].pcs
+          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
+          return `${code} #${machineNumber} ${pcs}`
         }
   }
 
@@ -1762,7 +1847,7 @@ renderDowntimeByMachineGraphic = () =>{
       const week3 = this.setGraphicFirstMachinePurge(this.state.monday, this.state.sunday, purge)
       const week4 = this.setGraphicFirstMachineDefect(this.state.monday, this.state.sunday, ng)
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
-      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3, data4, week4})
+      return this.setState({production, ng, downtime, purge, shift, week, data, data2, week2, data3, week3, data4, week4})
     }
   }
 
@@ -1899,7 +1984,10 @@ renderDowntimeByMachineGraphic = () =>{
             <td className='efficiency_body_day'>{this.reduceNG(this.state.sunday, machine._id)}</td>
             <td className='efficiency_body_week'>{this.filterTotalNG(machine._id)}</td>
           </tr>
+          </tbody>
+          
           {this.renderDefectDetail(machine._id)}
+          <tbody>
           <tr>
             <td className='efficiency_body_machine'>OK (pcs)</td>
             <td className='efficiency_body_day'>{this.reduceOK(this.state.monday, machine._id)}</td>
@@ -2063,7 +2151,7 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderDowntimeDetail = (id) =>{
-    const detail = [...this.state.detail].find( element => element === 'Downtime')
+    const detail = this.state.detail === 'on'
     if(detail){
       const array = this.filterArrayDowntime(id)
       return array.map( issue =>
@@ -2085,7 +2173,7 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderPurgeDetail = (id) =>{
-    const detail = [...this.state.detail].find( element => element === 'Purge')
+    const detail = this.state.detail === 'on'
     if(detail){
       const array = this.filterArrayPurge(id)
       return array.map( resine =>
@@ -2107,19 +2195,59 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderDefectDetail = (id) =>{
-    const detail = [...this.state.detail].find( element => element === 'NG')
+    const detail = this.state.detail === 'on'
     if(detail){
       const array = this.filterArrayDefectModelMolde(id)
      
-      return array.map( (defect, index) =>
-        <tr key={index}>
-          <td className='efficiency_body_machine' colSpan='8'>{defect.partName} {defect.moldeNumber}</td>
-          <td className='efficiency_body_machine' colSpan='1'>{defect.defectPcs}</td>
+      return array.map( (defect) =>
+      
+        <tbody key={id+'a'}>
+        <tr>
+          <th className='title_body_model' colSpan='8'>Model: {defect.partName} {defect.moldeNumber}</th>
+          <td className='efficiency_body_week' colSpan='1'>{defect.defectPcs}</td>
         </tr>
+        {this.renderDefectList(defect.defects)}
+        </tbody>
+      
       )  
     } else {
       return null
     }
+  }
+
+  reduceDefectListByCode = (arr, id ) =>{
+    const reduce = arr.filter( item => item.id === id).reduce( (a, b) =>{
+      return a + b.pcs || 0
+    },0)
+    return reduce
+  }
+
+  reduceDefectListByDate = (arr, date, id) =>{
+    const reduce = arr.filter( item => item.id === id && item.date === date).reduce( (a, b) =>{
+      return a + b.pcs || 0
+    },0)
+    return reduce
+  }
+  
+
+  renderDefectList = (arr) =>{
+    const uniqueDefectList = Array.from(new Set(arr.map( ({id})  =>{ 
+      const reduce = arr.find( item => item.id === id )
+      return reduce })))
+     
+    return uniqueDefectList.map( ({defectCode, id}) =>
+        <tr key={id+'b'}>
+          <td className='efficiency_body_machine' colSpan='1'>{defectCode}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.monday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.tuesday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.wednesday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.thursday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.friday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.saturday, id)}</td>
+          <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.sunday, id)}</td>
+          <td className='efficiency_body_week' colSpan='1'>{this.reduceDefectListByCode(arr, id)}</td>
+        </tr>
+      ) 
   }
 
   renderMoldeBody = () =>{
@@ -2362,14 +2490,14 @@ renderDowntimeByMachineGraphic = () =>{
       return (
         <tr>
           <td className='efficiency_total_machine'>Defect Indicator (pcs)</td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_day'></td>
-          <td className='efficiency_total_week'></td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.monday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.tuesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.wednesday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.thursday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.friday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.saturday)}</td>
+          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.sunday)}</td>
+          <td className='efficiency_total_week'>{this.filterHighestDefect()}</td>
         </tr>
       )
     } else{ return null }
