@@ -244,7 +244,7 @@ class Reports extends React.Component {
   render(){
     return (
       <div className="Reports">
-        <h2 className="section_header report_list_title">Injection Production Reports:</h2>
+        
         <div className='reports_container'>
           <div className='container_first_table'>
             <table className="report_list_table">

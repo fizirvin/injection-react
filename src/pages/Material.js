@@ -22,7 +22,7 @@ class Material extends React.Component {
   render(){
     return (
       <div className="Resines">
-        <h2 className="section_header">Injection Raw Material List:</h2>
+        
         <table className="resine_table">
         <thead>
           <tr>

@@ -16,7 +16,7 @@ class Models extends React.Component {
   render(){
     return (
       <div className="Models">
-        <h2 className="section_header">Injection Model List:</h2>
+        <div className='models_container'>
         <table className="table_list partnumber_table">
           <thead>
           <tr>
@@ -30,6 +30,7 @@ class Models extends React.Component {
             {this.renderList()}
           </tbody>
         </table>
+        </div>
       </div>
     )
   }

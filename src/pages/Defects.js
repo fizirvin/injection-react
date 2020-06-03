@@ -22,7 +22,7 @@ class Defects extends React.Component {
   render(){
     return (
       <div className="Issues">
-        <h2 className="section_header">Injection Defect List:</h2>
+        
         <table className="issue_table">
         <thead>
           <tr>

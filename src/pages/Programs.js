@@ -22,7 +22,6 @@ class Programs extends React.Component {
   render(){
     return (
       <div className="Programs">
-        <h2 className="section_header">Injection Programs List:</h2>
         <table className="table_programs">
         <thead>
           <tr>

@@ -30,8 +30,6 @@ import Toolbar from './pages/Toolbar.js'
 import Production from './pages/Production.js'
 import Downtime from './pages/Downtime.js'
 
-
-
 import './App.css';
 import './pages/Programs.css'
 import './pages/Moldes.css'
@@ -1478,7 +1476,7 @@ class App extends React.Component {
       <BrowserRouter>
         <div className="App">
           <div className='NavBar'>
-            <Toolbar></Toolbar>
+            <Route component={props => <Toolbar {...props}/>}   />
           </div>
           <div className="Content">
             <Switch>

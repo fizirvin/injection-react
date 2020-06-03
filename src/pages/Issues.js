@@ -17,7 +17,7 @@ class Issues extends React.Component {
   render(){
     return (
       <div className="Issues">
-        <h2 className="section_header">Injection Issues List:</h2>
+        
         <table className="issue_table">
         <thead>
           <tr>

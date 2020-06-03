@@ -1,42 +1,44 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
 
-
-class Moldes extends React.Component {
+class Moldes extends Component {
+  state ={
+    moldes: this.props.moldes,
+    header: [
+      {h: 'Mold Number', w: '45%'},
+      {h: 'Serial Number', w: '25%'},
+      {h: 'Cavities', w: '15%'},
+      {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '15%'}
+    ]
+  }
 
   renderList() {
-    return this.props.moldes.map( molde => 
-    <tr key={molde._id}>
-      <td className="table_data molde_number">{molde.moldeNumber}</td>
-      <td className="table_data molde_serial">{molde.moldeSerial}</td>
-      <td className="table_data molde_cavities">{molde.cavities}</td>
-      <td className="table_data molde_table_data"><Link to={`/molds/update/${molde._id}`}><button>Update</button></Link></td>
+    return this.state.moldes.map( ({_id, moldeNumber, moldeSerial, cavities}) =>
+    <tr key={_id}>
+      <TableData className='table_data' style={{width: '45%'}}>{moldeNumber}</TableData>
+      <TableData className='table_data' style={{width: '25%'}}>{moldeSerial}</TableData>
+      <TableData className='table_data' style={{width: '15%'}}>{cavities}</TableData>
+      <TableData className='table_data' style={{width: '15%'}}><Link to={`/molds/update/${_id}`}><button>Update</button></Link></TableData>
     </tr>)
-    }
+  }
 
   render(){
     return (
       <div className="Moldes" >
-        <h2 className="section_header">Injection Mold List:</h2>
-        <table className="table_list_moldes">
-          <thead>
-          <tr>
-            <th className="table_header mold_number_header">Mold Number</th>
-            <th className="table_header mold_serial_header">Serial Number</th>
-            <th className="table_header mold_cavities_header">Cavities</th>
-            <th className="table_header mold_add_header"><Link to="/molds/add"><button>Add Mold</button></Link></th>
-          </tr>
-          </thead>
-          </table>
-          <div className='body_moldes'>
-          <table className='body_table_moldes'>
-          <tbody>
-            
-          {this.renderList()}
-          
-          </tbody>
-          </table>
+        <div className='moldes_container'>
+          <div className='table_container'>
+            <TableHeader header={this.state.header}/>
+            <div className='moldes_body_container'>
+              <table className='moldes_body_table'>
+                <tbody>
+                  {this.renderList()}
+                </tbody>
+              </table>
+            </div>
           </div>
+        </div>
       </div>
     )
   }

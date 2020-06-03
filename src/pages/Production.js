@@ -1933,7 +1933,7 @@ renderDowntimeByMachineGraphic = () =>{
   renderHeader(){
     return (
       <div className='downtime_header'>
-        <h2 className='production_title_header'>Injection Production</h2>
+        
         <div className='downtime_controlls'>
           <table className='controls_table'>
             <tbody>
