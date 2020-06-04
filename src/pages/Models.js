@@ -1,35 +1,52 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Models.css'
 
-class Models extends React.Component {
+class Models extends Component {
+  state ={
+    models: this.props.models,
+    header: [
+      {h: 'Part Number', w: '30%'},
+      {h: 'Part Name', w: '35%'},
+      {h: 'Family', w: '20%'},
+      {h: <Link to="/models/add"><button>Add Model</button></Link>, w: '15%'}
+    ]
+  }
 
   renderList() {
-    return this.props.models.map( model => 
-    <tr key={model._id}>
-      <td className="table_data">{model.partNumber}</td>
-      <td className="table_data">{model.partName}</td>
-      <td className="table_data">{model.family}</td>
-      <td className="table_data"><Link to={`/models/update/${model._id}`}><button>Update</button></Link></td>
+    return this.state.models.map( ({_id, partNumber, partName, family,}) => 
+    <tr key={_id}>
+      <TableData className='table_data' style={{width: '30%'}}>{partNumber}</TableData>
+      <TableData className='table_data' style={{width: '35%'}}>{partName}</TableData>
+      <TableData className='table_data' style={{width: '20%'}}>{family}</TableData>
+      <TableData className='table_data' style={{width: '15%'}}><Link to={`/models/update/${_id}`}><button>Update</button></Link></TableData>
     </tr>)
   }
 
-  render(){
+  renderBodyContainer(array){
+    if( array.length === 0){
+      return <div>...loading</div>
+    } else {
+      return (
+        <div className='models_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+  }
+
+  render(){ 
     return (
-      <div className="Models">
-        <div className='models_container'>
-        <table className="table_list partnumber_table">
-          <thead>
-          <tr>
-            <th className="table_header partnumber_header">Part Number</th>
-            <th className="table_header partname_hader">Part Name</th>
-            <th className="table_header family_header">Family</th>
-            <th className="table_header addpart_hader"><Link to="/models/add"><button>Add Model</button></Link></th>
-          </tr>
-          </thead>
-          <tbody>
-            {this.renderList()}
-          </tbody>
-        </table>
+      <div className='page_container'>
+        <div className='models_table_container'>
+          <TableHeader header={this.state.header} className={'models_header_table'}/>
+          {this.renderBodyContainer(this.state.models)}
         </div>
       </div>
     )

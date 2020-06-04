@@ -473,7 +473,7 @@ renderDowntimeByMachineGraphic = () =>{
   setGraphicFirstDefect = (mon, sun, arr) =>{ 
     const data = this.props.defects.map(({_id, defectCode, defectName }) =>{  
       const mins = this.FilterDataForGraphDefect(_id, mon, sun, arr)
-      console.log(mins)
+      
       const issue = `${defectCode} ${defectName}`
       return {issue, mins}
     })

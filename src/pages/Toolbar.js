@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import './styles/toolbar.css'
 
 class Toolbar extends Component {
@@ -23,7 +24,7 @@ class Toolbar extends Component {
   }
 
   findHeader = () =>{
-    const header = this.props.location.pathname.slice(1) 
+    const header = this.props.location.pathname.slice(1)
     const index = this.state.items.findIndex(item => item === header)
     return index
   }
@@ -54,4 +55,4 @@ class Toolbar extends Component {
   }
 }
 
-export default Toolbar;
+export default withRouter(Toolbar);

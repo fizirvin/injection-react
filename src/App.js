@@ -31,20 +31,12 @@ import Production from './pages/Production.js'
 import Downtime from './pages/Downtime.js'
 
 import './App.css';
-import './pages/Programs.css'
-import './pages/Moldes.css'
-import './pages/Material.css'
-import './pages/Models.css'
-import './pages/Machines.css'
-import './pages/Defect.css'
-import './pages/Issues.css'
-import './pages/Reports.css'
+import './pages/styles/layout.css'
 import './pages/Production.css'
 import './pages/Downtime.css'
 
-
 class App extends React.Component {
-  state = { 
+  state = {
     machines: [],
     machineMessage: 'new',
     moldeMessage: 'new',
@@ -1470,14 +1462,15 @@ class App extends React.Component {
 
 
   render(){
-
-   
     return (
       <BrowserRouter>
         <div className="App">
+
+          
           <div className='NavBar'>
-            <Route component={props => <Toolbar {...props}/>}   />
+            <Toolbar/>
           </div>
+          
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />
@@ -1497,7 +1490,7 @@ class App extends React.Component {
                 material={this.state.materials} message={this.state.materialMessage} close={this.close} updateMaterial={this.updateMaterial}/> )} 
               />
 
-              <Route path="/machines" exact render={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
+              <Route path="/machines" exact component={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
               <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
                 message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
               />
@@ -1560,14 +1553,6 @@ class App extends React.Component {
                 issues={this.state.issues}
                 message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
               />
-              {/* <Route path="/efficiency" exact component={ props => ( <Production {...props} 
-              models={this.state.models} 
-              machines={this.state.machines}
-              moldes={this.state.moldes}  
-              reportsDate={this.state.reportsDate} 
-              initial49={this.state.initial49}
-              end={this.state.end}
-              /> )} /> */}
               <Route path="/downtime" exact component={ props => ( <Downtime {...props}
               issues={this.state.issues}
               machines={this.state.machines}

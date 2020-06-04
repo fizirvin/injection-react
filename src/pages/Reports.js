@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Reports.css'
 
-
-
-class Reports extends React.Component {
+class Reports extends Component {
   state ={
     _id: '',
     production: [],
     downtimeDetail: [],
-    target: ''
+    target: '',
+    reports: this.props.reports,
+    header: [
+      {h: 'Date', w: '11%'},
+      {h: 'Shift', w: '5%'},
+      {h: 'Machine', w: '8%'},
+      {h: 'Real (pcs)', w: '8%'},
+      {h: 'NG (pcs)', w: '8%'},
+      {h: 'OK (pcs)', w: '8%'},
+      {h: 'Plan (pcs)', w: '8%'},
+      {h: 'Work Time (hrs)', w: '10%'},
+      {h: 'Downtime (hrs)', w: '10%'},
+      {h: 'OEE (%)', w: '8%'},
+      {h: 'Purge (g)', w: '8%'},
+      {h: <Link to="/reports/add"><button>Add Report</button></Link>, w: '8%'}
+    ]
+
   }
 
   formatDate(format){
@@ -17,7 +34,6 @@ class Reports extends React.Component {
     const y = date.getFullYear()
     const d = date.getDate()
     const m = date.getMonth()+1
-
     function M(){
       if(m < 10){
       return '0'+ m
@@ -28,9 +44,6 @@ class Reports extends React.Component {
       return '0'+ d
     } else { return d}
   }
-
-
-
   const formatD = D();
   const formatM = M();
     formatDate = y + '-'+ formatM + '-'+ formatD
@@ -38,8 +51,8 @@ class Reports extends React.Component {
   }
 
   formatRow = (id, style) => {
-    const normal = `report_list ${style}`;
-    const selected = `report_selected_list ${style}`
+    const normal = 'report_list';
+    const selected = 'report_selected_list'
     const stateId = this.state._id
     if(stateId === id){
       return selected
@@ -47,9 +60,7 @@ class Reports extends React.Component {
     else {
       return normal
     }
-
   }
-
 
   closeDetail = () =>{
     const state ={
@@ -86,16 +97,16 @@ class Reports extends React.Component {
   }
 
   renderButtonOption = (id) =>{
-    if(this.state._id === id){ return <td className={this.formatRow(id, 'body_update_table')}>
+    if(this.state._id === id){ return <TableData className={this.formatRow(id)} style={{width: '8%'}}>
       <button className='button_report_list_blue' onClick={this.closeDetail}></button>
       <Link className='link-reports' to={`/reports/update/${id}`}>
         <button className='button_report_list_gold'></button>
-    </Link></td> }
-    else{ return <td className={this.formatRow(id, 'body_update_table')}>
+    </Link></TableData> }
+    else{ return <TableData className={this.formatRow(id)} style={{width: '8%'}}>
       <button name={id} className='button_report_list_tomato' onClick={this.openDetail}></button>
       <Link className='link-reports' to={`/reports/update/${id}`}>
         <button className='button_report_list_gold'></button>
-    </Link></td> }
+    </Link></TableData> }
   }
 
   renderDetailTable = () =>{
@@ -124,7 +135,6 @@ class Reports extends React.Component {
         <tr>
           <th className="detail_downtime" colSpan="6">Downtime</th>
           <th className="detail_mins" colSpan="2">Mins</th>
-          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
       <tbody>
@@ -134,7 +144,6 @@ class Reports extends React.Component {
         <tr>
           <th className="detail_downtime" colSpan="6">Defect</th>
           <th className="detail_mins" colSpan="2">Pcs</th>
-          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
       <tbody>
@@ -144,17 +153,13 @@ class Reports extends React.Component {
         <tr>
           <th className="detail_downtime" colSpan="6">Purge</th>
           <th className="detail_mins" colSpan="2">g</th>
-          {/* <th className="detail_close_button" colSpan="2"><button onClick={this.closeDetail}>close</button></th> */}
         </tr>
       </thead>
       <tbody>
       {this.renderDetailPurge()}
       </tbody>
-      
-      
     </table>)
     }
-
   }
 
   renderDetailProduction = () => {
@@ -208,79 +213,50 @@ class Reports extends React.Component {
   }
 
   renderList() {
-    const reports = this.props.reports
-    if(reports.length === 0){
-      
-      return <tr><td>no reports find, add report</td></tr>
+    return this.state.reports.map( ({_id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, 
+      TOEE, resines}) => 
+      <tr key={_id}>
+        <TableData className={this.formatRow(_id)} style={{width: '11%'}}>{ this.formatDate(reportDate) }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '5%'}}>{ shift }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ machine.machineNumber }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ TReal }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ TNG }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ TOK }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ TPlan }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '10%'}}>{TWTime.$numberDecimal}</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '10%'}}>{ TDTime.$numberDecimal }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{ TOEE.$numberDecimal }</TableData>
+        <TableData className={this.formatRow(_id)} style={{width: '8%'}}>{this.getResines(resines) }</TableData>
+        {this.renderButtonOption(_id)}
+      </tr>
+    )
+  }
+
+  renderBodyContainer(array){
+    if( array.length === 0){
+      return <div>...loading</div>
     } else {
-      return( 
-        this.props.reports.map( report => {
-          const { _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, 
-            TAvailability, TPerformance, TQuality, TOEE, resines } = report 
-    
-        return <tr key={report._id}>
-          <td className={this.formatRow(report._id, 'body_date_table')}>{ this.formatDate(reportDate) }</td>
-          <td className={this.formatRow(report._id, 'body_shift_table')}>{ shift }</td>
-          <td className={this.formatRow(report._id, 'body_machine_table')}>{ machine.machineNumber }</td>
-          <td className={this.formatRow(report._id, 'body_real_table')}>{ TReal }</td>
-          <td className={this.formatRow(report._id, 'body_ng_table')}>{ TNG }</td>
-          <td className={this.formatRow(report._id, 'body_ok_table')}>{ TOK }</td>
-          <td className={this.formatRow(report._id, 'body_plan_table')}>{ TPlan }</td>
-          <td className={this.formatRow(report._id, 'body_worktime_table')}>{TWTime.$numberDecimal}</td>
-          <td className={this.formatRow(report._id, 'body_downtime_table')}>{ TDTime.$numberDecimal }</td>
-          {/* <td className={this.formatRow(report._id, 'body_availability_table')}>{TAvailability.$numberDecimal }</td>
-          <td className={this.formatRow(report._id, 'body_performance_table')}>{ TPerformance.$numberDecimal}</td>
-          <td className={this.formatRow(report._id, 'body_quality_table')}>{ TQuality.$numberDecimal }</td> */}
-          <td className={this.formatRow(report._id, 'body_toee_table')}>{ TOEE.$numberDecimal }</td>
-          <td className={this.formatRow(report._id, 'body_purge')}>{this.getResines(resines) }</td>
-          {this.renderButtonOption(report._id)}
-        </tr>})
+      return (
+        <div className='programs_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
+          </table>
+        </div>
       )
     }
   }
 
-
-
-  render(){
+  render(){ 
     return (
-      <div className="Reports">
-        
-        <div className='reports_container'>
-          <div className='container_first_table'>
-            <table className="report_list_table">
-              <thead>
-                <tr>
-                  <th className="report_list_header date_data">Date</th>
-                  <th className="report_list_header shift_data">Shift</th>
-                  <th className="report_list_header machine_data">Machine</th>
-                  <th className="report_list_header treal_data">Real (pcs)</th>
-                  <th className="report_list_header ng_data">NG (pcs)</th>
-                  <th className="report_list_header ok_data">OK (pcs)</th>
-                  <th className="report_list_header plan_data">Plan (pcs)</th>
-                  <th className="report_list_header worktime_data">Work Time (hrs)</th>
-                  <th className="report_list_header downtime_data">Downtime (hrs)</th>
-                  {/* <th className="report_list_header availability_data">Availability (%)</th>
-                  <th className="report_list_header performance_data">Performance (%)</th>
-                  <th className="report_list_header quality_data">Quality (%)</th> */}
-                  <th className="report_list_header toee_data">OEE (%)</th>
-                  <th className="report_list_header purge_data">Purge (g)</th>
-                  <th className="report_list_header add_data">
-                    <Link to="/reports/add"><button>Add Report</button></Link>
-                  </th>
-                </tr>
-              </thead> 
-            </table>
-            <div className='body_reports'>
-              <table className='body_table_reports'> 
-                <tbody>
-                  {this.renderList()}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div className='report_detail'>
+      <div className='page_container'>
+        <div className='programs_table_container'>
+          <TableHeader header={this.state.header} className={'programs_header_table'}/>
+          {this.renderBodyContainer(this.state.reports)}
+        </div>
+        <div className='report_detail'>
             {this.renderDetailTable()}
-          </div>
         </div>
       </div>
     )

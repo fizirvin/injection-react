@@ -1,39 +1,55 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Machines.css'
 
+class Machines extends Component {
+  state ={
+    machines: this.props.machines,
+    header: [
+      {h: 'Machine Number', w: '25%'},
+      {h: 'Machine Serial', w: '30%'},
+      {h: 'Closing Force (t)', w: '15%'},
+      {h: 'Spindle D (mm)', w: '15%'},
+      {h: <Link to="/machines/add"><button>Add Machine</button></Link>, w: '15%'}
+    ]
+  }
 
-class Machines extends React.Component {
-
-  renderList() {
-  return this.props.machines.map(machine => 
-  <tr key={machine._id}>
-    <td className="table_data machine_number">{machine.machineNumber}</td>
-    <td className="table_data machine_Serial">{machine.machineSerial}</td>
-    <td className="table_data machine_force">{machine.closingForce}</td>
-    <td className="table_data machine_diameter">{machine.spindleDiameter}</td>
-    <td className="table_data machine_update"><Link to={`/machines/update/${machine._id}`}><button>Update</button></Link></td>
+  renderList(){
+  return this.state.machines.map( ({_id, machineNumber, machineSerial, closingForce, spindleDiameter}) => 
+  <tr key={_id}>
+    <TableData className='table_data' style={{width: '25%'}} >{machineNumber}</TableData>
+    <TableData className='table_data' style={{width: '30%'}} >{machineSerial}</TableData>
+    <TableData className='table_data' style={{width: '15%'}}>{closingForce}</TableData>
+    <TableData className='table_data' style={{width: '15%'}}>{spindleDiameter}</TableData>
+    <TableData className='table_data' style={{width: '15%'}}><Link to={`/machines/update/${_id}`}><button>Update</button></Link></TableData>
   </tr>)
   }
 
-  render(){
+  renderBodyContainer(array){
+    if(array.length === 0){
+      return <div>...loading</div>
+    } else {
+      return (
+        <div className='moldes_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+  }
 
+  render(){ 
     return (
-      <div className="Moldes">
-        
-        <table className="table_list machine_table">
-        <thead> 
-            <tr>
-              <th className="table_header header_num">Machine Number</th>
-              <th className="table_header header_serial">Machine Serial</th>
-              <th className="table_header header_force">Closing Force (t)</th>
-              <th className="table_header header_diameter">Spindle D (mm)</th>
-              <th className="table_header header_addmachine"><Link to="/machines/add"><button>Add Machine</button></Link></th>
-            </tr>
-          </thead>
-          <tbody>
-          {this.renderList()}
-          </tbody>
-        </table>
+      <div className='page_container'>
+        <div className='machines_table_container'>
+          <TableHeader header={this.state.header} className={'machines_header_table'}/>
+          {this.renderBodyContainer(this.state.machines)}
+        </div>
       </div>
     )
   }

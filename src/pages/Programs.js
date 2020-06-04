@@ -1,46 +1,59 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Programs.css'
 
-
-
-class Programs extends React.Component {
+class Programs extends Component {
+  state ={
+    programs: this.props.programs,
+    header: [
+      {h: 'Machine #', w: '17%'},
+      {h: 'Mold #', w: '24%'},
+      {h: 'Part #', w: '24%'},
+      {h: 'Cycle Time (s)', w: '8%'},
+      {h: 'Capacity (pcs/hr)', w: '9%'},
+      {h: 'Cycles (cyc/hr)', w: '9%'},
+      {h: <Link to="/programs/add"><button>Add Program</button></Link>, w: '9%'}
+    ]
+  }
 
   renderList() {
-    return this.props.programs.map( program => 
-    <tr key={program._id}>
-      <td className="table_data machineNumber">{ program.machineNumber.machineNumber}</td>
-      <td className="table_data moldeNumber">{ program.moldeNumber.moldeNumber}</td>
-      <td className="table_data partNumber">{ program.partNumber.partName}</td>
-      <td className="table_data cycleTime">{ program.cycleTime.$numberDecimal }</td>
-      <td className="table_data capacity">{ program.capacity}</td>
-      <td className="table_data cycles">{ program.cycles}</td>
-      <td className="table_data add_program"><Link to={`/programs/update/${program._id}`}><button>Update</button></Link></td>
+    return this.state.programs.map( ({_id, machineNumber, moldeNumber, partNumber, cycleTime, capacity, cycles}) => 
+    <tr key={_id}>
+      <TableData className='table_data' style={{width: '17%'}}>{ machineNumber.machineNumber}</TableData>
+      <TableData className='table_data' style={{width: '24%'}}>{ moldeNumber.moldeNumber}</TableData>
+      <TableData className='table_data' style={{width: '24%'}}>{ partNumber.partName}</TableData>
+      <TableData className='table_data' style={{width: '8%'}}>{ cycleTime.$numberDecimal }</TableData>
+      <TableData className='table_data' style={{width: '9%'}}>{ capacity}</TableData>
+      <TableData className='table_data' style={{width: '9%'}}>{ cycles}</TableData>
+      <TableData className='table_data' style={{width: '9%'}}><Link to={`/programs/update/${_id}`}><button>Update</button></Link></TableData>
     </tr>)
   }
 
 
-  render(){
-    return (
-      <div className="Programs">
-        <table className="table_programs">
-        <thead>
-          <tr>
-            <th className="table_header machineNumber_header">Machine Number</th>
-            <th className="table_header moldeNumber_header">Mold Number</th>
-            <th className="table_header partNumber_header">Part Number</th>
-            <th className="table_header cycletime_header">Cycle Time (s)</th>
-            <th className="table_header capacity_header">Capacity (pcs/hr)</th>
-            <th className="table_header cycles_header">Cycles (cyc/hr)</th>
-            <th className="table_header add_program_header"><Link to="/programs/add"><button>Add Program</button></Link></th>
-          </tr>
-          </thead>
+  renderBodyContainer(array){
+    if( array.length === 0){
+      return <div>...loading</div>
+    } else {
+      return (
+        <div className='programs_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
           </table>
-          <div className='body_programs_table'>
-          <table className='body_programs'> 
-          <tbody>
-          {this.renderList()}
-          </tbody>
-        </table>
+        </div>
+      )
+    }
+  }
+
+  render(){ 
+    return (
+      <div className='page_container'>
+        <div className='programs_table_container'>
+          <TableHeader header={this.state.header} className={'programs_header_table'}/>
+          {this.renderBodyContainer(this.state.programs)}
         </div>
       </div>
     )

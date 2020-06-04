@@ -1,33 +1,23 @@
-.defect_name{
-    width: 60%;
+.defects_table_container{
+    margin-top: 3px;
+    margin-left: 3px;
+    min-width: 55%;
+    max-width: 55%;
 }
   
-.defect_code{
-    width: 10%;
+.defects_header_table{
+    border-spacing: 1px;
+    margin-bottom: 1px;
+    width: 97.6%;
+    border: solid 2px;
+    border-radius: 3px;
+    table-layout: fixed;
 }
-
-.defectName {
-    width: 60%;
-    padding-left: 3px;
-}
-
-.defect_update{
-    width: 15%;
-    
-    align-items: center;
-    
-}
-
-    
-.defectCode {
-    padding-left: 3px;
-    width: 10%;
-}
-
-.defectisInjection{
-    width: 15%;
-}
-
-.defect_isInjection{
-    width: 15%;
+  
+.defects_body_container{
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin-bottom: 0;
+    max-height: 83vh;
+    width: 100%;
 }

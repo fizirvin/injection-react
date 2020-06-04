@@ -9,10 +9,7 @@ body{
   height: 100vh;
   margin-top: 0;
   display: inline-block;
-  
 }
-
-
 
 .Content{
   background-color: rgba(0, 0, 139, 0.123);
@@ -25,75 +22,26 @@ body{
   border: solid 2px black;
 }
 
-
-
 .Button{
   width: 90%;
   box-shadow: 2px 2px;
   border-radius: 3px;
   margin-bottom: 5px;
   cursor: pointer;
-  
 }
 
 .section_header{
-  
   margin-left: 3%;
   margin-top: 1%;
   margin-bottom: 0%;
 }
 
-
-
 .table_list{
- 
   width: 45%;
   border: solid 2px;
   margin-top: 2%;
   margin-left: 3%;
-  /* border-collapse: collapse; */
 }
-
-
-.table_header {
-  border: solid 1px;
-  border-radius: 2px;
-  background-color: rgb(83, 83, 204);
-}
-
-.table_data{
-  padding-left: 3%;
-  font-size: 90%;
-  height: 4vh;
-  /* border: solid 1px; */
-  border-radius: 2px;
-  background-color: white;
-}
-
-
-.Modal {
-  
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 50px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 35%;
-  border-radius: 4px;
-}
-
 
 .program_list{
   margin: 0px;
@@ -102,153 +50,17 @@ body{
   list-style: none;
 }
 
-.report_modal{
-  width: 55%;
-}
-
-.report_header{
-  border: solid 1px;
-  width: 25%;
-  background-color:gold;
-}
-
-
-.section_two{
-display: flex;
-
-}
-
-.checkbox-container{
-  display: flex;
-  flex-wrap: wrap;
-  
-  margin-bottom: 2px;
-  width: 47%;  
-  overflow-y: auto;
-  max-height: 40vh;
-  min-height: 40vh;
-  
-}
-
-
-
-.downtime-table{
-  
-  width: 39%;
-  margin-bottom: 2px;
-  margin-left: 2px; 
-  }
-
-.checkboxes{
- 
-  
-  margin: 0px;
-  margin-right: 2%;
-  margin-bottom: 1%;
-  width: 45%;
-  padding: 0;
-  padding-left: 2%;
-  text-align: left;
-  border-radius: 9px;
-}
-
 .issuesboxes{
   width: 45%;
-}
-
-
-
-.checkbox-input{
- padding-left: 1%;
- margin: 0;
-}
-
-.production_table-container{
-  border: solid 2px;
-  width: 100%;
-  margin-top: 10px;
-  border-spacing: 1px;
-}
-
-.production_row{
-  font-size: 85%;
-  border: solid 1px;
-}
-
-.production_table{
-  border: solid 1px;
-  background-color: gold;
-}
-
-
-
-.production_input{
-  font-size: 98%;
-  width: 94%;
-}
-
-
-
-
-.time_input{
-  width: 25%;
-}
-
-.date_input{
-  width: 70%;
-}
-
-
-
-.title_header{
-  font-weight: bold;
-  margin-top: 2px;
-  margin-bottom: 2px;
-}
-
-.Modal-report {
-  
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  padding-top: 20px; /* Location of the box */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.3); /* Black w/ opacity */
-}
-
-.modal-report-content {
-  background-color: #fefefe;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 35%;
-  border-radius: 4px;
-}
-
-
-
-.report_modal{
-  width: 75%;
 }
 
 .issueName_report{
   width: 75%;
 }
-.mins{
-  width: 25%;
-}
-
 
 .svg_model{
-  
   border-radius: 3px;
 }
-
-
 
 .Home{
   display: flex;
@@ -256,13 +68,12 @@ display: flex;
   padding: 0;
   margin: 0;
   background-color: turquoise;
-  
 }
 
 .Hola{
   width: 50%;
   background-color: yellow;
-}´
+}
 
 .gra{
   width: 500px;
@@ -271,12 +82,10 @@ display: flex;
   background-color: turquoise;
 }
 
-
 .Graphic{
   padding-left: 0;
   width: 400px;
   margin: 0;
-  
 }
 
 .invisible{
@@ -290,77 +99,4 @@ display: flex;
 .downtime-row-table{
   padding-left: 2px;
   text-align: left;
-}
-
-.checkboxes-defects{
- 
-  
-  margin: 0px;
-  margin-right: 2%;
-  margin-bottom: 1%;
-  width: 45%;
-  padding: 0;
-  padding-left: 2%;
-  text-align: left;
-  border-radius: 9px;
-}
-
-.input-defect-body{
-  border: solid 1px;
-}
-.input-defect-body-pcs{
-  border: solid 1px;
-}
-
-.label-defect-body{
-  font-size: 90%;
-  
-}
-
-.checkbox-defect-input{
-  
-  margin-left: 3px;
- }
-
- .input-defect-number{
-   width: 95%;
-   
-   
- }
-
- .defect-table{
-  border-spacing: 1px;
-   text-align: center;
-   width: 100%;
-   margin-left: 0;
-   margin-top: 1px;
-   margin-bottom: 1px;
-   border: solid 2px;
- }
-
- .defect-header-table{
-   width: 80%;
-   border: solid 1px;
-   background-color: gold;
- }
-
- .pcs-header-table{
-  width: 20%;
-  border: solid 1px;
-  background-color: gold;
- 
- }
-
- .defect-table-molde{
-  border: solid 1px;
-  background-color: gold;
- }
-
- .production_table-container-downtime{
-  border-spacing: 1px;
-   width: 100%;
-   margin-left: 0;
-   margin-top: 1px;
-   margin-bottom: 1px;
-   border: solid 2px;
 }

@@ -9,7 +9,7 @@ class TableHeader extends Component {
 
   render(){
     return (
-        <table className="moldes_header_table">
+        <table className={this.props.className}>
             <thead>
                 <tr>{this.renderHeader()}</tr>
             </thead>

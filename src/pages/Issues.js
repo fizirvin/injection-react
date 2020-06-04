@@ -1,39 +1,50 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Issues.css'
 
-
-
-class Issues extends React.Component {
+class Issues extends Component {
+  state ={
+    issues: this.props.issues,
+    header: [
+      {h: 'Code', w: '15%'},
+      {h: 'Issue Name', w: '70%'},
+      {h: <Link to="/issues/add"><button>Add Issue</button></Link>, w: '15%'}
+    ]
+  }
 
   renderList() {
-    return this.props.issues.map( issue => 
+    return this.state.issues.map( issue => 
     <tr key={issue._id}>
-      <td className="table_data issueCode">{ issue.issueCode}</td>
-      <td className="table_data issueName">{ issue.issueName}</td>
-      <td className="table_data issue_update"><Link to={`/issues/update/${issue._id}`}><button className='button_issue'>Update</button></Link></td>
+      <TableData className='table_data' style={{width: '15%'}}>{ issue.issueCode}</TableData>
+      <TableData className='table_data' style={{width: '70%'}}>{ issue.issueName}</TableData>
+      <TableData className='table_data' style={{width: '15%'}}><Link to={`/issues/update/${issue._id}`}><button className='button_issue'>Update</button></Link></TableData>
     </tr>)
   }
 
-  render(){
-    return (
-      <div className="Issues">
-        
-        <table className="issue_table">
-        <thead>
-          <tr>
-            <th className="table_header issue_code">Code</th>
-            <th className="table_header issue_name">Issue</th>
-            <th className="table_header issue_button"><Link to="/issues/add"><button>Add Issue</button></Link></th>
-          </tr>
-          </thead>
+  renderBodyContainer(array){
+    if( array.length === 0){
+      return <div>...loading</div>
+    } else {
+      return (
+        <div className='issues_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
           </table>
-          <div className='body_issues'> 
-          <table className='body_list_issues'>
-            
-          <tbody>
-          {this.renderList()}
-          </tbody>
-        </table>
+        </div>
+      )
+    }
+  }
+
+  render(){ 
+    return (
+      <div className='page_container'>
+        <div className='issues_table_container'>
+          <TableHeader header={this.state.header} className={'issues_header_table'}/>
+          {this.renderBodyContainer(this.state.issues)}
         </div>
       </div>
     )

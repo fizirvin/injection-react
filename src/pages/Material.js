@@ -1,49 +1,60 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import TableData from './components/TableData'
+import TableHeader from './components/TableHeader'
+import './Material.css'
 
-
-
-class Material extends React.Component {
+class Material extends Component {
+  state ={
+    material: this.props.material,
+    header: [
+      {h: 'Part Number', w: '14%'},
+      {h: 'Manufacturer', w: '14%'},
+      {h: 'Description', w: '24%'},
+      {h: 'Acronym', w: '14%'},
+      {h: 'ID', w: '14%'},
+      {h: 'Type', w: '7%'},
+      {h: 'Unit', w: '5%'},
+      {h: <Link to="/material/add"><button>Add Material</button></Link>, w: '8%'}
+    ]
+  }
 
   renderList() {
-    return this.props.material.map( material => 
-    <tr key={material._id}>
-      <td className="table_data material_number">{ material.number}</td>
-      <td className="table_data material_manufacturer">{ material.manufacturer}</td>
-      <td className="table_data material_description">{ material.description}</td>
-      <td className="table_data material_acronym">{ material.acronym}</td>
-      <td className="table_data material_identification">{ material.identification}</td>
-      <td className="table_data material_type">{ material.type}</td>
-      <td className="table_data material_unit">{ material.unit}</td>
-      <td className="table_data material_update"><Link to={`/material/update/${material._id}`}><button className='button_issue'>Update</button></Link></td>
+    return this.state.material.map( ({_id, number, manufacturer, description, acronym, identification, type, unit}) => 
+    <tr key={_id}>
+      <TableData className='table_data' style={{width: '14%'}}>{ number }</TableData>
+      <TableData className='table_data' style={{width: '14%'}}>{ manufacturer }</TableData>
+      <TableData className='table_data' style={{width: '24%'}}>{ description }</TableData>
+      <TableData className='table_data' style={{width: '14%'}}>{ acronym}</TableData>
+      <TableData className='table_data' style={{width: '14%'}}>{ identification }</TableData>
+      <TableData className='table_data' style={{width: '7%'}}>{type}</TableData>
+      <TableData className='table_data' style={{width: '5%'}}>{ unit }</TableData>
+      <TableData className='table_data' style={{width: '8%'}}><Link to={`/material/update/${_id}`}><button className='button_issue'>Update</button></Link></TableData>
     </tr>)
   }
 
-  render(){
-    return (
-      <div className="Resines">
-        
-        <table className="resine_table">
-        <thead>
-          <tr>
-            <th className="table_header material_number">Part Number</th>
-            <th className="table_header material_manufacturer">Manufacturer</th>
-            <th className="table_header material_description">Description</th>
-            <th className="table_header material_acronym">Acronym</th>
-            <th className="table_header material_identification">ID</th>
-            <th className="table_header material_type">Type</th>
-            <th className="table_header material_unit">Unit</th>
-            <th className="table_header material_button"><Link to="/material/add"><button>Add Material</button></Link></th>
-          </tr>
-          </thead>
+  renderBodyContainer(array){
+    if( array.length === 0){
+      return <div>...loading</div>
+    } else {
+      return (
+        <div className='material_body_container'>
+          <table className='body_table'>
+            <tbody>
+              {this.renderList()}
+            </tbody>
           </table>
-          <div className='body_resines'> 
-          <table className='body_list_resines'>
-            
-          <tbody>
-          {this.renderList()}
-          </tbody>
-        </table>
+        </div>
+      )
+    }
+  }
+
+  render(){ 
+    return (
+      <div className='page_container'>
+        <div className='material_table_container'>
+          <TableHeader header={this.state.header} className={'material_header_table'}/>
+          {this.renderBodyContainer(this.state.material)}
         </div>
       </div>
     )
