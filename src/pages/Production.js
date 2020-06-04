@@ -1089,42 +1089,42 @@ renderDowntimeByMachineGraphic = () =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reduceTimeModel = (date, id) =>{
     const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reduceTimeMolde = (date, id) =>{
     const reduce = this.filterMoldeDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reduceDownTime = ( date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reduceDownTimeModel = (date, id) =>{
     const reduce = this.filterModelDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   reduceDownTimeMolde = (date, id) =>{
     const reduce = this.filterMoldeDate(date, id).reduce( (a, b) =>{
       return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
-    return reduce
+    return this.precise_round(reduce, 2)
   }
 
   filterTotalTime = (id) =>{
@@ -1543,7 +1543,7 @@ renderDowntimeByMachineGraphic = () =>{
           },0)
           return {resine: resine.resine, acronym: resine.acronym, color: resine.color, purge: reducePurge }
         })
-
+        
     return mapping.sort((x, y)  => y.purge - x.purge)
   }
 
@@ -1831,7 +1831,7 @@ renderDowntimeByMachineGraphic = () =>{
       const week = this.GraphAllWeekFirst(this.state.monday, this.state.tuesday, this.state.wednesday, this.state.thursday, this.state.friday, this.state.saturday, this.state.sunday, production)
       const week3 = this.setGraphicFirstMachinePurge(this.state.monday, this.state.sunday, purge)
       const week4 = this.setGraphicFirstMachineDefect(this.state.monday, this.state.sunday, ng)
-      return this.setState({production, downtime, purge, shift, week, data, data2, week2, data3, week3, data4, week4})
+      return this.setState({production, downtime, purge, ng, shift, week, data, data2, week2, data3, week3, data4, week4})
     } else{
       const production = [...this.props.production].filter(item => item.shift === shift)
       const purge = [...this.props.purge].filter(item => item.shift === shift)
@@ -2154,7 +2154,12 @@ renderDowntimeByMachineGraphic = () =>{
     const detail = this.state.detail === 'on'
     if(detail){
       const array = this.filterArrayDowntime(id)
-      return array.map( issue =>
+
+      const uniqueDowntimeList = Array.from(new Set(array.map( ({issue})  =>{ 
+        const reduce = array.find( item => item.issue === issue )
+        return reduce })))
+
+      return uniqueDowntimeList.map( issue =>
         <tr key={issue.issue}>
           <td className='efficiency_body_machine'>{issue.issueCode} (mins)</td>
           <td className='efficiency_body_day'>{this.reduceMinsByIssue(this.state.monday, id, issue.issue)}</td>
@@ -2176,7 +2181,12 @@ renderDowntimeByMachineGraphic = () =>{
     const detail = this.state.detail === 'on'
     if(detail){
       const array = this.filterArrayPurge(id)
-      return array.map( resine =>
+
+      const uniquePurgeList = Array.from(new Set(array.map( ({resine})  =>{ 
+        const reduce = array.find( item => item.resine === resine )
+        return reduce })))
+
+      return uniquePurgeList.map( resine =>
         <tr key={resine.resine}>
           <td className='efficiency_body_machine'>{resine.acronym} {resine.color} (g)</td>
           <td className='efficiency_body_day'>{this.reducePurgeByResine(this.state.monday, id, resine.resine)}</td>
@@ -2199,16 +2209,16 @@ renderDowntimeByMachineGraphic = () =>{
     if(detail){
       const array = this.filterArrayDefectModelMolde(id)
      
-      return array.map( (defect) =>
-      
-        <tbody key={id+'a'}>
+      return array.map( (defect, index) => {
+        
+        return <tbody key={index}>
         <tr>
           <th className='title_body_model' colSpan='8'>Model: {defect.partName} {defect.moldeNumber}</th>
           <td className='efficiency_body_week' colSpan='1'>{defect.defectPcs}</td>
         </tr>
         {this.renderDefectList(defect.defects)}
         </tbody>
-      
+      }
       )  
     } else {
       return null
@@ -2236,7 +2246,7 @@ renderDowntimeByMachineGraphic = () =>{
       return reduce })))
      
     return uniqueDefectList.map( ({defectCode, id}) =>
-        <tr key={id+'b'}>
+        <tr key={id+'b'+defectCode}>
           <td className='efficiency_body_machine' colSpan='1'>{defectCode}</td>
           <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.monday, id)}</td>
           <td className='efficiency_body_day'>{this.reduceDefectListByDate(arr, this.state.tuesday, id)}</td>
