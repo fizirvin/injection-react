@@ -145,16 +145,15 @@
 
 .row_detail_production{
   background-color: white;
-  border: solid 1px;
-  border-radius: 2px;
   font-size: 85%;
   padding-left: 2px;
 }
 
 .report_detail{
-  width: 34%;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-top: 3px;
+  width: 35%;
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 
