@@ -202,6 +202,7 @@ class App extends React.Component {
           moldeNumber
           moldeSerial
           cavities
+          lifecycles
         }
         partNumber{
           _id
@@ -492,11 +493,13 @@ class App extends React.Component {
       moldeNumber: "${newMolde.moldeNumber}"
       moldeSerial: "${newMolde.moldeSerial}"
       cavities: ${newMolde.cavities}
+      lifecycles: ${newMolde.lifecycles}
     }) {
       _id
       moldeNumber
       moldeSerial
       cavities
+      lifecycles
     }}`;
 
     const url = this.state.server;
@@ -527,11 +530,13 @@ class App extends React.Component {
       moldeNumber: "${updateMolde.moldeNumber}"
       moldeSerial: "${updateMolde.moldeSerial}"
       cavities: ${updateMolde.cavities}
+      lifecycles: ${updateMolde.lifecycles}
     }) {
       _id
       moldeNumber
       moldeSerial
       cavities
+      lifecycles
     }}`;
 
     const url = this.state.server;

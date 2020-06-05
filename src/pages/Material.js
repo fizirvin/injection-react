@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TableData from './components/TableData'
 import TableHeader from './components/TableHeader'
+import RenderItems from './components/RenderItems'
 import './Material.css'
 
 class Material extends Component {
@@ -55,6 +56,7 @@ class Material extends Component {
         <div className='material_table_container'>
           <TableHeader header={this.state.header} className={'material_header_table'}/>
           {this.renderBodyContainer(this.state.material)}
+          <RenderItems items={this.state.material}/>
         </div>
       </div>
     )

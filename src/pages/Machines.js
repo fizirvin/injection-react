@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TableData from './components/TableData'
 import TableHeader from './components/TableHeader'
+import RenderItems from './components/RenderItems'
 import './Machines.css'
 
 class Machines extends Component {
@@ -49,6 +50,7 @@ class Machines extends Component {
         <div className='machines_table_container'>
           <TableHeader header={this.state.header} className={'machines_header_table'}/>
           {this.renderBodyContainer(this.state.machines)}
+          <RenderItems items={this.state.machines}/>
         </div>
       </div>
     )

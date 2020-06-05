@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TableData from './components/TableData'
 import TableHeader from './components/TableHeader'
+import RenderItems from './components/RenderItems'
 import './Models.css'
 
 class Models extends Component {
@@ -47,6 +48,7 @@ class Models extends Component {
         <div className='models_table_container'>
           <TableHeader header={this.state.header} className={'models_header_table'}/>
           {this.renderBodyContainer(this.state.models)}
+          <RenderItems items={this.state.models}/>
         </div>
       </div>
     )

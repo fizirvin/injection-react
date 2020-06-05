@@ -8,6 +8,7 @@ class UpdateMold extends Component {
     moldeNumber:'',
     moldeSerial: '',
     cavities: 0,
+    lifecycles: 0,
   }
 
   componentDidMount(){
@@ -33,8 +34,8 @@ class UpdateMold extends Component {
     }
   };
 
-  cavitieValue = () => {
-    const value = parseInt(this.state.cavities)
+  cavitieValue = (name) => {
+    const value = parseInt(this.state[name])
     if( isNaN(value) ){ return '' }
     else if( value === 0 ){ return ''}
     else { 
@@ -72,7 +73,15 @@ class UpdateMold extends Component {
               <td><label>Cavities: </label></td>
               <td><input type="number"
                 name='cavities' 
-                value={this.cavitieValue()}
+                value={this.cavitieValue('cavities')}
+                onChange={this.onCavitieChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
+              <td><label>Lifecycles: </label></td>
+              <td><input type="number"
+                name='lifecycles' 
+                value={this.cavitieValue('lifecycles')}
                 onChange={this.onCavitieChange} min="1" required></input>
               </td>
             </tr>

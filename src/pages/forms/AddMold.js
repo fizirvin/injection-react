@@ -6,7 +6,8 @@ class AddMold extends Component {
   state= {
     moldeNumber:'',
     moldeSerial: '',
-    cavities: ''
+    cavities: '',
+    lifecycles: ''
   }
 
   onClose = () =>{
@@ -27,8 +28,8 @@ class AddMold extends Component {
     }
   };
 
-  cavitieValue = () => {
-    const value = parseInt(this.state.cavities)
+  cavitieValue = (name) => {
+    const value = parseInt(this.state[name])
     if( isNaN(value) ){ return '' }
     else if( value === 0 ){ return ''}
     else { 
@@ -42,7 +43,7 @@ class AddMold extends Component {
   }
 
   renderSubmit = () =>{
-    if(this.state.cavities === ''){return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>}
+    if(this.state.cavities === '' || this.state.lifecycles === ''){return <input type="submit" onSubmit={this.onSubmit} value="Submit" disabled></input>}
     else{
       return <input type="submit" onSubmit={this.onSubmit} value="Submit"></input>
     }
@@ -78,7 +79,15 @@ class AddMold extends Component {
               <td><label>Cavities: </label></td>
               <td><input type="number"
                 name='cavities' 
-                value={this.cavitieValue()}
+                value={this.cavitieValue('cavities')}
+                onChange={this.onCavitieChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
+              <td><label>Lifecycles: </label></td>
+              <td><input type="number"
+                name='lifecycles' 
+                value={this.cavitieValue('lifecycles')}
                 onChange={this.onCavitieChange} min="1" required></input>
               </td>
             </tr>
