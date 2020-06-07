@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 class UpdateProgram extends Component {
   state= {
     _id:'',
-    machine: '',
-    molde:'',
-    model:'',
+    machineNumber: '',
+    moldeNumber:'',
+    partNumber:'',
     cycleTime: 0,
     cycles: 0,
     capacity: 0
@@ -21,9 +21,9 @@ class UpdateProgram extends Component {
       return 
     } else {
       this.setState({_id: _id, 
-        machine: machineNumber._id, 
-        model: partNumber._id, 
-        molde: moldeNumber._id,
+        machineNumber: machineNumber._id, 
+        partNumber: partNumber._id, 
+        moldeNumber: moldeNumber._id,
         cycleTime: cycleTime.$numberDecimal,
         cycles: cycles,
         capacity: capacity})
@@ -59,12 +59,12 @@ class UpdateProgram extends Component {
     else {
       const capacity = this.capacityValue(value)
       const cycles = this.cyclesValue(capacity) 
-      return this.setState({ [e.target.name]: e.target.value, capacity, cycles });
+      return this.setState({ [e.target.name]: value, capacity, cycles });
     }
   };
 
   capacityValue = (cycleTime) => {
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       const value = parseInt(3600/cycleTime*capacity.cavities)
@@ -77,7 +77,7 @@ class UpdateProgram extends Component {
   };
 
   cyclesValue = (cap) => {
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       const value = cap/capacity.cavities
@@ -91,7 +91,7 @@ class UpdateProgram extends Component {
   };
 
   getCavities = () =>{
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       return capacity.cavities
@@ -142,7 +142,7 @@ class UpdateProgram extends Component {
     <tr>
       <td><label>Machine Number: </label></td>
       <td>
-        <select onChange={this.onInputChange} defaultValue={this.state.machine} name="machine" required>
+        <select onChange={this.onInputChange} defaultValue={this.state.machineNumber} name="machineNumber" required>
          
           {this.renderMachines()}
         </select>
@@ -151,7 +151,7 @@ class UpdateProgram extends Component {
     <tr>
       <td><label>Mold Number: </label></td>
       <td>
-        <select onChange={this.onMoldeChange} name="molde" defaultValue={this.state.molde} required>
+        <select onChange={this.onMoldeChange} name="moldeNumber" defaultValue={this.state.moldeNumber} required>
           
           {this.renderMoldes()}
           </select> {this.renderCavities()} 
@@ -160,7 +160,7 @@ class UpdateProgram extends Component {
     <tr>
       <td><label>Part Number: </label></td>
       <td>
-        <select onChange={this.onInputChange} name="model" defaultValue={this.state.model} required>
+        <select onChange={this.onInputChange} name="partNumber" defaultValue={this.state.partNumber} required>
           {this.renderModels()}
         </select>
       </td>

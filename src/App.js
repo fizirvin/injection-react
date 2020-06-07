@@ -1,41 +1,20 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-
-import Home from './pages/Home.js'
-import Moldes from './pages/Moldes.js'
-import AddMold from './pages/forms/AddMold.js'
-import UpdateMold from './pages/forms/UpdateMold.js'
-import Machines from './pages/Machines.js'
-import AddMachine from './pages/forms/AddMachine.js'
-import UpdateMachine from './pages/forms/UpdateMachine.js'
-import Material from './pages/Material.js'
-import AddMaterial from './pages/forms/AddMaterial.js'
-import UpdateMaterial from './pages/forms/UpdateMaterial.js'
-import Models from './pages/Models.js'
-import AddModel from './pages/forms/AddModel.js'
-import UpdateModel from './pages/forms/UpdateModel.js'
-import Issues from './pages/Issues.js'
-import AddIssue from './pages/forms/AddIssue.js'
-import UpdateIssue from './pages/forms/UpdateIssue.js'
-import Defects from './pages/Defects.js'
-import AddDefect from './pages/forms/AddDefect.js'
-import UpdateDefect from './pages/forms/UpdateDefect.js'
-import Programs from './pages/Programs.js'
-import AddProgram from './pages/forms/AddProgram.js'
-import UpdateProgram from './pages/forms/UpdateProgram.js'
-import Reports from './pages/Reports.js'
-import AddReport from './pages/forms/AddReport.js'
-import UpdateReport from './pages/forms/UpdateReport.js'
-import Toolbar from './pages/Toolbar.js'
-import Production from './pages/Production.js'
-import Downtime from './pages/Downtime.js'
-
+import { Home, Moldes, Machines, Material, Models, Issues, 
+  Defects, Programs, Reports, Toolbar, Production, Downtime } from './pages'
+import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
+  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport } from './forms';
+import { initialQuery } from './actions/queries'
+import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, 
+  modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport } from './actions/mutations'
+import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
+import { url, opts } from './actions/config'
 import './App.css';
 import './pages/styles/layout.css'
 import './pages/Production.css'
 import './pages/Downtime.css'
 
-class App extends React.Component {
+class App extends Component {
   state = {
     machines: [],
     machineMessage: 'new',
@@ -62,305 +41,16 @@ class App extends React.Component {
     server: 'https://injection.irvinfiz.now.sh/injection'
   };
 
-  formatDate(format){
-    let formatDate
-    const date = new Date(format);
-    const y = date.getFullYear()
-    const d = date.getDate();
-    const m = date.getMonth()+1
-
-    function M(){
-      if(m < 10){
-        return '0'+ m
-      } else { return m } 
-    }
-    
-    function D(){
-      if(d < 10){
-        return '0'+ d
-      } else { return d }
-    }
-  
-    const formatD = D();
-    const formatM = M();
-    formatDate = y + '-'+ formatM + '-'+ formatD
-    return formatDate
-  }
-
-  todayIs(date){
-    const today = date
-    const dayOfWeek = today.getDay()
-    let day;
-    switch (dayOfWeek) {
-      case 0:
-        day = 7;
-        break;
-      case 1:
-        day = 1;
-        break;
-      case 2:
-         day = 2;
-        break;
-      case 3:
-        day = 3;
-        break;
-      case 4:
-        day = 4;
-        break;
-      case 5:
-        day = 5;
-        break;
-      case 6:
-        day = 6;
-    }
-    return day
-  }
-  
-
-  getDateofTable = (number, aDate)=>{
-    const today = new Date(aDate);
-    const dayOfMonth = today.getDate();
-    const difference = number - this.todayIs(today);
-    const set = dayOfMonth + difference;
-    const date= today.setDate(set);
-    
-    return this.formatDate(date)
-  }
-
-  getDateofTable49 = (number, aDate)=>{
-    const today = new Date(aDate);
-    const dayOfMonth = today.getDate();
-    const difference = number - this.todayIs(today);
-    const set = dayOfMonth + difference;
-    const set2= set - 50
-    const date= today.setDate(set2);
-    
-    return this.formatDate(date)
-  }
-
-
   async componentDidMount(){
-
     const date = new Date();
-    const today = this.formatDate(date)+'T23:59:00.000-06:00'
-    // const initial = this.getDateofTable(1, today);
-    const end = this.getDateofTable(7, today);
-    const initial49 = this.getDateofTable49(1, today);
-    
-
-    const query = `query{
-      machines{
-        _id
-        machineNumber
-        machineSerial
-        closingForce
-        spindleDiameter
-      } 
-      moldes{
-        _id
-        moldeNumber
-        moldeSerial
-        cavities
-      }
-      materials{
-        _id
-        number
-        manufacturer
-        description
-        acronym
-        identification
-        type
-        unit
-        color
-      } 
-      parts {
-        _id
-        partNumber
-        partName
-        family
-      }
-      issues{
-        _id
-        issueName
-        issueCode
-      }
-      defects{
-        _id
-        defectName
-        defectCode
-        isInjection
-      }
-      programs{
-        _id
-        machineNumber{
-          _id
-          machineNumber
-          machineSerial
-        }
-        moldeNumber{
-          _id
-          moldeNumber
-          moldeSerial
-          cavities
-          lifecycles
-        }
-        partNumber{
-          _id
-          partNumber
-          partName
-          family
-        }
-        cycleTime
-        cycles
-        capacity
-      }
-      reports{
-        _id
-        reportDate
-        shift
-        machine{
-          _id
-          machineNumber
-          machineSerial
-        }
-        TReal
-        TNG
-        TOK
-        TPlan
-        TWTime
-        TDTime
-        TAvailability
-        TPerformance
-        TQuality
-        TOEE
-        production{
-          _id
-          program{
-            _id
-          }
-          real
-          ng
-          ok
-          plan
-          wtime
-          dtime
-          availability
-          performance
-          quality
-          oee
-          partNumber {
-            _id
-            partNumber
-            partName
-            family
-          }
-          molde{
-            _id
-            moldeNumber
-            moldeSerial
-            cavities
-          }
-        }
-        downtimeDetail {
-          _id
-          issueId{
-            _id
-            issueName
-          }
-          mins
-        }
-        resines {
-          _id
-          resine{
-            _id
-            description
-          }
-          purge
-        }
-        defects{
-          _id
-          defect{
-            _id
-            defectName
-            defectCode
-          }
-          defectPcs
-          molde{
-            _id
-            moldeNumber
-          }
-          partNumber{
-            _id
-            partNumber
-            partName
-            family
-          }
-          program{
-            _id
-          }
-        }
-      }
-      productionByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
-        report
-        date
-        machine
-        shift
-        part
-        molde
-        real
-        ng
-        ok
-        plan
-        wtime
-        dtime
-        availability
-        performance
-        quality
-        oee
-      }
-      downtimeByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
-        report
-        date
-        shift
-        machine
-        issue
-        issueName
-        issueCode
-        mins
-      }
-      defectsByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
-        report
-        date
-        shift
-        machine
-        defect
-        defectCode
-        defectName
-        partNumber
-        partName
-        molde
-        moldeNumber
-        defectPcs
-      }
-      resinesByDate(initial: "${initial49}T00:00:01.000+00:00", end: "${end}T23:59:59.000+00:00"){
-        report
-        date
-        shift
-        machine
-        resine
-        resineName
-        purge
-        acronym
-        color
-      }
-    }`
-
-    const url = this.state.server;
-    const opts = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query })
-    };
+    const today = formatDate(date)+'T23:59:00.000-06:00'
+    const end = getDateofTable(7, today);
+    const initial49 = getDateofTable49(1, today);
+    initialQuery.variables = {
+      initial: "2020-06-01",
+      end: "2020-06-05"
+    }
+    opts.body = JSON.stringify(initialQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
     console.log('holalalala', data)
@@ -382,83 +72,37 @@ class App extends React.Component {
     })
   }
 
-  close = (message) =>{
-    this.setState({[message]: 'new'})
-  }
+  close = message => this.setState({[message]: 'new'});
 
-  addMachine = async (newMachine)=>{
-
-    const query = `mutation{newMachine(input:{
-      machineNumber: "${newMachine.machineNumber}"
-      machineSerial: "${newMachine.machineSerial}"
-      closingForce: ${newMachine.closingForce}
-      spindleDiameter: ${newMachine.spindleDiameter}
-    }) {
-      _id
-      machineNumber
-      machineSerial
-      closingForce
-      spindleDiameter
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addMachine = async ({ machineNumber, machineSerial, closingForce, spindleDiameter })=>{
+    const input = { machineNumber, machineSerial, closingForce, spindleDiameter }
+    addMachine.variables = { input }
+    opts.body = JSON.stringify(addMachine)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({machineMessage: 'error'})
+      this.setState({machineMessage: 'error'})
     } else{
-      let machines = [...this.state.machines];
-      machines.push(data.data.newMachine);
-      this.setState({machines: machines, machineMessage: 'sucess'});
+      const { newMachine } = data.data
+      const machines = [...this.state.machines, newMachine ];
+      this.setState({ machines, machineMessage: 'sucess'});
     }
-
   }
 
-  updateMachine = async (updateMachine)=>{
-
-    const query = `mutation{updateMachine(_id: "${updateMachine._id}", input:{
-      machineNumber: "${updateMachine.machineNumber}"
-      machineSerial: "${updateMachine.machineSerial}"
-      closingForce: ${updateMachine.closingForce}
-      spindleDiameter: ${updateMachine.spindleDiameter}
-    }) {
-      _id
-      machineNumber
-      machineSerial
-      closingForce
-      spindleDiameter
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateMachine = async ({ _id, machineNumber, machineSerial, closingForce, spindleDiameter })=>{
+    const input = { machineNumber, machineSerial, closingForce, spindleDiameter }
+    modifyMachine.variables = { _id, input }
+    opts.body = JSON.stringify(modifyMachine)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({machineMessage: 'error'})
+      this.setState({machineMessage: 'error'})
     } else{
-
       let machine = data.data.updateMachine;
       let machines = [...this.state.machines];
       machines[machines.findIndex(el => el._id === machine._id)] = machine;
-
       let programs = [...this.state.programs]
       let reports = [...this.state.reports]
-
       const updateProgramMachine = (programs, machine) => {
         return programs.map(item => {
             var temp = Object.assign({}, item);
@@ -468,7 +112,6 @@ class App extends React.Component {
             return temp;
         });
       }
-
       const updateReportMachine = (reports, machine) => {
         return reports.map(item => {
             var temp = Object.assign({}, item);
@@ -478,87 +121,40 @@ class App extends React.Component {
             return temp;
         });
       }
-    
       const updatedPrograms = updateProgramMachine(programs, machine);
       const updatedReports = updateReportMachine(reports, machine);
-
-      this.setState({machines: machines, programs: updatedPrograms, reports: updatedReports, machineMessage: 'sucess'});
+      this.setState({ machines: machines, programs: updatedPrograms, reports: updatedReports, machineMessage: 'sucess'});
     }
-
   }
 
-  addMolde = async (newMolde)=>{
-
-    const query = `mutation{newMolde(input:{
-      moldeNumber: "${newMolde.moldeNumber}"
-      moldeSerial: "${newMolde.moldeSerial}"
-      cavities: ${newMolde.cavities}
-      lifecycles: ${newMolde.lifecycles}
-    }) {
-      _id
-      moldeNumber
-      moldeSerial
-      cavities
-      lifecycles
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addMolde = async ({moldeNumber, moldeSerial, cavities, lifecycles})=>{
+    const input = { moldeNumber, moldeSerial, cavities, lifecycles }
+    addMolde.variables = { input }
+    opts.body = JSON.stringify(addMolde)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-   
-    this.setState({moldeMessage: 'error'})
+      this.setState({moldeMessage: 'error'})
     } else{
-      let moldes = [...this.state.moldes];
-
-      moldes.push(data.data.newMolde);
-      this.setState({moldes: moldes, moldeMessage: 'sucess'});
+      const { newMolde } = data.data
+      const moldes = [...this.state.moldes, newMolde ];
+      this.setState({ moldes, moldeMessage: 'sucess'});
     }
-
   }
 
-  updateMolde = async (updateMolde)=>{
-
-    const query = `mutation{updateMolde(_id: "${updateMolde._id}", input:{
-      moldeNumber: "${updateMolde.moldeNumber}"
-      moldeSerial: "${updateMolde.moldeSerial}"
-      cavities: ${updateMolde.cavities}
-      lifecycles: ${updateMolde.lifecycles}
-    }) {
-      _id
-      moldeNumber
-      moldeSerial
-      cavities
-      lifecycles
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles })=>{
+    const input = { moldeNumber, moldeSerial, cavities, lifecycles }
+    modifyMolde.variables = { _id, input }
+    opts.body = JSON.stringify(modifyMolde)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({moldeMessage: 'error'})
+      this.setState({moldeMessage: 'error'})
     } else{
       let molde = data.data.updateMolde;
       let moldes = [...this.state.moldes];
       moldes[moldes.findIndex(el => el._id === molde._id)] = molde;
-
       let programs = [...this.state.programs]
-
       const updateProgramMolde = (programs, molde) => {
         return programs.map(item => {
             var temp = Object.assign({}, item);
@@ -568,171 +164,71 @@ class App extends React.Component {
             return temp;
         });
       }
-    
       const updatedPrograms = updateProgramMolde(programs, molde);
-    
-
-      this.setState({moldes: moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
+      this.setState({ moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
     }
-
   }
 
-  addMaterial = async (newMaterial)=>{
-
-    const query = `mutation{newMaterial(input:{
-      number: "${newMaterial.number}"
-      manufacturer: "${newMaterial.manufacturer}"
-      description: "${newMaterial.description}"
-      acronym: "${newMaterial.acronym}"
-      identification: "${newMaterial.identification}"
-      type: "${newMaterial.type}"
-      unit: "${newMaterial.unit}"
-      color: "black"
-    }) {
-      _id
-      number
-      manufacturer
-      description
-      acronym
-      identification
-      type
-      unit
-      color
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addMaterial = async ({ number, manufacturer, description, acronym, identification, type, unit, color })=>{
+    const input = { number, manufacturer, description, acronym, identification, type, unit, color }
+    addMaterial.variables = { input }
+    opts.body = JSON.stringify(addMaterial)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({materialMessage: 'error'})
+      this.setState({materialMessage: 'error'})
     } else{
-      let materials = [...this.state.materials];
-      materials.push(data.data.newMaterial);
-      this.setState({materials: materials, materialMessage: 'sucess'});
+      const { newMaterial } = data.data
+      const materials = [...this.state.materials, newMaterial ];
+      this.setState({ materials, materialMessage: 'sucess'});
     }
 
   }
 
-  updateMaterial = async (updateMaterial)=>{
-
-    const query = `mutation{updateMaterial(_id: "${updateMaterial._id}", input:{
-      number: "${updateMaterial.number}"
-      manufacturer: "${updateMaterial.manufacturer}"
-      description: "${updateMaterial.description}"
-      acronym: "${updateMaterial.acronym}"
-      identification: "${updateMaterial.identification}"
-      type: "${updateMaterial.type}"
-      unit: "${updateMaterial.unit}"
-      color: "black"
-    }) {
-      _id
-      number
-      manufacturer
-      description
-      acronym
-      identification
-      type
-      unit
-      color
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateMaterial = async ({ _id, number, manufacturer, description, acronym, identification, type, color, unit })=>{
+    const input = { number, manufacturer, description, acronym, identification, type, color, unit }
+    modifyMaterial.variables = { _id, input }
+    opts.body = JSON.stringify(modifyMaterial)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({materialMessage: 'error'})
+      this.setState({materialMessage: 'error'})
     } else{
       let material = data.data.updateMaterial;
       let materials = [...this.state.materials];
       materials[materials.findIndex(el => el._id === material._id)] = material;
-      this.setState({materials: materials, materialMessage: 'sucess'});
+      this.setState({ materials, materialMessage: 'sucess'});
     }
-
   }
 
-  addModel = async (newModel)=>{
-
-    const query = `mutation{newPartNumber(input:{
-      partNumber: "${newModel.partNumber}"
-      partName: "${newModel.partName}"
-      family: "${newModel.family}"
-    }) {
-      _id
-      partNumber
-      partName
-      family
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addModel = async ({ partNumber, partName, family })=>{
+    const input = { partNumber, partName, family }
+    addModel.variables = { input }
+    opts.body = JSON.stringify(addModel)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({modelMessage: 'error'})
+      this.setState({modelMessage: 'error'})
     } else{
-      let models = [...this.state.models];
-      models.push(data.data.newPartNumber);
-      this.setState({models: models, modelMessage: 'sucess'});
+      const { newPartNumber } = data.data
+      const models = [...this.state.models, newPartNumber ];
+      this.setState({ models, modelMessage: 'sucess'});
     }
-
   }
 
-  updateModel = async (updateModel)=>{
-
-    const query = `mutation{updatePartNumber(_id: "${updateModel._id}",input:{
-      partNumber: "${updateModel.partNumber}"
-      partName: "${updateModel.partName}"
-      family: "${updateModel.family}"
-    }) {
-      _id
-      partNumber
-      partName
-      family
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateModel = async ({ _id, partNumber, partName, family })=>{
+    const input = { partNumber, partName, family }
+    modifyModel.variables = { _id, input }
+    opts.body = JSON.stringify(modifyModel)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({modelMessage: 'error'})
+      this.setState({modelMessage: 'error'})
     } else{
       let model = data.data.updatePartNumber;
       let models = [...this.state.models];
       models[models.findIndex(el => el._id === model._id)] = model;
-
       let programs = [...this.state.programs]
-
       const updateProgramModel = (programs, model) => {
         return programs.map(item => {
             var temp = Object.assign({}, item);
@@ -742,391 +238,123 @@ class App extends React.Component {
             return temp;
         });
       }
-    
       const updatedPrograms = updateProgramModel(programs, model);
-
-      this.setState({models: models, programs: updatedPrograms, modelMessage: 'sucess'});
+      this.setState({ models, programs: updatedPrograms, modelMessage: 'sucess'});
     }
-
   }
 
-  addIssue = async (newIssue)=>{
-
-    const query = `mutation{newIssue(input:{
-      issueName: "${newIssue.issueName}"
-      issueCode: "${newIssue.issueCode}"
-    }) {
-      _id
-      issueName
-      issueCode
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addIssue = async ({ issueName, issueCode })=>{
+    const input = { issueName, issueCode }
+    addIssue.variables = { input }
+    opts.body = JSON.stringify(addIssue)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
     this.setState({issueMessage: 'error'})
     } else{
-      let issues = [...this.state.issues];
-      issues.push(data.data.newIssue);
-      this.setState({issues: issues, issueMessage: 'sucess'});
+      const { newIssue } = data.data
+      const issues = [...this.state.issues, newIssue ];
+      this.setState({ issues, issueMessage: 'sucess'});
     }
-
   }
 
-  updateIssue = async (updateIssue)=>{
-
-    const query = `mutation{updateIssue(_id: "${updateIssue._id}", input:{
-      issueName: "${updateIssue.issueName}"
-      issueCode: "${updateIssue.issueCode}"
-    }) {
-      _id
-      issueName
-      issueCode
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateIssue = async ({ _id, issueName, issueCode })=>{
+    const input = { issueName, issueCode }
+    modifyIssue.variables = { _id, input }
+    opts.body = JSON.stringify(modifyIssue)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({issueMessage: 'error'})
+      this.setState({issueMessage: 'error'})
     } else{
       let issue = data.data.updateIssue;
       let issues = [...this.state.issues];
       issues[issues.findIndex(el => el._id === issue._id)] = issue;
       this.setState({issues: issues, issueMessage: 'sucess'});
     }
-
   }
 
-  addDefect = async (newDefect)=>{
-    
-    const query = `mutation{newDefect(input:{
-      defectName: "${newDefect.defectName}"
-      defectCode: "${newDefect.defectCode}"
-      isInjection: ${newDefect.isInjection}
-    }) {
-      _id
-      defectName
-      defectCode
-      isInjection
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addDefect = async ({ defectName, defectCode, isInjection })=>{
+    const input = { defectName, defectCode, isInjection }
+    addDefect.variables = { input }
+    opts.body = JSON.stringify(addDefect)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({defectMessage: 'error'})
+      console.log(data.errors)
+      this.setState({defectMessage: 'error'})
     } else{
-      let defects = [...this.state.defects];
-      defects.push(data.data.newDefect);
-      this.setState({defects: defects, defectMessage: 'sucess'});
+      const { newDefect } = data.data
+      const defects = [...this.state.defects, newDefect ];
+      this.setState({defects, defectMessage: 'sucess'});
     }
-
   }
 
-  updateDefect = async (updateDefect)=>{
-
-    const query = `mutation{updateDefect(_id: "${updateDefect._id}", input:{
-      defectName: "${updateDefect.defectName}"
-      defectCode: "${updateDefect.defectCode}"
-      isInjection: ${updateDefect.isInjection}
-    }) {
-      _id
-      defectName
-      defectCode
-      isInjection
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateDefect = async ({ _id, defectName, defectCode, isInjection })=>{
+    const input = { defectName, defectCode, isInjection }
+    modifyDefect.variables = { _id, input }
+    opts.body = JSON.stringify(modifyDefect)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({defectMessage: 'error'})
+      console.log(data.errors)
+      this.setState({defectMessage: 'error'})
     } else{
       let defect = data.data.updateDefect;
       let defects = [...this.state.defects];
       defects[defects.findIndex(el => el._id === defect._id)] = defect;
       this.setState({defects: defects, defectMessage: 'sucess'});
     }
-
   }
 
-  addProgram = async (program)=>{
-
-    const query = `mutation{newProgram(input:{
-      machineNumber: "${program.machine}"
-      moldeNumber: "${program.molde}"
-      partNumber: "${program.model}"
-      cycleTime: ${program.cycleTime}
-      cycles: ${program.cycles}
-      capacity: ${program.capacity}
-    }) {
-      _id
-    machineNumber {
-      _id
-      machineNumber
-      machineSerial
-    }
-    moldeNumber {
-      _id
-      moldeNumber
-      moldeSerial
-      cavities
-    }
-    partNumber {
-      _id
-      partNumber
-      partName
-
-    }
-    cycleTime
-    cycles
-    capacity
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  addProgram = async ({ machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
+    const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
+    addProgram.variables = { input }
+    opts.body = JSON.stringify(addProgram)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
-
     if(data.errors){
-    
-    this.setState({programMessage: 'error'})
+      this.setState({programMessage: 'error'})
     } else{
-      let programs = [...this.state.programs];
-      programs.push(data.data.newProgram);
-      this.setState({programs: programs, programMessage: 'sucess'});
+      const { newProgram } = data.data
+      const programs = [...this.state.programs, newProgram];
+      this.setState({programs, programMessage: 'sucess'});
     }
-
   }
 
-  updateProgram = async (program)=>{
-
-    const query = `mutation{updateProgram(_id: "${program._id}", input:{
-      machineNumber: "${program.machine}"
-      moldeNumber: "${program.molde}"
-      partNumber: "${program.model}"
-      cycleTime: ${program.cycleTime} 
-      cycles: ${program.cycles}
-      capacity: ${program.capacity}
-    }) {
-      _id
-    machineNumber {
-      _id
-      machineNumber
-      machineSerial
-    }
-    moldeNumber {
-      _id
-      moldeNumber
-      moldeSerial
-      cavities
-    }
-    partNumber {
-      _id
-      partNumber
-      partName
-
-    }
-    cycleTime
-    cycles
-    capacity
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query })
-    };
-
+  updateProgram = async ({ _id, machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
+    const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
+    modifyProgram.variables = { _id, input }
+    opts.body = JSON.stringify(modifyProgram)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    this.setState({programMessage: 'error'})
+      this.setState({programMessage: 'error'})
     } else{
       let program = data.data.updateProgram;
       let programs = [...this.state.programs];
       programs[programs.findIndex(el => el._id === program._id)] = program;
       this.setState({programs: programs, programMessage: 'sucess'});
     }
-
   }
 
-  addReport = async (report)=>{
-
-    const { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = report;
+  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
     const downtimeDetail = downtime
-    
-    const query = `mutation NewInjectionReport($input: NewInjectionReport ){
-      newInjectionReport(input: $input){
-        _id
-        reportDate
-        shift
-        machine{
-          _id
-          machineNumber
-          machineSerial
-        }
-        TReal
-        TOK
-        TNG
-        TPlan
-        TWTime
-        TDTime
-        TAvailability
-        TPerformance
-        TQuality
-        TOEE
-        production{
-          _id
-          real
-          ng
-          ok
-          plan
-          wtime
-          dtime
-          availability
-          performance
-          quality
-          oee
-          program {
-            _id
-          }
-          partNumber {
-            _id
-            partNumber
-            partName
-          }
-          molde{
-            _id
-            moldeNumber
-            moldeSerial
-            cavities
-          }
-        }
-        resines {
-          _id
-          resine{
-            _id
-            description
-            color
-            acronym
-          }
-          purge
-        }
-        downtimeDetail {
-          _id
-          issueId{
-            _id
-            issueName
-          }
-          mins
-        }
-        defects{
-          _id
-          defect{
-            _id
-            defectName
-          }
-          defectPcs
-          molde{
-            _id
-            moldeNumber
-          }
-          partNumber{
-            _id
-            partNumber
-            partName
-          }
-          program{
-            _id
-          }
-        }
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables:{
-          input: {
-            reportDate,
-            shift,
-            machine,
-            TReal,
-            TNG, 
-            TOK,
-            TPlan,
-            TWTime, 
-            TDTime,
-            TAvailability,
-            TPerformance,
-            TQuality,
-            TOEE,
-            production,
-            downtimeDetail,
-            defects,
-            resines
-          }
-        } })
-    };
-
+    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
+      production, downtimeDetail, defects, resines }
+    addReport.variables = { input }
+    opts.body = JSON.stringify(addReport)
     const res = await fetch(url, opts);
     const data = await res.json();
-    
     if(data.errors){
-    
-    return this.setState({reportMessage: 'error'})
+      return this.setState({reportMessage: 'error'})
     } else{
       const reports = [ data.data.newInjectionReport, ...this.state.reports]
-    
       const testArr = [data.data.newInjectionReport]
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
       if(test){
         const convert = testArr.map( item => { 
-        const date = this.formatDate(item.reportDate);
+        const date = formatDate(item.reportDate);
         const id = item._id
         const shift = item.shift
         const machine = item.machine._id
@@ -1152,9 +380,8 @@ class App extends React.Component {
         })
           return production
         })
-
         const convertDowntime = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const machine = item.machine._id
           const shift = item.shift
@@ -1171,9 +398,8 @@ class App extends React.Component {
           })
           return downtime
         })
-
         const convertDefects = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const machine = item.machine._id
           const shift = item.shift
@@ -1195,9 +421,8 @@ class App extends React.Component {
           })
           return defects
         })
-
         const convertResine = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const machine = item.machine._id
           const shift = item.shift
@@ -1216,12 +441,10 @@ class App extends React.Component {
           })
           return resines
         })
-          
         const productionByDate= [...this.state.productionByDate, ...convert[0]]
         const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
         const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
         const defectsByDate = [...this.state.defectsByDate, ...convertDefects[0]]
-
         return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
@@ -1230,128 +453,14 @@ class App extends React.Component {
     }
   }
 
-  updateReport = async (report)=>{
-    const { _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime  } = report;
+  updateReport = async ({ _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
     const downtimeDetail = downtime
-    const query = `mutation UpdateInjectionReport($_id: ID, $input: NewInjectionReport ){
-      updateInjectionReport(_id: $_id, input: $input){
-        _id
-          reportDate
-          shift
-          machine{
-            _id
-            machineNumber
-            machineSerial
-          }
-          TReal
-          TOK
-          TNG
-          TPlan
-          TWTime
-          TDTime
-          TAvailability
-          TPerformance
-          TQuality
-          TOEE
-          production{
-            _id
-            real
-            ng
-            ok
-            plan
-            wtime
-            dtime
-            availability
-            performance
-            quality
-            oee
-            program {
-              _id
-            }
-            partNumber {
-              _id
-              partNumber
-              partName
-              family
-            }
-            molde{
-              _id
-              moldeNumber
-              moldeSerial
-              cavities
-            }
-          }
-          resines {
-            _id
-            resine{
-              _id
-              description
-              acronym
-              color
-            }
-            purge
-          }
-          downtimeDetail {
-            _id
-            issueId{
-              _id
-              issueName
-            }
-            mins
-          }
-          defects{
-            _id
-            defect{
-              _id
-              defectName
-            }
-            defectPcs
-            molde{
-              _id
-              moldeNumber
-            }
-            partNumber{
-              _id
-              partNumber
-              partName
-              family
-            }
-            program{
-              _id
-            }
-          }
-    }}`;
-
-    const url = this.state.server;
-    const opts = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, variables:{
-        _id: _id,
-        input: {
-          reportDate,
-          shift,
-          machine,
-          TReal,
-          TNG, 
-          TOK,
-          TPlan,
-          TWTime, 
-          TDTime,
-          TAvailability,
-          TPerformance,
-          TQuality,
-          TOEE,
-          production,
-          downtimeDetail,
-          defects,
-          resines
-        }
-      }})
-    };
+    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
+      production, downtimeDetail, defects, resines }
+    modifyReport.variables = { _id, input }
+    opts.body = JSON.stringify(modifyReport)
     const res = await fetch(url, opts);
     const data = await res.json();
- 
     if(data.errors){
       return this.setState({reportMessage: 'error'})
     } 
@@ -1362,9 +471,8 @@ class App extends React.Component {
       const testArr = [report]
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
       if(test){
-
         const convert = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const shift = item.shift
           const machine = item.machine._id
@@ -1390,9 +498,8 @@ class App extends React.Component {
           })
             return production
           })
-
         const convertDowntime = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const shift = item.shift
           const machine = item.machine._id
@@ -1401,9 +508,8 @@ class App extends React.Component {
             })
             return downtime
           })
-
           const convertDefects = testArr.map( item => { 
-            const date = this.formatDate(item.reportDate);
+            const date = formatDate(item.reportDate);
             const id = item._id
             const machine = item.machine._id
             const shift = item.shift
@@ -1425,9 +531,8 @@ class App extends React.Component {
             })
             return defects
           })  
-
         const convertResine = testArr.map( item => { 
-          const date = this.formatDate(item.reportDate);
+          const date = formatDate(item.reportDate);
           const id = item._id
           const machine = item.machine._id
           const shift = item.shift
@@ -1446,17 +551,14 @@ class App extends React.Component {
           })
           return resines
         })
-
         const oldProductionByDate = this.state.productionByDate.filter( reportDate => reportDate.report !== report._id)
         const oldDowntimeByDate = this.state.downtimeByDate.filter( reportDate => reportDate.report !== report._id)
         const oldDefectsByDate = this.state.defectsByDate.filter( reportDate => reportDate.report !== report._id)
         const oldResinesByDate = this.state.resinesByDate.filter( reportDate => reportDate.report !== report._id)
-
         const productionByDate= [...oldProductionByDate, ...convert[0]]
         const downtimeByDate = [...oldDowntimeByDate, ...convertDowntime[0]]
         const defectsByDate = [...oldDefectsByDate, ...convertDefects[0]]
         const resinesByDate = [...oldResinesByDate, ...convertResine[0]]
-          
         return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
@@ -1465,17 +567,13 @@ class App extends React.Component {
     }
   }
 
-
   render(){
     return (
       <BrowserRouter>
         <div className="App">
-
-          
           <div className='NavBar'>
             <Toolbar/>
           </div>
-          
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />

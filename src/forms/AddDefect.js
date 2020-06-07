@@ -22,6 +22,14 @@ class AddDefect extends Component {
     this.props.addDefect(this.state);
   }
 
+  onIsInjection = e =>{
+    const value = e.target.value
+    let bool;
+    if(value === 'true'){
+      bool = true
+    } else {bool = false}
+    this.setState({isInjection: bool})
+  }
   
 
   render() {
@@ -52,9 +60,9 @@ class AddDefect extends Component {
             <tr>
               <td><label>Injection Area Defect?: </label></td>
               <td>
-                <input type="radio" id="true" name="isInjection" value={true} onChange={this.onInputChange} required></input>
+                <input type="radio" id="true" name="isInjection" value={true} onChange={this.onIsInjection} required></input>
                 <label htmlFor="true">Yes</label>
-                <input type="radio" id="false" name="isInjection" value={false} onChange={this.onInputChange} required></input>
+                <input type="radio" id="false" name="isInjection" value={false} onChange={this.onIsInjection} required></input>
                 <label htmlFor="false">No</label>
               </td>
             </tr>

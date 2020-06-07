@@ -10,7 +10,8 @@ class UpdateMaterial extends Component {
     acronym: '',
     identification: '',
     type: '',
-    unit: ''
+    unit: '',
+    color: ''
   }
 
   componentDidMount(){
@@ -63,6 +64,13 @@ class UpdateMaterial extends Component {
               <td><input type="text"
               name='description' 
               value={this.state.description}
+              onChange={this.onInputChange} required></input></td>
+            </tr>
+            <tr>
+              <td><label>Color: </label></td>
+              <td><input type="text"
+              name='color' 
+              value={this.state.color}
               onChange={this.onInputChange} required></input></td>
             </tr>
             <tr>

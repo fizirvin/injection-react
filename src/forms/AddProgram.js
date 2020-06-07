@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 
 class AddProgram extends Component {
   state= {
-    machine: '',
-    molde:'',
-    model:'',
+    machineNumber: '',
+    moldeNumber:'',
+    partNumber:'',
     cycleTime: 0,
     cycles: 0,
     capacity: 0
@@ -45,7 +45,7 @@ class AddProgram extends Component {
   };
 
   capacityValue = (cycleTime) => {
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       const value = parseInt(3600/cycleTime*capacity.cavities)
@@ -58,7 +58,7 @@ class AddProgram extends Component {
   };
 
   cyclesValue = (cap) => {
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       const value = cap/capacity.cavities
@@ -72,7 +72,7 @@ class AddProgram extends Component {
   };
 
   getCavities = () =>{
-    const capacity = this.props.moldes.find( item => item._id === this.state.molde)
+    const capacity = this.props.moldes.find( item => item._id === this.state.moldeNumber)
     if(!capacity){ return 0}
     else {
       return capacity.cavities
@@ -127,7 +127,7 @@ class AddProgram extends Component {
             <tr>
               <td><label>Machine Number: </label></td>
               <td>
-                <select onChange={this.onInputChange} name="machine" defaultValue="" required>
+                <select onChange={this.onInputChange} name="machineNumber" defaultValue="" required>
                   <option disabled value="">select</option>
                   {this.renderMachines()}
                 </select>
@@ -136,7 +136,7 @@ class AddProgram extends Component {
             <tr>
               <td><label>Mold Number: </label></td>
               <td>
-                <select onChange={this.onMoldeChange} name="molde" defaultValue="" required>
+                <select onChange={this.onMoldeChange} name="moldeNumber" defaultValue="" required>
                   <option disabled value="">select</option>
                   {this.renderMoldes()}
                 </select> {this.renderCavities()}
@@ -145,7 +145,7 @@ class AddProgram extends Component {
             <tr>
               <td><label>Model Name: </label></td>
               <td>
-                <select onChange={this.onInputChange} name="model" defaultValue="" required>
+                <select onChange={this.onInputChange} name="partNumber" defaultValue="" required>
                   <option disabled value="">select</option>
                   {this.renderModels()}
                 </select>
