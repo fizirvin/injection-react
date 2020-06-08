@@ -48,8 +48,8 @@ class App extends Component {
     const end = getDateofTable(7, today);
     const initial49 = getDateofTable49(1, today);
     initialQuery.variables = {
-      initial: "2020-06-01",
-      end: "2020-06-05"
+      initial: initial49,
+      end: end
     }
     opts.body = JSON.stringify(initialQuery)
     const res = await fetch(url, opts);
