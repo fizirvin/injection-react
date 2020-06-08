@@ -18,8 +18,8 @@ class Users extends Component {
   }
 
   renderList(){
-  return this.state.users.map( ({_id, name, level, active, createdAt}) =>
- 
+  return this.state.users.map( ({_id, name, level, active }) =>
+  
   <tr key={_id}>
     <TableData className='table_data' style={{width: '25%'}} >{name}</TableData>
     <TableData className='table_data' style={{width: '25%'}} >{level}</TableData>

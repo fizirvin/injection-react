@@ -65,7 +65,6 @@ const initialQuery = { query: `query
             name
             active
             level
-            createdAt
         } 
         moldes{
             _id
