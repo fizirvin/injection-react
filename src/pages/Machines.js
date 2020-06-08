@@ -33,7 +33,7 @@ class Machines extends Component {
       return <div>...loading</div>
     } else {
       return (
-        <div className='moldes_body_container'>
+        <div className='machines_body_container'>
           <table className='body_table'>
             <tbody>
               {this.renderList()}

@@ -59,6 +59,13 @@ const initialQuery = { query: `query
             machineSerial
             closingForce
             spindleDiameter
+        }
+        users{
+            _id
+            name
+            active
+            level
+            createdAt
         } 
         moldes{
             _id

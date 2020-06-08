@@ -6,6 +6,7 @@ import addIssue from './addIssue'
 import addDefect from './addDefect'
 import addProgram from './addProgram'
 import addReport from './addReport'
+import addUser from './addUser'
 import modifyMachine from './modifyMachine'
 import modifyMolde from './modifyMolde'
 import modifyMaterial from './modifyMaterial'
@@ -15,5 +16,5 @@ import modifyDefect from './modifyDefect'
 import modifyProgram from './modifyProgram'
 import modifyReport from './modifyReport'
 
-export { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport,
+export { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser,
     modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport }

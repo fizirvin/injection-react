@@ -10,6 +10,7 @@ import Reports from './Reports.js'
 import Toolbar from './Toolbar.js'
 import Production from './Production.js'
 import Downtime from './Downtime.js'
+import Users from './Users.js'
 
 export { 
     Home, 
@@ -23,5 +24,6 @@ export {
     Reports, 
     Toolbar, 
     Production, 
-    Downtime
+    Downtime,
+    Users
 } 

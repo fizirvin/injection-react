@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, Machines, Material, Models, Issues, 
-  Defects, Programs, Reports, Toolbar, Production, Downtime } from './pages'
+  Defects, Programs, Reports, Toolbar, Production, Downtime, Users } from './pages'
 import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport } from './forms';
 import { initialQuery } from './actions/queries'
@@ -36,6 +36,7 @@ class App extends Component {
     defectsByDate: [],
     productionByDate: [],
     resinesByDate: [],
+    users: [],
     initial49:'',
     end:'',
     server: 'https://injection.irvinfiz.now.sh/injection'
@@ -67,6 +68,7 @@ class App extends Component {
       downtimeByDate: data.data.downtimeByDate,
       defectsByDate: data.data.defectsByDate,
       resinesByDate: data.data.resinesByDate,
+      users: data.data.users,
       initial49: initial49,
       end: end
     })
@@ -567,6 +569,57 @@ class App extends Component {
     }
   }
 
+  signupHandler = (event, authData) => {
+    event.preventDefault();
+    this.setState({ authLoading: true });
+    const graphqlQuery = {
+      query: `
+        mutation CreateNewUser($email: String!, $name: String!, $password: String!) {
+          createUser(userInput: {email: $email, name: $name, password: $password}) {
+            _id
+            email
+          }
+        }
+      `,
+      variables: {
+        email: authData.signupForm.email.value,
+        name: authData.signupForm.name.value,
+        password: authData.signupForm.password.value
+      }
+    };
+    fetch('http://localhost:8080/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(graphqlQuery)
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(resData => {
+        if (resData.errors && resData.errors[0].status === 422) {
+          throw new Error(
+            "Validation failed. Make sure the email address isn't used yet!"
+          );
+        }
+        if (resData.errors) {
+          throw new Error('User creation failed!');
+        }
+        console.log(resData);
+        this.setState({ isAuth: false, authLoading: false });
+        this.props.history.replace('/');
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          isAuth: false,
+          authLoading: false,
+          error: err
+        });
+      });
+  };
+
   render(){
     return (
       <BrowserRouter>
@@ -674,6 +727,9 @@ class App extends Component {
               downtime={this.state.downtimeByDate}
               production={this.state.productionByDate}
               purge={this.state.resinesByDate}
+              /> )} />
+              <Route path="/users" exact component={ props => ( <Users {...props}
+              users={this.state.users}
               /> )} />
             </Switch> 
           </div>
