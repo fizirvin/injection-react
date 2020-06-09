@@ -5,7 +5,8 @@ const addMolde = { query: `mutation
             moldeNumber
             moldeSerial
             cavities
-            lifecycles
+            lifecycle
+            tcycles
         }
     }`
 }

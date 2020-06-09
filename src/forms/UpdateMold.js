@@ -9,6 +9,7 @@ class UpdateMold extends Component {
     moldeSerial: '',
     cavities: 0,
     lifecycles: 0,
+    tcycles: 0,
   }
 
   componentDidMount(){
@@ -82,6 +83,14 @@ class UpdateMold extends Component {
               <td><input type="number"
                 name='lifecycles' 
                 value={this.cavitieValue('lifecycles')}
+                onChange={this.onCavitieChange} min="1" required></input>
+              </td>
+            </tr>
+            <tr>
+              <td><label>Total cycles: </label></td>
+              <td><input type="number"
+                name='tcycles' 
+                value={this.cavitieValue('tcycles')}
                 onChange={this.onCavitieChange} min="1" required></input>
               </td>
             </tr>

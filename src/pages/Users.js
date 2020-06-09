@@ -9,23 +9,23 @@ class Users extends Component {
   state ={
     users: this.props.users,
     header: [
-      {h: 'Name', w: '25%'},
-      {h: 'Level', w: '25%'},
+      {h: 'Name', w: '30%'},
+      {h: 'Level', w: '15%'},
       {h: 'Active', w: '15%'},
-      {h: 'Created At', w: '20%'},
-      {h: <button>Add User</button>, w: '15%'}
+      {h: 'Created', w: '20%'},
+      {h: <Link to="/users/add"><button>Add User</button></Link>, w: '20%'}
     ]
   }
 
   renderList(){
-  return this.state.users.map( ({_id, name, level, active }) =>
+  return this.state.users.map( ({_id, name, level, active, shortCat, fullCat }) =>
   
   <tr key={_id}>
-    <TableData className='table_data' style={{width: '25%'}} >{name}</TableData>
-    <TableData className='table_data' style={{width: '25%'}} >{level}</TableData>
-    <TableData className='table_data' style={{width: '15%'}}>{<input type='checkbox' checked={active? 'Yes': 'No'}/>}</TableData>
-    <TableData className='table_data' style={{width: '20%'}}>{}</TableData>
-    <TableData className='table_data' style={{width: '15%'}}><button>Update</button></TableData>
+    <TableData className='table_data' style={{width: '30%'}} >{name}</TableData>
+    <TableData className='table_data' style={{width: '15%'}} >{level}</TableData>
+    <TableData className='table_data' style={{width: '15%'}}>{<input type='checkbox' readOnly checked={active}/>}</TableData>
+    <TableData className='table_data' style={{width: '20%'}}>{shortCat}</TableData>
+    <TableData className='table_data' style={{width: '20%'}}><Link to={`/users/update/${_id}`}><button>Update</button></Link></TableData>
   </tr>)
   }
 

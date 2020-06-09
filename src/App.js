@@ -3,10 +3,10 @@ import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, Machines, Material, Models, Issues, 
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users } from './pages'
 import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
-  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport } from './forms';
+  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser } from './forms';
 import { initialQuery } from './actions/queries'
-import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, 
-  modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport } from './actions/mutations'
+import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
+  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts } from './actions/config'
 import './App.css';
@@ -25,6 +25,7 @@ class App extends Component {
     defectMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
+    userMessage: 'new',
     moldes: [],
     materials: [],
     models: [],
@@ -75,6 +76,39 @@ class App extends Component {
   }
 
   close = message => this.setState({[message]: 'new'});
+
+  addUser = async ({name, level, password})=>{
+    const input = { name, level, password }
+    addUser.variables = { input }
+    opts.body = JSON.stringify(addUser)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if(data.errors){
+      this.setState({userMessage: 'error'})
+    } else{
+      const { newUser } = data.data
+      const users = [...this.state.users, newUser ];
+      this.setState({ users, userMessage: 'sucess'});
+    }
+  }
+
+  updateUser = async ({_id, level, active})=>{
+    const input = { level, active}
+    console.log(input)
+    modifyUser.variables = { _id, input }
+    opts.body = JSON.stringify(modifyUser)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if(data.errors){
+      console.log(data.errors)
+      this.setState({userMessage: 'error'})
+    } else{
+      let user = data.data.updateUser;
+      let users = [...this.state.users];
+      users[users.findIndex(el => el._id === user._id)] = user;
+      this.setState({ users, userMessage: 'sucess'});
+    }
+  }
 
   addMachine = async ({ machineNumber, machineSerial, closingForce, spindleDiameter })=>{
     const input = { machineNumber, machineSerial, closingForce, spindleDiameter }
@@ -144,8 +178,8 @@ class App extends Component {
     }
   }
 
-  updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles })=>{
-    const input = { moldeNumber, moldeSerial, cavities, lifecycles }
+  updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles, tcycles })=>{
+    const input = { moldeNumber, moldeSerial, cavities, lifecycles, tcycles }
     modifyMolde.variables = { _id, input }
     opts.body = JSON.stringify(modifyMolde)
     const res = await fetch(url, opts);
@@ -731,6 +765,13 @@ class App extends Component {
               <Route path="/users" exact component={ props => ( <Users {...props}
               users={this.state.users}
               /> )} />
+
+              <Route path="/users/add" exact component={ props => ( <AddUser {...props} 
+                message={this.state.userMessage} close={this.close} addUser={this.addUser}/> )} 
+              />
+              <Route path="/users/update/:id" exact component={ props => ( <UpdateUser {...props} 
+                users={this.state.users} message={this.state.userMessage} close={this.close} updateUser={this.updateUser}/> )} 
+              />
             </Switch> 
           </div>
         </div>

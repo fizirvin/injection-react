@@ -62,9 +62,12 @@ const initialQuery = { query: `query
         }
         users{
             _id
-            name
+            shortCat
+            fullUat
+            fullCat
             active
             level
+            name
         } 
         moldes{
             _id
@@ -72,6 +75,7 @@ const initialQuery = { query: `query
             moldeSerial
             cavities
             lifecycles
+            tcycles
         }
         materials{
             _id

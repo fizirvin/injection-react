@@ -6,6 +6,7 @@ UpdateMolde($_id: ID, $input: NewMolde ){
             moldeSerial
             cavities
             lifecycles
+            tcycles
         }
     }`
 }

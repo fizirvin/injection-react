@@ -9,22 +9,24 @@ class Moldes extends Component {
   state ={
     moldes: this.props.moldes,
     header: [
-      {h: 'Mold Number', w: '35%'},
-      {h: 'Serial Number', w: '20%'},
-      {h: 'Cavities', w: '15%'},
+      {h: 'Mold Number', w: '30%'},
+      {h: 'Serial Number', w: '18%'},
+      {h: 'Cavities', w: '10%'},
       {h: 'Lifecycles', w: '15%'},
-      {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '15%'}
+      {h: 'Tcycles', w: '15%'},
+      {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '12%'}
     ]
   }
 
   renderList() {
-    return this.state.moldes.map( ({_id, moldeNumber, moldeSerial, cavities, lifecycles}) =>
+    return this.state.moldes.map( ({_id, moldeNumber, moldeSerial, cavities, lifecycles, tcycles}) =>
       <tr key={_id}>
-        <TableData className='table_data' style={{width: '35%'}}>{moldeNumber}</TableData>
-        <TableData className='table_data' style={{width: '20%'}}>{moldeSerial}</TableData>
-        <TableData className='table_data' style={{width: '15%'}}>{cavities}</TableData>
+        <TableData className='table_data' style={{width: '30%'}}>{moldeNumber}</TableData>
+        <TableData className='table_data' style={{width: '18%'}}>{moldeSerial}</TableData>
+        <TableData className='table_data' style={{width: '10%'}}>{cavities}</TableData>
         <TableData className='table_data' style={{width: '15%'}}>{lifecycles}</TableData>
-        <TableData className='table_data' style={{width: '15%'}}><Link to={`/molds/update/${_id}`}><button>Update</button></Link></TableData>
+        <TableData className='table_data' style={{width: '15%'}}>{tcycles}</TableData>
+        <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`}><button>Update</button></Link></TableData>
       </tr>
     )
   }

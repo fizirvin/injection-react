@@ -9,6 +9,8 @@ import UpdateModel from './UpdateModel.js'
 import AddIssue from './AddIssue.js'
 import UpdateIssue from './UpdateIssue.js'
 import AddDefect from './AddDefect.js'
+import AddUser from './AddUser.js'
+import UpdateUser from './UpdateUser.js'
 import UpdateDefect from './UpdateDefect.js'
 import AddProgram from './AddProgram.js'
 import UpdateProgram from './UpdateProgram.js'
@@ -27,6 +29,8 @@ export {
     AddIssue,
     UpdateIssue,
     AddDefect,
+    AddUser,
+    UpdateUser, 
     UpdateDefect,
     AddProgram,
     UpdateProgram,
