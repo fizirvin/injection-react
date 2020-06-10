@@ -58,7 +58,7 @@ class UpdateUser extends Component {
       return ReactDOM.createPortal(
         <div className="Modal">
         <div className="modal-content">
-          <h2>Add New User:</h2>
+          <h2>Update User:</h2>
           <form onSubmit={this.onSubmit} autoComplete='off'>
             <table>
           <tbody> 

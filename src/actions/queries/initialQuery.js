@@ -217,6 +217,4 @@ const initialQuery = { query: `query
     }`
 }
 
-export {
-    initialQuery
-}
+export default initialQuery

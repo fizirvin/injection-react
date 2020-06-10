@@ -603,63 +603,12 @@ class App extends Component {
     }
   }
 
-  signupHandler = (event, authData) => {
-    event.preventDefault();
-    this.setState({ authLoading: true });
-    const graphqlQuery = {
-      query: `
-        mutation CreateNewUser($email: String!, $name: String!, $password: String!) {
-          createUser(userInput: {email: $email, name: $name, password: $password}) {
-            _id
-            email
-          }
-        }
-      `,
-      variables: {
-        email: authData.signupForm.email.value,
-        name: authData.signupForm.name.value,
-        password: authData.signupForm.password.value
-      }
-    };
-    fetch('http://localhost:8080/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(graphqlQuery)
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(resData => {
-        if (resData.errors && resData.errors[0].status === 422) {
-          throw new Error(
-            "Validation failed. Make sure the email address isn't used yet!"
-          );
-        }
-        if (resData.errors) {
-          throw new Error('User creation failed!');
-        }
-        console.log(resData);
-        this.setState({ isAuth: false, authLoading: false });
-        this.props.history.replace('/');
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({
-          isAuth: false,
-          authLoading: false,
-          error: err
-        });
-      });
-  };
-
   render(){
     return (
       <BrowserRouter>
         <div className="App">
           <div className='NavBar'>
-            <Toolbar/>
+            <Toolbar logoutHandler={this.props.logoutHandler}/>
           </div>
           <div className="Content">
             <Switch>

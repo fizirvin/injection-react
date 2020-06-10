@@ -1,3 +1,4 @@
-import { initialQuery } from './initialQuery'
+import initialQuery from './initialQuery'
+import loginQuery from './loginQuery'
 
-export { initialQuery }
+export { initialQuery, loginQuery }

@@ -40,6 +40,11 @@ class Toolbar extends Component {
     }
   }
 
+  logOut = () =>{
+    this.props.history.replace('/');
+    this.props.logoutHandler()
+  }
+
   render(){
     return (
       <div className='Toolbar'>
@@ -50,6 +55,9 @@ class Toolbar extends Component {
           </div>
         </div>
         <h3 className='header_toolbar'>{this.renderHeader()}</h3>
+        <div className='user_container'>
+          <button onClick={this.logOut}>logout</button>
+        </div>
       </div>
     )
   }
