@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import {BrowserRouter, Route } from 'react-router-dom';
+import {BrowserRouter, Route, withRouter } from 'react-router-dom';
 import Login from './Login'
+import NotFound from './NotFound'
 import { loginQuery } from '../actions/queries';
 import { url, opts } from '../actions/config/index';
 import App from '../App.js'
@@ -29,6 +30,7 @@ class Auth extends Component {
     }
   
     logoutHandler = () => {
+        this.props.history.replace('/');
         this.setState({ isAuth: false, token: null, userId: null });
         localStorage.removeItem('token');
         localStorage.removeItem('expiryDate');
@@ -78,7 +80,8 @@ class Auth extends Component {
         else{
             return (
                 <BrowserRouter>
-                    <Route path="/" exact component={ props => ( <Login {...props} loginHandler={this.loginHandler}/> )} /> 
+                    <Route path="/" exact component={ props => ( <Login {...props} loginHandler={this.loginHandler}/> )} />
+                    <Route component={NotFound} />
                 </BrowserRouter>
             )
         }
@@ -93,4 +96,4 @@ class Auth extends Component {
     }
 }
 
-export default Auth;
+export default withRouter(Auth);
