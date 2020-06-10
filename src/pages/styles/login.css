@@ -34,15 +34,16 @@
     width: 10vw;
     background-color: #050505;
     border-style: hidden;
-    /* border-bottom: solid 1.5px orangered; */
+    
     color: rgb(175, 175, 175);
     border: 10px solid;
     border-image-slice: 1;
     border-width: 1px;
-    border-image-source: linear-gradient(to right, rgb(38, 70, 250), rgb(0, 11, 168));;
+    /* border-image-source: linear-gradient(to right, rgb(38, 70, 250), rgb(0, 11, 168)); */
     border-top: hidden;
     border-left: hidden;
     border-right: hidden;
+    border-bottom: solid 1px  rgb(0, 11, 168);
 
  }
 
