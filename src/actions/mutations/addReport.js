@@ -4,6 +4,9 @@ const addReport = { query: `mutation
             _id
             reportDate
             shift
+            userId{
+                name
+            }
             machine{
                 _id
                 machineNumber
@@ -31,6 +34,7 @@ const addReport = { query: `mutation
                 performance
                 quality
                 oee
+                cycles
                  program {
                     _id
                 }

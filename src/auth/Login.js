@@ -20,6 +20,8 @@ onInputPassword = (e) =>{
   return this.setState({password: e.target.value})
 }
 
+renderMessage = () => this.props.userMessage? <div className='userMessage'>{this.props.userMessage}</div> : null
+
   render(){
     return (
       <div className="Login">
@@ -33,7 +35,7 @@ onInputPassword = (e) =>{
             </table>
             <button className='login_button' type='submit'>login</button>
           </form>
-          
+          {this.renderMessage()}
         </div>
       </div>
     )

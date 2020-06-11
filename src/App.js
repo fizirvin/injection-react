@@ -374,17 +374,20 @@ class App extends Component {
     }
   }
 
-  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
+  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
     const downtimeDetail = downtime
     const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
-      production, downtimeDetail, defects, resines }
+      production, userId, downtimeDetail, defects, resines }
     addReport.variables = { input }
     opts.body = JSON.stringify(addReport)
     const res = await fetch(url, opts);
     const data = await res.json();
+    
     if(data.errors){
+      console.log('reporte', data)
       return this.setState({reportMessage: 'error'})
     } else{
+      console.log('reporte', data.data)
       const reports = [ data.data.newInjectionReport, ...this.state.reports]
       const testArr = [data.data.newInjectionReport]
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
@@ -608,7 +611,7 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <div className='NavBar'>
-            <Toolbar logoutHandler={this.props.logoutHandler}/>
+            <Toolbar logoutHandler={this.props.logoutHandler} name={this.props.name}/>
           </div>
           <div className="Content">
             <Switch>
@@ -681,6 +684,7 @@ class App extends Component {
                 machines={this.state.machines}
                 material={this.state.materials} 
                 issues={this.state.issues}
+                userId={this.props.userId}
                 message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
               />
               <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}

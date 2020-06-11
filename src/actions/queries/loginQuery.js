@@ -3,6 +3,7 @@ const loginQuery = { query: `query
         login(name:$name, password:$password){
             userId
             token
+            name
         }
     }`,
 };

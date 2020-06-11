@@ -9,7 +9,12 @@ class Toolbar extends Component {
     ['molds', 'machines', 'material', 'models', 'issues', 'defects', 'programs', 'reports', 'production', 'users'],
     title: ['Molds List:', 'Machine List:', 'Raw Material List:', 'Model List:', 
     'Issues List:', 'Defect List:', 'Programs:', 'Production Reports:', 'Production:', 'Users:' ],
-    header:''
+    header:'',
+    name: ''
+  }
+
+  componentDidMount(){
+    return this.setState({name: this.props.name})
   }
 
   setHeader = (e) =>{
@@ -44,6 +49,7 @@ class Toolbar extends Component {
     this.props.logoutHandler()
   }
 
+
   render(){
     return (
       <div className='Toolbar'>
@@ -55,7 +61,12 @@ class Toolbar extends Component {
         </div>
         <h3 className='header_toolbar'>{this.renderHeader()}</h3>
         <div className='user_container'>
-          <button onClick={this.logOut}>logout</button>
+          <div className='dropdown-user-right'>
+            <button className='dropbtn-user'>{this.state.name}</button>
+              <div className='dropdown-user'>
+                <Link to={'/'} onClick={this.logOut}>logout</Link>
+             </div>
+          </div>
         </div>
       </div>
     )

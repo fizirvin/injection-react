@@ -31,6 +31,7 @@ const modifyReport = { query: `mutation
         performance
         quality
         oee
+        cycles
         program {
           _id
         }

@@ -58,7 +58,7 @@ class AddReport extends Component {
     const items = this.state.selected.filter( item => item.program !== id);
     const getProduction = selected.find( item => item.program === id);
 
-    const { production, capacity } = await getProduction
+    const { production, capacity, moldeNumber } = await getProduction
     const { ng } = production
     const ok = value - ng
     const prewtime = value/capacity
@@ -70,10 +70,13 @@ class AddReport extends Component {
 
     const predtime = (this.state.time - TWTime - wtime)/this.state.selected.length
     const dtime = this.precise_round(predtime, 2)
+    
+    const { cavities } = moldeNumber;
+    const cycles = parseInt(value/cavities);
 
     const item = { 
       ...getProduction,
-      production: { ...getProduction.production, real: value, ok: ok, wtime: wtime, dtime: dtime}
+      production: { ...getProduction.production, real: value, ok: ok, wtime: wtime, dtime: dtime, cycles: cycles}
     }
     const newSelected = [...items, item]
     const newArray = newSelected.map( item => {
@@ -716,7 +719,8 @@ class AddReport extends Component {
           availability: 0,
           performance: 0,
           quality: 0,
-          oee: 0
+          oee: 0,
+          cycles: 0
         }
       }
 
@@ -791,7 +795,8 @@ class AddReport extends Component {
       production,
       downtime,
       defects,
-      resines
+      resines,
+      userId: this.props.userId
     }
     
     return this.props.addReport(report)
