@@ -911,7 +911,7 @@ class UpdateReport extends Component {
     const production = selected.map( item => item.production )
     const report = {
       _id, 
-      reportDate: date+'T03:00:00.000-06:00',
+      reportDate: date+'T15:00:30.640+00:00',
       shift,
       machine,
       TReal,

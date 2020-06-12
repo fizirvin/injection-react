@@ -77,6 +77,16 @@ const initialQuery = { query: `query
             lifecycles
             tcycles
         }
+        cycles{
+            report
+            date
+            shift
+            machine
+            part
+            molde
+            real
+            cycles
+        }
         materials{
             _id
             number

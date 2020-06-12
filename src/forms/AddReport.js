@@ -779,7 +779,7 @@ class AddReport extends Component {
     const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, downtime  } = this.state;
     const production = selected.map( item => item.production )
     const report = {
-      reportDate: date+'T03:00:00.000-06:00',
+      reportDate: date+'T15:00:30.640+00:00',
       shift,
       machine,
       TReal,

@@ -27,6 +27,7 @@ class App extends Component {
     reportMessage: 'new',
     userMessage: 'new',
     moldes: [],
+    cycles: [],
     materials: [],
     models: [],
     issues: [],
@@ -59,7 +60,8 @@ class App extends Component {
     this.setState({ 
       machines: data.data.machines,
       materials: data.data.materials, 
-      moldes: data.data.moldes, 
+      moldes: data.data.moldes,
+      cycles: data.data.cycles, 
       models: data.data.parts, 
       issues: data.data.issues,
       defects: data.data.defects,
@@ -387,7 +389,7 @@ class App extends Component {
       console.log('reporte', data)
       return this.setState({reportMessage: 'error'})
     } else{
-      console.log('reporte', data.data)
+      
       const reports = [ data.data.newInjectionReport, ...this.state.reports]
       const testArr = [data.data.newInjectionReport]
       const test = testArr.some(item => item.reportDate >= this.state.initial49 && item.reportDate <= this.state.end)
@@ -480,11 +482,35 @@ class App extends Component {
           })
           return resines
         })
+
+        const convertMolde = testArr.map( item => { 
+          const date = formatDate(item.reportDate);
+          const id = item._id
+          const shift = item.shift
+          const machine = item.machine._id
+          const production = item.production.map( prod =>{
+           
+            return { 
+              report: id, 
+              date: date, 
+              shift: shift, 
+              machine: machine, 
+              part: prod.partNumber._id,
+              molde: prod.molde._id,
+              real: prod.real,
+              cycles: prod.cycles
+               }
+          })
+            return production
+        })
+        
+        
         const productionByDate= [...this.state.productionByDate, ...convert[0]]
         const downtimeByDate = [...this.state.downtimeByDate, ...convertDowntime[0]]
         const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
         const defectsByDate = [...this.state.defectsByDate, ...convertDefects[0]]
-        return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        const cycles = [...this.state.cycles, ...convertMolde[0]]
+        return this.setState({reports, productionByDate, cycles, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -590,15 +616,39 @@ class App extends Component {
           })
           return resines
         })
+
+        const convertMolde = testArr.map( item => { 
+          const date = formatDate(item.reportDate);
+          const id = item._id
+          const shift = item.shift
+          const machine = item.machine._id
+          const production = item.production.map( prod =>{
+           
+            return { 
+              report: id, 
+              date: date, 
+              shift: shift, 
+              machine: machine, 
+              part: prod.partNumber._id,
+              molde: prod.molde._id,
+              real: prod.real,
+              cycles: prod.cycles
+               }
+          })
+            return production
+        })
+
         const oldProductionByDate = this.state.productionByDate.filter( reportDate => reportDate.report !== report._id)
         const oldDowntimeByDate = this.state.downtimeByDate.filter( reportDate => reportDate.report !== report._id)
         const oldDefectsByDate = this.state.defectsByDate.filter( reportDate => reportDate.report !== report._id)
         const oldResinesByDate = this.state.resinesByDate.filter( reportDate => reportDate.report !== report._id)
+        const oldCycles = this.state.cycles.filter( reportDate => reportDate.report !== report._id)
         const productionByDate= [...oldProductionByDate, ...convert[0]]
         const downtimeByDate = [...oldDowntimeByDate, ...convertDowntime[0]]
         const defectsByDate = [...oldDefectsByDate, ...convertDefects[0]]
         const resinesByDate = [...oldResinesByDate, ...convertResine[0]]
-        return this.setState({reports, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        const cycles = [...oldCycles, ...convertMolde[0]]
+        return this.setState({reports, cycles, productionByDate, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -616,7 +666,7 @@ class App extends Component {
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/molds" exact component={ props => ( <Moldes {...props} moldes={this.state.moldes}/> )} /> 
+              <Route path="/molds" exact component={ props => ( <Moldes {...props} cycles={this.state.cycles} moldes={this.state.moldes}/> )} /> 
               <Route path="/molds/add" exact component={ props => ( <AddMold {...props} 
                 message={this.state.moldeMessage} close={this.close} addMolde={this.addMolde}/> )} 
               />
