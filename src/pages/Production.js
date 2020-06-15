@@ -38,7 +38,8 @@ class Production extends React.Component {
     week2: [],
     week3: [],
     data4: [],
-    week4: []
+    week4: [],
+    title2: 'Production by Machine'
   }
 
   async componentDidMount (){
@@ -295,7 +296,7 @@ renderModelGraphic = () =>{
   if(this.state.graphic === 'Machine'){
     return (
       <div className='Graphic'>  
-        <WeekChart data={this.state.data}></WeekChart>
+        <WeekChart title={this.state.title2} data={this.state.data}></WeekChart>
       </div>
     )
   }
@@ -323,7 +324,7 @@ renderModelGraphic = () =>{
   else{
     return (
       <div className='Graphic'>  
-        <WeekChartVertical data={this.state.data}></WeekChartVertical>
+        <WeekChartVertical title={this.state.title2} data={this.state.data}></WeekChartVertical>
       </div>
     )
   }
@@ -1800,17 +1801,17 @@ renderDowntimeByMachineGraphic = () =>{
     if( e.target.name === 'Machine'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Machine', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, graphic: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data, title2: 'Production by Machine'})
     }
     else if(e.target.name === 'Molde'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Molde', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, graphic: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data, title2: 'Production by Molde'})
     }
     else if(e.target.name === 'Model'){
       const data = this.setGraphicFilter(this.state.monday, this.state.sunday, 'Model', production)
       // this.setState({render: e.target.name, data, week: []})
-      return this.setState({render: e.target.name, graphic: e.target.name, data})
+      return this.setState({render: e.target.name, graphic: e.target.name, data, title2: 'Production by Model'})
     }
     else{ return }
   }

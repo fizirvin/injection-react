@@ -29,14 +29,18 @@ class WeekChart extends Component {
 
   componentDidMount (){
     d3.select(this.xAxisRef.current).call(this.xAxis);
-    d3.select(this.yAxisRef.current).call(this.yAxis);
-  
+    d3.select(this.yAxisRef.current).call(this.yAxis).append("text")
+    .attr("x", 225)
+    .attr("y", 15)    // +20 to adjust position (lower)
+    .text(this.state.title)
+    .attr("font-size", "16px")
+    .attr("fill",  "grey" );;
 
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (!nextProps.data) return null; // data hasn't been loaded yet so do nothing
-    const {data} = nextProps;
+    const {data, title} = nextProps;
     const {xScale, yScale, colorScale} = prevState;
 
     // data has changed, so recalculate scale domains
@@ -70,12 +74,17 @@ class WeekChart extends Component {
       }
     });
 
-    return {bars, barWidth};
+    return {bars, barWidth, title};
   }
 
   componentDidUpdate() {
     d3.select(this.xAxisRef.current).call(this.xAxis)
-    d3.select(this.yAxisRef.current).call(this.yAxis);
+    d3.select(this.yAxisRef.current).call(this.yAxis).append("text")
+    .attr("x", 225)
+    .attr("y", 15)    // +20 to adjust position (lower)
+    .text(this.state.title)
+    .attr("font-size", "16px")
+    .attr("fill",  "grey" );;
   }
 
   render() {

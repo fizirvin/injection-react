@@ -11,12 +11,11 @@ class Moldes extends Component {
     header: [
       {h: 'Mold Number', w: '25%'},
       {h: 'Serial Number', w: '15%'},
-      {h: 'Cavities', w: '10%'},
+      {h: 'Cavities', w: '12%'},
       {h: 'Lifecycles', w: '12%'},
-      {h: 'Tcycles', w: '10%'},
-      {h: 'Report cycles', w: '10%'},
-      {h: '%', w: '10%'},
-      {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '10%'}
+      {h: 'Tcycles', w: '12%'},
+      {h: '%', w: '12%'},
+      {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '12%'}
     ]
   }
 
@@ -35,18 +34,19 @@ class Moldes extends Component {
         return a + b.cycles || 0
       },0)
 
+     
       const sum = filter + tcycles
       const percent = this.precise_round((sum/lifecycles)*100, 2) 
 
       return (<tr key={_id}>
         <TableData className='table_data' style={{width: '25%'}}>{moldeNumber}</TableData>
         <TableData className='table_data' style={{width: '15%'}}>{moldeSerial}</TableData>
-        <TableData className='table_data' style={{width: '10%'}}>{cavities}</TableData>
+        <TableData className='table_data' style={{width: '12%'}}>{cavities}</TableData>
         <TableData className='table_data' style={{width: '12%'}}>{lifecycles}</TableData>
-        <TableData className='table_data' style={{width: '10%'}}>{tcycles}</TableData>
-        <TableData className='table_data' style={{width: '10%'}}>{filter}</TableData>
-        <TableData className='table_data' style={{width: '10%'}}>{percent}</TableData>
-        <TableData className='table_data' style={{width: '10%'}}><Link to={`/molds/update/${_id}`}><button>Update</button></Link></TableData>
+        {/* <TableData className='table_data' style={{width: '10%'}}>{tcycles}</TableData> */}
+        <TableData className='table_data' style={{width: '12%'}}>{sum}</TableData>
+        <TableData className='table_data' style={{width: '12%'}}>{percent}</TableData>
+        <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`}><button>Update</button></Link></TableData>
       </tr>)
     })
   }

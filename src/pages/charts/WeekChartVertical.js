@@ -17,7 +17,8 @@ class WeekChartVertical extends Component {
     // d3 helpers
     // xScale: d3.scaleTime().range([35, 350]),
     xScale: d3.scaleBand().range([margin.left, width - margin.right]),
-    yScale: d3.scaleLinear().range([height - margin.bottom, margin.top])
+    yScale: d3.scaleLinear().range([height - margin.bottom, margin.top]),
+    newTitle: '',
     
   };
 
@@ -29,14 +30,21 @@ class WeekChartVertical extends Component {
 
   componentDidMount (){
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
-    d3.select(this.yAxisRef.current).call(this.yAxis);
+    d3.select(this.yAxisRef.current).call(this.yAxis)
+    
+    // .append("text")
+    // .attr("x", 225)
+    // .attr("y", 15)    // +20 to adjust position (lower)
+    // .text(this.state.newTitle)
+    // .attr("font-size", "16px")
+    // .attr("fill",  "grey" );
   
 
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (!nextProps.data) return null; // data hasn't been loaded yet so do nothing
-    const {data} = nextProps;
+    const {data, title } = nextProps;
     const { xScale, yScale } = prevState;
 
     // data has changed, so recalculate scale domains
@@ -55,7 +63,7 @@ class WeekChartVertical extends Component {
     const dataLength = data.length;
     const barPos= ((width - margin.left - margin.right) / dataLength);
     const barWidth = barPos - 1
-
+    
     // calculate x and y for each rectangle
     const bars = data.map((d,i) => {
       const y1 = yScale(d.ok);
@@ -71,12 +79,19 @@ class WeekChartVertical extends Component {
       }
     });
 
-    return {bars, barWidth};
+    return {bars, barWidth, newTitle: title};
   }
 
   componentDidUpdate() {
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
-    d3.select(this.yAxisRef.current).call(this.yAxis);
+    d3.select(this.yAxisRef.current).call(this.yAxis)
+    
+    // .append("text")
+    // .attr("x", 225)
+    // .attr("y", 15)    // +20 to adjust position (lower)
+    // .text(this.state.newTitle)
+    // .attr("font-size", "16px")
+    // .attr("fill",  "grey" );
   }
 
   render() {
