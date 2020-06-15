@@ -10,6 +10,9 @@ class Reports extends Component {
     _id: '',
     production: [],
     downtimeDetail: [],
+    name: '',
+    createdAt: '',
+    updatedAt: '',
     target: '',
     reports: this.props.reports,
     header: [
@@ -68,7 +71,10 @@ class Reports extends Component {
       _id: '',
       production: [],
       downtimeDetail: [],
-      target: ''
+      target: '',
+      name: '',
+     createdAt: '',
+     updatedAt: '',
     }
     this.setState({
       _id: state._id, 
@@ -85,14 +91,17 @@ class Reports extends Component {
     if(this.state._id === id){ return null}
     else {
       const getDetail = this.props.reports.find( report => report._id === e.target.name );
-      const { _id, production, downtimeDetail, defects, resines } = await getDetail
+      const { _id, production, downtimeDetail, defects, resines, userId, createdAt, updatedAt } = await getDetail
       this.setState({
         _id: _id, 
         production: production,
         downtimeDetail: downtimeDetail,
         defects: defects,
         resines: resines, 
-        target: id
+        target: id,
+        name: userId.name,
+        createdAt: createdAt,
+        updatedAt: updatedAt
       })
     }
   }
@@ -158,6 +167,19 @@ class Reports extends Component {
       </thead>
       <tbody>
       {this.renderDetailPurge()}
+      </tbody>
+      <tbody >
+        <tr>
+          <td className='row_detail_production tbody_author' colSpan="8">
+
+          </td>
+        </tr>
+        <tr>
+    <td className='row_detail_production' colSpan="8">{`created: ${this.state.createdAt}`} {`by: ${this.state.name}`}</td>
+        </tr>
+        <tr>
+    <td className='row_detail_production' colSpan="8">{this.state.updatedAt? `updated: ${this.state.updatedAt}`: null}</td>
+        </tr>
       </tbody>
     </table>)
     }

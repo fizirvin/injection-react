@@ -142,6 +142,11 @@ const initialQuery = { query: `query
             _id
             reportDate
             shift
+            createdAt
+            updatedAt
+            userId{
+                name
+            }
             machine{
                 _id
                 machineNumber

@@ -7,6 +7,7 @@ const addReport = { query: `mutation
             userId{
                 name
             }
+            createdAt
             machine{
                 _id
                 machineNumber

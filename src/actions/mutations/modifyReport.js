@@ -4,6 +4,11 @@ const modifyReport = { query: `mutation
       _id
       reportDate
       shift
+      userId{
+        name
+      }
+      createdAt
+      updatedAt
       machine{
         _id
         machineNumber
