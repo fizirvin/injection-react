@@ -271,22 +271,26 @@ setDataForGraph = ( id ) =>{
 renderGraphic = () =>{
 
   if(this.state.graphic === 'Downtime'){
-    return (<div className='Graphic'>   
+    return (<div className='Graphic'>
+      <div className='title_graphic'>Downtime by machine</div>   
         <DownTimeWeekByMachine data={this.state.week2}> </DownTimeWeekByMachine>
     </div>)
   }
   else if(this.state.graphic === 'Purge'){
-    return (<div className='Graphic'>   
+    return (<div className='Graphic'>
+      <div className='title_graphic'>Purge by machine</div>    
         <DownTimeWeekByMachine data={this.state.week3}> </DownTimeWeekByMachine>
     </div>)
   }
   else if(this.state.graphic === 'NG'){
-    return (<div className='Graphic'>   
+    return (<div className='Graphic'>
+      <div className='title_graphic'>NG by machine</div>    
         <DownTimeWeekByMachine data={this.state.week4}> </DownTimeWeekByMachine>
     </div>)
   }
   else { 
-    return (<div className='Graphic'> 
+    return (<div className='Graphic'>
+      <div className='title_graphic'>Production by Day</div>  
     <BarChart data={this.state.week}></BarChart>
     </div>)
   }
@@ -295,35 +299,48 @@ renderGraphic = () =>{
 renderModelGraphic = () =>{
   if(this.state.graphic === 'Machine'){
     return (
-      <div className='Graphic'>  
+      <div className='Graphic'>
+        <div className='title_graphic'>Production by machine</div>  
         <WeekChart title={this.state.title2} data={this.state.data}></WeekChart>
       </div>
     )
   }
   else if(this.state.graphic === 'Downtime'){
     return (
-      <div className='Graphic'>  
+      <div className='Graphic'>
+        <div className='title_graphic'>Downtime by Issue</div>   
         <DowntimeWeekChart data={this.state.data2}></DowntimeWeekChart>
       </div>
     )
   }
   else if(this.state.graphic === 'Purge'){
     return (
-      <div className='Graphic'>  
+      <div className='Graphic'>
+        <div className='title_graphic'>Purge by resine</div>   
         <DowntimeWeekChart data={this.state.data3}></DowntimeWeekChart>
       </div>
     )
   }
   else if(this.state.graphic === 'NG'){
     return (
-      <div className='Graphic'>  
+      <div className='Graphic'> 
+          <div className='title_graphic'>NG by defect</div> 
         <DowntimeWeekChart data={this.state.data4}></DowntimeWeekChart>
+      </div>
+    )
+  }
+  else if(this.state.graphic === 'Model'){
+    return (
+      <div className='Graphic'>  
+      <div className='title_graphic'>Production by model</div>
+        <WeekChartVertical title={this.state.title2} data={this.state.data}></WeekChartVertical>
       </div>
     )
   }
   else{
     return (
-      <div className='Graphic'>  
+      <div className='Graphic'>
+        <div className='title_graphic'>Production by molde</div>  
         <WeekChartVertical title={this.state.title2} data={this.state.data}></WeekChartVertical>
       </div>
     )

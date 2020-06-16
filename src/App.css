@@ -58,9 +58,7 @@ body{
   width: 75%;
 }
 
-.svg_model{
-  border-radius: 3px;
-}
+
 
 .Home{
   display: flex;
@@ -82,11 +80,7 @@ body{
   background-color: turquoise;
 }
 
-.Graphic{
-  padding-left: 0;
-  width: 400px;
-  margin: 0;
-}
+
 
 .invisible{
   display: none

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Spinner from '../pages/components/Spinner'
 import '../pages/styles/login.css'
 
 
@@ -21,6 +22,7 @@ onInputPassword = (e) =>{
 }
 
 renderMessage = () => this.props.userMessage? <div className='userMessage'>{this.props.userMessage}</div> : null
+renderSubmit = () => this.props.loading? <button className='login_button' type='button' disabled><Spinner></Spinner></button>: <button className='login_button' type='submit'>Login</button>
 
   render(){
     return (
@@ -33,9 +35,10 @@ renderMessage = () => this.props.userMessage? <div className='userMessage'>{this
                 <tr><td><input type='password' value={this.state.password} onChange={this.onInputPassword} required className='login_input' placeholder="password" autoComplete='new-password'></input></td></tr>
               </tbody>
             </table>
-            <button className='login_button' type='submit'>login</button>
+           {this.renderSubmit()}
           </form>
           {this.renderMessage()}
+          
         </div>
       </div>
     )

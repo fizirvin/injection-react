@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 
 const width = 450;
 const height = 330;
-const margin = {top: 10, right: 5, bottom: 150, left: 35};
+const margin = {top: 10, right: 5, bottom: 150, left: 40};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
@@ -32,19 +32,12 @@ class WeekChartVertical extends Component {
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
     d3.select(this.yAxisRef.current).call(this.yAxis)
     
-    // .append("text")
-    // .attr("x", 225)
-    // .attr("y", 15)    // +20 to adjust position (lower)
-    // .text(this.state.newTitle)
-    // .attr("font-size", "16px")
-    // .attr("fill",  "grey" );
-  
 
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (!nextProps.data) return null; // data hasn't been loaded yet so do nothing
-    const {data, title } = nextProps;
+    const {data } = nextProps;
     const { xScale, yScale } = prevState;
 
     // data has changed, so recalculate scale domains
@@ -79,19 +72,13 @@ class WeekChartVertical extends Component {
       }
     });
 
-    return {bars, barWidth, newTitle: title};
+    return {bars, barWidth};
   }
 
   componentDidUpdate() {
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
     d3.select(this.yAxisRef.current).call(this.yAxis)
-    
-    // .append("text")
-    // .attr("x", 225)
-    // .attr("y", 15)    // +20 to adjust position (lower)
-    // .text(this.state.newTitle)
-    // .attr("font-size", "16px")
-    // .attr("fill",  "grey" );
+
   }
 
   render() {

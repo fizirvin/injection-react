@@ -12,7 +12,8 @@ class Auth extends Component {
         token: null,
         userId: null,
         name: null,
-        userMessage: ''
+        userMessage: '',
+        loading: false
     }
 
     componentDidMount() {
@@ -49,6 +50,7 @@ class Auth extends Component {
     loginHandler = async ({ name, password })=>{
         loginQuery.variables = { name: name, password: password  }
         opts.body = JSON.stringify(loginQuery)
+        this.setState({loading: true})
         const res = await fetch(url, opts);
         const data = await res.json().catch(err => {
             console.log('eseste', err);
@@ -58,7 +60,7 @@ class Auth extends Component {
         });
         if(data.errors){
            
-            this.setState({userMessage: data.errors[0].message})
+            this.setState({userMessage: data.errors[0].message, loading: false})
             
         } else{
             this.setState({
@@ -66,7 +68,8 @@ class Auth extends Component {
                 token: data.data.login.token,
                 userId: data.data.login.userId,
                 name: data.data.login.name,
-                userMessage: ''
+                userMessage: '',
+                loading: false
             });
             localStorage.setItem('token', data.data.login.token);
             localStorage.setItem('userId', data.data.login.userId);
@@ -88,7 +91,7 @@ class Auth extends Component {
             return (
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/" exact component={ props => ( <Login {...props} userMessage={this.state.userMessage} loginHandler={this.loginHandler}/> )} />
+                        <Route path="/" exact component={ props => ( <Login {...props} userMessage={this.state.userMessage} loading={this.state.loading} loginHandler={this.loginHandler}/> )} />
                         <Route component={NotFound} />
                     </Switch>
                 </BrowserRouter>
