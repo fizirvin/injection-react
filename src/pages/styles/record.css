@@ -1,0 +1,33 @@
+.record_table_container{
+  margin-top: 1px;
+  margin-left: 1px;
+  margin-right: 1px;
+  min-width: 99%;
+  max-width: 99%;
+  
+}
+
+.models_header_table{
+  border-spacing: 1px;
+  margin-bottom: 1px;
+  width: 97.6%;
+  border: solid 2px;
+  border-radius: 3px;
+  table-layout: fixed;
+}
+
+.models_body_container{
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin-bottom: 0;
+  max-height: 80vh;
+  width: 100%;
+}
+
+.record_controls{
+  margin-left: 15px;
+}
+
+.svg_record{
+  font-family: 'Courier New', Courier, monospace;
+}
