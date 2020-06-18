@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
 import DayTotalChart from './charts/DayTotalChart'
-
+import Spinner from './components/Spinner'
 import { url, opts } from '../actions/config'
 import { daytotalQuery } from '../actions/queries'
 import './styles/record.css'
 
 class Record extends Component {
   state ={
-    
+    loading: false
   }
 
   getData = async (e) =>{
     
     e.preventDefault();
     opts.body = JSON.stringify(daytotalQuery)
+    this.setState({loading: true})
     const res = await fetch(url, opts);
     const data = await res.json();
     
-    return this.setState({data: data.data.daytotalrecord})
+    return this.setState({data: data.data.daytotalrecord, loading: false})
+  }
+
+  renderSpinner = () =>{
+    if(this.state.loading === true){
+      return <div className='spinner_div'><Spinner></Spinner></div>
+    }
+    else{
+      return <DayTotalChart data={this.state.data}></DayTotalChart>
+    }
   }
 
   render(){ 
@@ -40,8 +50,7 @@ class Record extends Component {
             <button type='submit'>Get Data</button>
             </form>
           </div>
-          <DayTotalChart data={this.state.data}></DayTotalChart>
-          
+          {this.renderSpinner()}
         </div>
       </div>
     )

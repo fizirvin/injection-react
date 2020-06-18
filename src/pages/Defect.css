@@ -21,3 +21,21 @@
     max-height: 80vh;
     width: 100%;
 }
+
+.sort_button{
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: solid 1px;
+    margin-left: 3px;
+    background-color: whitesmoke;
+}
+
+.head_field{
+   display: inline-flex;
+    align-items: center;
+    padding-left: 2px;
+    justify-self: center;
+    
+}

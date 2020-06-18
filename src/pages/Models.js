@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import TableData from './components/TableData'
 import TableHeader from './components/TableHeader'
 import RenderItems from './components/RenderItems'
+import Spinner from './components/Spinner'
 import './Models.css'
 
 class Models extends Component {
@@ -28,7 +29,7 @@ class Models extends Component {
 
   renderBodyContainer(array){
     if( array.length === 0){
-      return <div>...loading</div>
+      return <div className='spinner_div'><Spinner></Spinner></div>
     } else {
       return (
         <div className='models_body_container'>
