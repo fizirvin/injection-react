@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import DayTotalChart from './charts/DayTotalChart'
+import WeekTotalChart from './charts/WeekTotalChart'
 import Spinner from './components/Spinner'
 import { url, opts } from '../actions/config'
 import { daytotalQuery } from '../actions/queries'
+import { weektotalQuery } from '../actions/queries'
 import './styles/record.css'
 
 class Record extends Component {
@@ -11,14 +13,22 @@ class Record extends Component {
   }
 
   getData = async (e) =>{
-    
     e.preventDefault();
-    opts.body = JSON.stringify(daytotalQuery)
-    this.setState({loading: true})
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    
-    return this.setState({data: data.data.daytotalrecord, loading: false})
+    if(!this.state.bar){ return null }
+    else if (this.state.bar === 'day'){
+      opts.body = JSON.stringify(daytotalQuery)
+      this.setState({loading: true})
+      const res = await fetch(url, opts);
+      const data = await res.json();
+      return this.setState({data: data.data.daytotalrecord, loading: false, graph: 'day'})
+    }
+    else if (this.state.bar === 'week') {
+      opts.body = JSON.stringify(weektotalQuery)
+      this.setState({loading: true})
+      const res = await fetch(url, opts);
+      const data = await res.json();
+      return this.setState({data: data.data.weektotalrecord, loading: false, graph: 'week'})
+    }
   }
 
   renderSpinner = () =>{
@@ -27,11 +37,16 @@ class Record extends Component {
     }
     else{
       if(this.state.data){
-        return <DayTotalChart data={this.state.data}></DayTotalChart>
+        if(this.state.graph === 'day'){ return <DayTotalChart data={this.state.data}></DayTotalChart> }
+        else if ( this.state.graph === 'week'){ return <WeekTotalChart data={this.state.data}></WeekTotalChart> }
       } else{
         return null
       }
     }
+  }
+
+  onchangeBar = (e) =>{
+    return this.setState({[e.target.name]: e.target.value})
   }
 
   render(){ 
@@ -41,13 +56,14 @@ class Record extends Component {
           
           <div className='record_controls'>
             <form onSubmit={this.getData}>
-            <label>Bar Value: </label> 
-            <select name="shift" defaultValue="" required>
+            <label>Bar value: </label> 
+            <select name="bar" defaultValue="" onChange={this.onchangeBar} required>
               <option disabled value="">select</option>
               <option value='day'>day</option>
+              <option value='week'>week</option>
             </select>
             <label>Chart: </label> 
-            <select name="shift" defaultValue="" required>
+            <select name="chart" defaultValue="" required>
               <option disabled value="">select</option>
               <option value='day'>Production</option>
             </select>

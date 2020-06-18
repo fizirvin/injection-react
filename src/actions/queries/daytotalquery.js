@@ -3,7 +3,7 @@ const daytotalQuery = { query: `query {
       date
       ok
       ng
-      plan
+      remainning
     }
   }`,
 };

@@ -50,7 +50,7 @@ class DayTotalChart extends Component {
     const max = okMax + ngMax + remainningMax
     
     yScale.domain([0, max]);
-    xScale.domain(data.map(d => d.date))
+    xScale.domain(data.map(d => d.week))
     
     
 
@@ -66,7 +66,6 @@ class DayTotalChart extends Component {
       const y2 = yScale(0);
       const y3 = yScale(d.ng)
       const y4 = yScale(d.remainning)
-      
       const remainning = y2-y4
       return {
         x: 50 + (i*barPos),
