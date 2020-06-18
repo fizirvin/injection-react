@@ -31,3 +31,7 @@
 .svg_record{
   font-family: 'Courier New', Courier, monospace;
 }
+
+.rect_plan{
+  border: solid 1px red;
+}

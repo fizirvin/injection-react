@@ -26,7 +26,11 @@ class Record extends Component {
       return <div className='spinner_div'><Spinner></Spinner></div>
     }
     else{
-      return <DayTotalChart data={this.state.data}></DayTotalChart>
+      if(this.state.data){
+        return <DayTotalChart data={this.state.data}></DayTotalChart>
+      } else{
+        return null
+      }
     }
   }
 

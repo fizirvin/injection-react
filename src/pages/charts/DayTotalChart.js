@@ -29,13 +29,13 @@ class DayTotalChart extends Component {
   .tickFormat(d => `${d}`);
 
 
-  // componentDidMount (){
-  //   d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
-  //   d3.select(this.yAxisRef.current).call(this.yAxis)
+  componentDidMount (){
+    d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
+    d3.select(this.yAxisRef.current).call(this.yAxis)
     
     
 
-  // }
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (!nextProps.data) return null; // data hasn't been loaded yet so do nothing
@@ -69,7 +69,7 @@ class DayTotalChart extends Component {
       
       const real = y1+y3
       const plan = real-y4-y2
-      console.log(y1-(y2-y3))
+      
       return {
         x: 50 + (i*barPos),
         y: y1,
@@ -88,6 +88,7 @@ class DayTotalChart extends Component {
   componentDidUpdate() {
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
     d3.select(this.yAxisRef.current).call(this.yAxis)
+   
 
   }
 
