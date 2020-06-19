@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import DayTotalChart from './charts/DayTotalChart'
+import DayPurgeChart from './charts/DayPurgeChart'
 import WeekTotalChart from './charts/WeekTotalChart'
+import WeekPurgeChart from './charts/WeekPurgeChart'
 import Spinner from './components/Spinner'
 import { url, opts } from '../actions/config'
 import { daytotalQuery } from '../actions/queries'
 import { weektotalQuery } from '../actions/queries'
+import { daypurgeQuery } from '../actions/queries'
+import { weekpurgeQuery } from '../actions/queries'
 import './styles/record.css'
 
 class Record extends Component {
@@ -15,19 +19,33 @@ class Record extends Component {
   getData = async (e) =>{
     e.preventDefault();
     if(!this.state.bar){ return null }
-    else if (this.state.bar === 'day'){
+    else if (this.state.bar === 'day' && this.state.chart === 'production'){
       opts.body = JSON.stringify(daytotalQuery)
       this.setState({loading: true})
       const res = await fetch(url, opts);
       const data = await res.json();
       return this.setState({data: data.data.daytotalrecord, loading: false, graph: 'day'})
     }
-    else if (this.state.bar === 'week') {
+    else if (this.state.bar === 'day' && this.state.chart === 'purge'){
+      opts.body = JSON.stringify(daypurgeQuery)
+      this.setState({loading: true})
+      const res = await fetch(url, opts);
+      const data = await res.json();
+      return this.setState({data: data.data.daytotalpurge, loading: false, graph: 'day-purge'})
+    }
+    else if (this.state.bar === 'week' && this.state.chart === 'production') {
       opts.body = JSON.stringify(weektotalQuery)
       this.setState({loading: true})
       const res = await fetch(url, opts);
       const data = await res.json();
       return this.setState({data: data.data.weektotalrecord, loading: false, graph: 'week'})
+    }
+    else if (this.state.bar === 'week' && this.state.chart === 'purge') {
+      opts.body = JSON.stringify(weekpurgeQuery)
+      this.setState({loading: true})
+      const res = await fetch(url, opts);
+      const data = await res.json();
+      return this.setState({data: data.data.weektotalpurge, loading: false, graph: 'week-purge'})
     }
   }
 
@@ -38,7 +56,9 @@ class Record extends Component {
     else{
       if(this.state.data){
         if(this.state.graph === 'day'){ return <DayTotalChart data={this.state.data}></DayTotalChart> }
+        if(this.state.graph === 'day-purge' ){ return <DayPurgeChart data={this.state.data}></DayPurgeChart> }
         else if ( this.state.graph === 'week'){ return <WeekTotalChart data={this.state.data}></WeekTotalChart> }
+        else if ( this.state.graph === 'week-purge'){ return <WeekPurgeChart data={this.state.data}></WeekPurgeChart> }
       } else{
         return null
       }
@@ -63,9 +83,10 @@ class Record extends Component {
               <option value='week'>week</option>
             </select>
             <label>Chart: </label> 
-            <select name="chart" defaultValue="" required>
+            <select name="chart" defaultValue="" onChange={this.onchangeBar} required>
               <option disabled value="">select</option>
-              <option value='day'>Production</option>
+              <option value='production'>Production</option>
+              <option value='purge'>Purge</option>
             </select>
             <button type='submit'>Get Data</button>
             </form>
