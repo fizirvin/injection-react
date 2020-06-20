@@ -32,6 +32,17 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
-.rect_plan{
-  border: solid 1px red;
+
+
+.bar_purge:hover{
+  stroke: black;
+  stroke-width: 1;
+  fill: rgb(0, 60, 255);
+}
+
+.tooltip{
+  fill: black;
+  font-size: 12px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  
 }

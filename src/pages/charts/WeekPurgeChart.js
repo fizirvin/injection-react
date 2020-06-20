@@ -6,7 +6,7 @@ const h = parseInt(document.documentElement.clientHeight * (45/100))
 
 const width = w;
 const height = h;
-const margin = {top: 10, right: 5, bottom: 70, left: 50};
+const margin = {top: 30, right: 20, bottom: 70, left: 50};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 const orchid = '#F8F8FF';
@@ -27,6 +27,25 @@ class WeekPurgeChart extends Component {
   xAxis = d3.axisBottom().scale(this.state.xScale)
   yAxis = d3.axisLeft().scale(this.state.yScale)
   .tickFormat(d => `${d}`);
+
+  onMouseOver = (purge, x, y, date) =>{
+    
+    d3.select('#svg_record')
+    .append('text')
+    .attr('x',x+2)
+    .attr('y',y-20)
+    .attr('class','tooltip')
+    .text(`${date}`)
+    .append('tspan')
+    .attr("dx", '-5em')
+    .attr("dy", "1.2em")
+    .text(`purge: ${purge} g`)
+
+  }
+
+  onMouseOut = () =>{
+    d3.select(".tooltip").remove();
+  }
 
 
   componentDidMount (){
@@ -49,9 +68,6 @@ class WeekPurgeChart extends Component {
     yScale.domain([0, max]);
     xScale.domain(data.map(d => d.week))
     
-    
-
-   
 
     const dataLength = data.length;
     const barPos= ((width - margin.left - margin.right) / dataLength);
@@ -66,6 +82,8 @@ class WeekPurgeChart extends Component {
         x: 50 + (i*barPos),
         y: y1,
         height: y2 - y1,
+        purge: d.purge,
+        date: d.week
         
       }
     });
@@ -83,9 +101,11 @@ class WeekPurgeChart extends Component {
   render() {
     
     return (
-      <svg width={width} height={height} className='svg_record'>
+      <svg width={width} height={height} className='svg_record' id='svg_record'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} className='bar_purge' width={this.state.barWidth} height={d.height} fill={blue} 
+            onMouseOut={this.onMouseOut}   
+            onMouseOver={() => this.onMouseOver(d.purge, d.x, d.y, d.date)}/>))}
          
         <g>
           <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`}/>
