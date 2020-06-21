@@ -2,9 +2,13 @@ import React, { Component, Fragment } from 'react';
 import {BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
 import Login from './Login'
 import NotFound from './NotFound'
+import NotSupported from './NotSupported'
 import { loginQuery } from '../actions/queries';
 import { url, opts } from '../actions/config/index';
 import App from '../App.js'
+
+const w = parseInt(document.documentElement.clientWidth)
+
 
 class Auth extends Component {
     state ={
@@ -17,6 +21,7 @@ class Auth extends Component {
     }
 
     componentDidMount() {
+        console.log(w)
         const token = localStorage.getItem('token');
         const expiryDate = localStorage.getItem('expiryDate');
         if (!token || !expiryDate) {
@@ -88,6 +93,8 @@ class Auth extends Component {
             <App logoutHandler={this.logoutHandler} userId={this.state.userId} name={this.state.name}/>
         )}
         else{
+            if(w < 700){ return <NotSupported></NotSupported> }
+            else{
             return (
                 <BrowserRouter>
                     <Switch>
@@ -96,6 +103,7 @@ class Auth extends Component {
                     </Switch>
                 </BrowserRouter>
             )
+            }
         }
     }
 
