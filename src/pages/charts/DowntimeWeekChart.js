@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 
 
 const width = 450;
-const height = 400;
-const margin = {top: 10, right: 5, bottom: 220, left: 35};
+const height = 420;
+const margin = {top: 30, right: 5, bottom: 220, left: 35};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
@@ -26,6 +26,20 @@ class DownTimeWeekChart extends Component {
   yAxis = d3.axisLeft().scale(this.state.yScale)
   .tickFormat(d => `${d}`);
 
+  onMouseOver = (x, y, ok ) =>{
+    
+    d3.select('#svg_recordweek')
+    .append('text')
+    .attr('x',x+2)
+    .attr('y',y-5)
+    .attr('class','tooltip-production')
+    .text(`${ok}`)
+
+  }
+
+  onMouseOut = () =>{
+    d3.select(".tooltip-production").remove();
+  }
 
   componentDidMount (){
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
@@ -62,6 +76,7 @@ class DownTimeWeekChart extends Component {
         x: 35 + (i*barPos),
         y: y1,
         height: y2 - y1,
+        ok: d.mins
       }
     });
 
@@ -76,9 +91,11 @@ class DownTimeWeekChart extends Component {
   render() {
     
     return (
-      <svg width={width} height={height} className='svg_model'>
+      <svg width={width} height={height} className='svg_model' id='svg_recordweek'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} className='bar_purge' width={this.state.barWidth} height={d.height} fill={blue} 
+          onMouseOut={this.onMouseOut}   
+          onMouseOver={() => this.onMouseOver(d.x, d.y, d.ok )}/>))}
          {this.state.bars.map((d, i) =>
           (<rect key={i} x={d.x} y={d.ng} width={this.state.barWidth} height={d.ngH} fill={red} />))}
         <g>

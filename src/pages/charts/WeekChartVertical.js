@@ -3,8 +3,8 @@ import * as d3 from 'd3';
 
 
 const width = 450;
-const height = 330;
-const margin = {top: 10, right: 5, bottom: 150, left: 40};
+const height = 350;
+const margin = {top: 30, right: 20, bottom: 150, left: 40};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 
@@ -27,6 +27,25 @@ class WeekChartVertical extends Component {
   yAxis = d3.axisLeft().scale(this.state.yScale)
   .tickFormat(d => `${d}`);
 
+  onMouseOver = (x, y, ok, ng) =>{
+    
+    d3.select('#svg_recordweek')
+    .append('text')
+    .attr('x',x+2)
+    .attr('y',y-20)
+    .attr('class','tooltip-production')
+    .text(`OK: ${ok} pcs`)
+    .append('tspan')
+    .attr("dx", '-7em')
+    .attr("dy", "1.2em")
+    .text(`NG: ${ng} pcs`)
+
+  }
+
+  onMouseOut = () =>{
+    d3.select(".tooltip-production").remove();
+  }
+  
 
   componentDidMount (){
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
@@ -69,6 +88,8 @@ class WeekChartVertical extends Component {
         // fill: colors(colorScale(d.avg)),
         ng: y1 -(y2-y3), //y3,
         ngH: y2 - y3, //y2 - y3
+        ok: d.ok,
+        ngdata: d.ng
       }
     });
 
@@ -84,9 +105,11 @@ class WeekChartVertical extends Component {
   render() {
     
     return (
-      <svg width={width} height={height} className='svg_model'>
+      <svg width={width} height={height} className='svg_model' id='svg_recordweek'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} className='bar_purge' width={this.state.barWidth} height={d.height} fill={blue} 
+          onMouseOut={this.onMouseOut}   
+          onMouseOver={() => this.onMouseOver(d.x, d.y, d.ok, d.ngdata )}/>))}
          {this.state.bars.map((d, i) =>
           (<rect key={i} x={d.x} y={d.ng} width={this.state.barWidth} height={d.ngH} fill={red} />))}
         <g>

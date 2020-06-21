@@ -6,7 +6,7 @@ const h = parseInt(document.documentElement.clientHeight * (45/100))
 
 const width = w;
 const height = h;
-const margin = {top: 10, right: 5, bottom: 70, left: 50};
+const margin = {top: 45, right: 20, bottom: 55, left: 50};
 const red = '#eb6a5b';
 const blue = '#52b6ca';
 const orchid = '#F8F8FF';
@@ -28,6 +28,27 @@ class WeekTotalChart extends Component {
   yAxis = d3.axisLeft().scale(this.state.yScale)
   .tickFormat(d => `${d}`);
 
+  onMouseOver = (x, y, date, ok, ng) =>{
+    
+    d3.select('#svg_record')
+    .append('text')
+    .attr('x',x+2)
+    .attr('y',y-35)
+    .attr('class','tooltip')
+    .text(`${date}`)
+    .append('tspan')
+    .attr("dx", '-5em')
+    .attr("dy", "1.2em")
+    .text(`OK: ${ok} pcs`)
+    .append('tspan')
+    .attr("dx", '-7.8em')
+    .attr("dy", "1.2em")
+    .text(`NG: ${ng} pcs`)
+  }
+
+  onMouseOut = () =>{
+    d3.select(".tooltip").remove();
+  }
 
   componentDidMount (){
     d3.select(this.xAxisRef.current).call(this.xAxis).selectAll("text").style("text-anchor", "end").attr("transform", "rotate(-90)" ).attr("dx", "-.6em").attr("dy", "-.4em");
@@ -47,7 +68,7 @@ class WeekTotalChart extends Component {
     const okMax = d3.max(data, d => d.ok);
     const ngMax = d3.max(data, d => d.ng);
     const remainningMax = d3.max(data, d => d.remainning)
-    const max = okMax + ngMax + remainningMax
+    const max = d3.max(data, d => d.ok + d.ng + d.remainning )
     
     yScale.domain([0, max]);
     xScale.domain(data.map(d => d.week))
@@ -74,7 +95,10 @@ class WeekTotalChart extends Component {
         ng: y1 -(y2-y3), //y3,
         ngH: y2 - y3, //y2 - y3
         remainning: (y1-(y2-y3)-remainning),
-        remainningH: remainning
+        remainningH: remainning,
+        ok: d.ok,
+        ngdata: d.ng,
+        date: d.week
       }
     });
 
@@ -91,9 +115,11 @@ class WeekTotalChart extends Component {
   render() {
     
     return (
-      <svg width={width} height={height} className='svg_record'>
+      <svg width={width} height={height} className='svg_record' id='svg_record'>
         {this.state.bars.map((d, i) =>
-          (<rect key={i} x={d.x} y={d.y} width={this.state.barWidth} height={d.height} fill={blue} />))}
+          (<rect key={i} x={d.x} y={d.y} className='bar_purge' width={this.state.barWidth} height={d.height} fill={blue}
+          onMouseOut={this.onMouseOut}   
+            onMouseOver={() => this.onMouseOver(d.x, d.remainning, d.date, d.ok, d.ngdata)} />))}
          {this.state.bars.map((d, i) =>
           (<rect key={i} x={d.x} y={d.ng} width={this.state.barWidth} height={d.ngH} fill={red} />))}
           {this.state.bars.map((d, i) =>

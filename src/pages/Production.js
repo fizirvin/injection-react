@@ -584,7 +584,7 @@ renderDowntimeByMachineGraphic = () =>{
         const ng = this.forGraphNG(model._id, mon, sun, array)
         return {part: model.partName, ok: ok, ng: ng}
       })
-      return data
+      return data.sort((x, y)  => y.ok - x.ok)
     }
     else if(filter === 'Machine'){
       const data = this.state.machines.map(machine =>{  
@@ -592,7 +592,7 @@ renderDowntimeByMachineGraphic = () =>{
         const ng = this.forGraphMachineNG(machine._id, mon, sun, array)
         return {part: machine.machineNumber, ok: ok, ng: ng}
       })
-      return data
+      return data.sort((x, y)  => y.ok - x.ok)
     }
     else if( filter === 'Molde'){
       const data = this.state.moldes.map(molde =>{  
@@ -600,7 +600,7 @@ renderDowntimeByMachineGraphic = () =>{
         const ng = this.forGraphMoldeNG(molde._id, mon, sun, array)
         return {part: molde.moldeNumber, ok: ok, ng: ng}
       })
-      return data
+      return data.sort((x, y)  => y.ok - x.ok)
     }
     else { return }
   }
