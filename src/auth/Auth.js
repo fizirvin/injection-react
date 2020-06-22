@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import {BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
+import detect from 'detect.js'
 import Login from './Login'
 import NotFound from './NotFound'
 import NotSupported from './NotSupported'
@@ -9,6 +10,16 @@ import App from '../App.js'
 
 const w = parseInt(document.documentElement.clientWidth)
 
+// const mob = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+
+
+const mob = detect.parse(navigator.userAgent)
+const detectDevice = () =>{
+    return mob.device.type === 'Mobile' || mob.device.family === 'iPhone' || mob.os.family === 'Linux' || mob.os.family === "iOS" || mob.os.family === 'Android' || w < 700 ?  true: false
+}
+
+const isMobile = detectDevice()
 
 class Auth extends Component {
     state ={
@@ -21,7 +32,6 @@ class Auth extends Component {
     }
 
     componentDidMount() {
-        console.log(w)
         const token = localStorage.getItem('token');
         const expiryDate = localStorage.getItem('expiryDate');
         if (!token || !expiryDate) {
@@ -93,7 +103,7 @@ class Auth extends Component {
             <App logoutHandler={this.logoutHandler} userId={this.state.userId} name={this.state.name}/>
         )}
         else{
-            if(w < 700){ return <NotSupported></NotSupported> }
+            if(isMobile){ return <NotSupported></NotSupported> }
             else{
             return (
                 <BrowserRouter>
