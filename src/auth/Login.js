@@ -38,7 +38,6 @@ renderSubmit = () => this.props.loading? <button className='login_button' type='
            {this.renderSubmit()}
           </form>
           {this.renderMessage()}
-          {this.props.type}
         </div>
       </div>
     )
