@@ -40,8 +40,7 @@ class App extends Component {
     resinesByDate: [],
     users: [],
     initial49:'',
-    end:'',
-    server: 'https://injection.irvinfiz.now.sh/injection'
+    end:''
   };
 
   async componentDidMount(){
