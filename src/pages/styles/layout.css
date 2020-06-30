@@ -200,7 +200,7 @@
   }
   
   .report_modal{
-    width: 75%;
+    width: 85%;
   }
 
   .Modal {
@@ -253,11 +253,11 @@
       }
 
       .molde{
-        width: 20%;
+        width: 16%;
       }
       
       .model{
-        width: 20%;
+        width: 18%;
       }
       
       
@@ -268,6 +268,11 @@
       }
     
       .plan{
+        font-size: 90%;
+        width: 6%;
+      }
+
+      .prod{
         font-size: 90%;
         width: 6%;
       }
