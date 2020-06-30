@@ -98,8 +98,8 @@ class AddReport extends Component {
       return { ...item, production: {...item.production, dtime: dtime, plan}}
     })
 
-    const TOK = this.totalOK(newArray)
-    const TReal = this.totalReal(newArray)
+    const TOK = this.state.TOK
+    const TReal = this.state.TReal
     const TPlan = this.totalPlan(newArray)
     const TProd = this.totalProd(newArray)
     const totalWTime = this.precise_round(this.totalWTime(newArray), 2)
@@ -139,9 +139,9 @@ class AddReport extends Component {
     const dtime = this.precise_round(predtime, 2)
     
     const { cavities } = moldeNumber;
-    const cycles = parseInt(value/cavities);
+    const cycles = Math.round(value/cavities);
 
-    const prod = parseInt(wtime * capacity)
+    const prod = Math.round(wtime * capacity)
 
     const item = { 
       ...getProduction,
@@ -831,7 +831,7 @@ class AddReport extends Component {
       const newSelected = [...items]
       const newArray = newSelected.map( item => {
         const { production, capacity } = item
-        const { real, wtime, quality } = production
+        const { real, prod, wtime, quality } = production
         
         const TWTime = items.reduce( (a, b) =>{
           return a + parseFloat(b.production.wtime)
@@ -843,7 +843,7 @@ class AddReport extends Component {
         const preav = (wtime / time)*100
         const preplan = time * capacity
         const plan = this.precise_round(preplan, 0)
-        const preperf = (real/plan)*100
+        const preperf = (real/prod)*100
         const performance = this.precise_round( preperf, 2) 
         const availability = this.precise_round( preav, 2)
         const preoee = (availability*performance*quality)/10000
@@ -855,10 +855,11 @@ class AddReport extends Component {
       const TReal = this.totalReal(newArray)
       const TNG = this.TNG(newArray)
       const TPlan = this.totalPlan(newArray)
+      const TProd = this.totalProd(newArray)
       const totalWTime = this.precise_round(this.totalWTime(newArray), 2)
       let TDTime = this.precise_round(this.totalDTime(newArray), 2)
       const TAvailability = this.precise_round((totalWTime/(totalWTime + TDTime)*100),2)
-      const TPerformance = this.precise_round(((TReal/TPlan)*100),2)
+      const TPerformance = this.precise_round(((TReal/TProd)*100),2)
       const TQuality = this.precise_round(((TOK/TReal)*100),2)
       const TOEE = this.precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
 
@@ -866,14 +867,14 @@ class AddReport extends Component {
       if(newArray.length === 0 ){ resines = []; TDTime = this.state.time }
       else{ resines = resines}
 
-      return this.setState({ selected: newArray, defects: defects, TNG, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
+      return this.setState({ selected: newArray, defects: defects, TNG, TProd, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
     }
   }
 
 
   onSubmit = async (e) =>{
     e.preventDefault();    
-    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, downtime  } = this.state;
+    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, downtime  } = this.state;
     const production = selected.map( item => item.production )
     const report = {
       reportDate: date+'T15:00:30.640+00:00',
@@ -884,6 +885,7 @@ class AddReport extends Component {
       TOK,
       TPlan,
       TWTime,
+      TProd, 
       TDTime,
       TAvailability,
       TPerformance,
