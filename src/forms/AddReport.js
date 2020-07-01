@@ -1144,7 +1144,7 @@ validateNG = () =>{
 }
 
 validateSubmit = () =>{
-  const timeToReport = this.getDowntimeToReport();
+  // const timeToReport = this.getDowntimeToReport();
   const TWTime = this.state.TWTime
 
   const validateNG = this.validateNG()
@@ -1153,8 +1153,8 @@ validateSubmit = () =>{
   const TOK = this.state.TOK
   const TNG = this.state.TNG
   const defects = this.totalDefectPcs()
-  if( timeToReport !== 0){ return false }
-  else if(defects !== TNG){ return false }
+  // if( timeToReport !== 0){ return false }
+  if(defects !== TNG){ return false }
   else if(TWTime !== 0 && TReal <= 0){ return false }
   else if(TOK < 0 ){ return false }
   else if(!validateNG){ return false }
