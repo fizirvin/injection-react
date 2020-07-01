@@ -221,14 +221,15 @@ class UpdateReport extends Component {
     const newSelected = [...items, item]
     const newArray = newSelected.map( item => {
       const { production, capacity } = item
-      const { wtime  } = production
+      const { wtime, quality, performance  } = production
       const time = wtime + dtime
-      
+      const preav = (wtime / time)*100
       const preplan = time * capacity
       const plan = this.precise_round(preplan, 0)
-      
-      
-      return { ...item, production: {...item.production, dtime: dtime, plan}}
+      const availability = this.precise_round( preav, 2)
+      const preoee = (availability*performance*quality)/10000
+      const oee = this.precise_round(preoee, 2)
+      return { ...item, production: {...item.production, dtime: dtime, plan, availability, oee}}
     })
 
     const TOK = this.state.TOK
