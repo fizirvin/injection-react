@@ -70,7 +70,7 @@ class AddReport extends Component {
     const predtime = (this.state.time - TWTime - wtime)/this.state.selected.length
     const dtime = this.precise_round(predtime, 2)
 
-    const prod = parseInt(wtime * capacity)
+    const prod = Math.round(wtime * capacity)
 
     const time = wtime + dtime
     const preav = (wtime / time)*100
@@ -644,13 +644,14 @@ class AddReport extends Component {
     const TNG = 0
     const TOK = 0
     const TPlan = 0
+    const TProd = 0
     const TWTime = 0
     const TDTime = value
     const TAvailability = 0
     const TPerformance = 0
     const TQuality = 0
     const TOEE = 0
-    this.setState({ [e.target.name]: value, selected, defects, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
+    this.setState({ [e.target.name]: value, selected, defects, TReal, TNG, TOK, TProd, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   };
 
@@ -662,6 +663,7 @@ class AddReport extends Component {
     const TNG = 0
     const TOK = 0
     const TPlan = 0
+    const TProd = 0
     const TWTime = 0
     const TDTime = this.state.time
     const TAvailability = 0
@@ -669,7 +671,7 @@ class AddReport extends Component {
     const TQuality = 0
     const TOEE = 0
     const programs = this.filterPrograms(e.target.value)
-    this.setState({ [e.target.name]: e.target.value, programs, selected, defects, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
+    this.setState({ [e.target.name]: e.target.value, programs, selected, defects, TReal, TNG, TOK, TProd, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   }
 

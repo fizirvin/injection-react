@@ -156,6 +156,7 @@ const initialQuery = { query: `query
             TNG
             TOK
             TPlan
+            TProd
             TWTime
             TDTime
             TAvailability
@@ -171,6 +172,7 @@ const initialQuery = { query: `query
                 ng
                 ok
                 plan
+                prod
                 wtime
                 dtime
                 availability

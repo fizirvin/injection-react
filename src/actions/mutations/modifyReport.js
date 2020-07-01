@@ -18,6 +18,7 @@ const modifyReport = { query: `mutation
       TOK
       TNG
       TPlan
+      TProd
       TWTime
       TDTime
       TAvailability
@@ -30,6 +31,7 @@ const modifyReport = { query: `mutation
         ng
         ok
         plan
+        prod
         wtime
         dtime
         availability

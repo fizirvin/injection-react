@@ -375,9 +375,9 @@ class App extends Component {
     }
   }
 
-  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
+  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
     const downtimeDetail = downtime
-    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
+    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE,
       production, userId, downtimeDetail, defects, resines }
     addReport.variables = { input }
     opts.body = JSON.stringify(addReport)
@@ -517,9 +517,9 @@ class App extends Component {
     }
   }
 
-  updateReport = async ({ _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
+  updateReport = async ({ _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
     const downtimeDetail = downtime
-    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
+    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TProd, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
       production, downtimeDetail, defects, resines }
     modifyReport.variables = { _id, input }
     opts.body = JSON.stringify(modifyReport)
