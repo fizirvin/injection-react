@@ -1,7 +1,7 @@
 # Injection Production Web App
 
-<img src="https://raw.githubusercontent.com/fizirvin/injection-react/master/screenshot.png" width="960" height="540">
-<img src="https://raw.githubusercontent.com/fizirvin/injection-react/master/screenshot-form.png" width="960" height="540">
+<img src="https://raw.githubusercontent.com/fizirvin/injection-react/master/screenshot.png" >
+<img src="https://raw.githubusercontent.com/fizirvin/injection-react/master/screenshot-form.png" >
 
 
 
