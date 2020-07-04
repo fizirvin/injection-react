@@ -1061,7 +1061,7 @@ class AddReport extends Component {
             <input type='number' className='production_input' name={program._id} value={this.getPlan(program._id)} disabled></input>
           </td>
           <td className='production_row'>
-            <input type='number' className='production_input' disabled={this.disabledProduction(program._id)} value={this.getWTime(program._id)} name={program._id} onChange={this.onWTProduction}></input>
+            <input type="number" step=".01" className='production_input' disabled={this.disabledProduction(program._id)} value={this.getWTime(program._id)} name={program._id} onChange={this.onWTProduction}></input>
           </td>
           <td className='production_row'>
             <input type='number' className='production_input' name={program._id} value={this.getProd(program._id)} disabled></input>
