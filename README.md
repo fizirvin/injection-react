@@ -5,7 +5,13 @@
 <img src="https://raw.githubusercontent.com/fizirvin/injection-react/master/screenshot-production.png" >
 
 
+Single Page App for manage the database of the injection molding production area of a factory.
+It requires to relate the production machines with injection molds and with models they produce. This is a list of programs they use on each relation. For example: "machine 1" use "mold 1" for the injection of the "model 1".
 
+Then, there is a report form to store in the database the production data of each machine every day.
+And finally, there is a results table to get data about the production of the week. That can be filter, by machines, models, molds, with bar graphics for each of this filters.
+
+Then there is some data that is updated automatically, like the cylces of each injection mold. For example, a injection mold cycle is count in every shot of a number of pieces produce by the machine.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
