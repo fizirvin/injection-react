@@ -273,3 +273,7 @@
     border-radius: 3px;
    
   }
+
+  .periodActive{
+      background-color: tomato;
+  }

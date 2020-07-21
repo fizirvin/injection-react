@@ -8,6 +8,11 @@ import WeekChart from './charts/WeekChart'
 import WeekChartVertical from './charts/WeekChartVertical'
 import BarChart from './charts/BarCharts'
 
+import { filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, filterWeekTotalNG,
+  filterDayTotalOK, filterWeekTotalOK, filterDayTotalPlan, filterWeekTotalPlan, filterDayTotalWTime, filterWeekTotalWTime,
+  filterDayTotalDTime, filterWeekTotalDTime, filterDayTotalOEE, filterWeekTotalOEE, filterDayTotalPurge, filterWeekTotalPurge,
+  filterHighest, filterHighestIndicator, filterHighestPurgeByDay, filterHighestPurge, filterHighestDefectByDay, filterHighestDefect } from '../actions/helpers'
+
 class Production extends React.Component {
   state = {
     today:'',
@@ -39,7 +44,36 @@ class Production extends React.Component {
     week3: [],
     data4: [],
     week4: [],
-    title2: 'Production by Machine'
+    title2: 'Production by Machine',
+    period: 'week',
+    realtable: { },
+    ngtable: { },
+    oktable: { },
+    plantable: { },
+    worktimetable: { },
+    downtimetable: { },
+    oeetable: { },
+    purgetable: { },
+    header: {
+      position1: 'Jan',
+      position2: 'Feb',
+      position3: 'Mar',
+      position4: 'Apr',
+      position5: 'May',
+      position6: 'Jun',
+      position7: 'Jul',
+      position8: 'Total'
+    },
+    subheader: {
+      position1: 1,
+      position2: 2,
+      position3: 3,
+      position4: 4,
+      position5: 5,
+      position6: 6,
+      position7: 7,
+      position8: '2020'
+    }
   }
 
   async componentDidMount (){
@@ -889,60 +923,6 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
-  filterDayTotalOK = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.ok || 0
-    },0)
-
-    return reduce
-  }
-
-  filterWeekTotalOK = ( ) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.ok || 0
-    },0)
-
-    return reduce
-  }
-
-  filterDayTotalNG = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.ng || 0
-    },0)
-
-    return reduce
-  }
-
-  filterWeekTotalNG = ( ) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.ng || 0
-    },0)
-
-    return reduce
-  }
-
-  filterDayTotalReal = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.real || 0
-    },0)
-
-    return reduce
-  }
-
   filterWeekTotalReal = ( ) =>{
     const array = [...this.state.production]
     const filter = array.filter( 
@@ -955,38 +935,6 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
-  filterDayTotalPlan = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.plan || 0
-    },0)
-
-    return reduce
-  }
-
-  filterWeekTotalPlan = ( ) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.plan || 0
-    },0)
-
-    return reduce
-  }
-
-  filterDayTotalWTime = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + parseFloat(b.wtime.$numberDecimal) || 0
-    },0)
-
-    return this.precise_round(reduce,2)
-  }
-
   filterWeekTotalWTime = ( ) =>{
     const array = [...this.state.production]
     const filter = array.filter( 
@@ -994,28 +942,6 @@ renderDowntimeByMachineGraphic = () =>{
       && item.date <= this.state.sunday)
     const reduce = filter.reduce( (a, b) =>{
       return a + parseFloat(b.wtime.$numberDecimal) || 0
-    },0)
-
-    return this.precise_round(reduce,2)
-  }
-
-  filterDayTotalDTime = (day) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + parseFloat(b.dtime.$numberDecimal) || 0
-    },0)
-
-    return this.precise_round(reduce,2)
-  }
-
-  filterWeekTotalDTime = ( ) =>{
-    const array = [...this.state.production]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + parseFloat(b.dtime.$numberDecimal) || 0
     },0)
 
     return this.precise_round(reduce,2)
@@ -1042,66 +968,6 @@ renderDowntimeByMachineGraphic = () =>{
 
     return reduce
   }
-
-  filterDayTotalPurge = (day) =>{
-    const array = [...this.state.purge]
-    const filter = array.filter( item => item.date === day)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.purge || 0
-    },0)
-
-    return reduce
-  }
-
-  filterWeekTotalPurge = () =>{
-    const array = [...this.state.purge]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-    const reduce = filter.reduce( (a, b) =>{
-      return a + b.purge || 0
-    },0)
-
-    return reduce
-  }
-
-  filterDayTotalOEE = (date) =>{
-    const real = this.filterDayTotalPlan(date)
-    const ok = this.filterDayTotalOK(date)
-    const plan = this.filterDayTotalPlan(date)
-    const wtime = this.filterDayTotalWTime(date)
-
-    const dtime = this.filterDayTotalDTime(date)
-    const time = parseInt(wtime + dtime) 
-    
-    const availability = this.precise_round(( wtime / time )*100, 2)
-    const performance = this.precise_round(( real / plan )*100, 2)
-    const quality = this.precise_round(( ok / real )*100, 2)
-    const oee = this.precise_round( ((availability*performance*quality)/10000), 2 )
-     
-    
-    return oee
-  }
-
-  filterWeekTotalOEE = ( ) =>{
-    const real = this.filterWeekTotalReal()
-    const ok = this.filterWeekTotalOK()
-    const plan = this.filterWeekTotalPlan()
-    const wtime = this.filterWeekTotalWTime()
-
-    const dtime = this.filterWeekTotalDTime()
-    const time = parseInt(wtime + dtime) 
-    
-    const availability = this.precise_round(( wtime / time )*100, 2)
-    const performance = this.precise_round(( real / plan )*100, 2)
-    const quality = this.precise_round(( ok / real )*100, 2)
-    const oee = this.precise_round( ((availability*performance*quality)/10000), 2 )
-     
-    
-    return oee
-  }
-
-  
 
   reduceTime = (date, id) =>{
     const reduce = this.filterMachineDate(date, id).reduce( (a, b) =>{
@@ -1498,33 +1364,6 @@ renderDowntimeByMachineGraphic = () =>{
     return isFinite(valid) ? valid : 0
   }
 
-  filterHighest = (day) =>{
-    const array = [...this.state.downtime]
-    const filter = array.filter( item => item.date === day ) 
-      // const issues = [...new Set(filter)];
-      const issues = [...filter]
-      const mapping = issues.map( issue =>
-        {
-          const reduceMins = filter.filter( item => item.issue === issue.issue)
-          .reduce( (a, b) =>{
-            return a + b.mins || 0
-          },0)
-          return {issue: issue.issueCode, mins: reduceMins }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.mins || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0'
-        } else {
-          const issue = mapping.sort((x, y)  => y.mins - x.mins)[0].issue
-          const mins =  mapping.sort((x, y)  => y.mins - x.mins)[0].mins
-          return `${issue} ${mins}`
-        }
-  }
-
   filterArrayDowntime = (id) =>{
     const array = [...this.state.downtime]
     const filter = array.filter( 
@@ -1613,201 +1452,7 @@ renderDowntimeByMachineGraphic = () =>{
      
   }
 
-  filterHighestIndicator = () =>{
-    const array = [...this.state.downtime]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-      
-
-      const issues = [...filter]
-      const mapping = issues.map( issue =>
-        {
-          const reduceMins = filter.filter( item => item.issue === issue.issue)
-          .reduce( (a, b) =>{
-            return a + b.mins || 0
-          },0)
-          return {issue: issue.issueCode, mins: reduceMins }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.mins || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0 mins'
-        } else {
-          const issue = mapping.sort((x, y)  => y.mins - x.mins)[0].issue
-          const mins =  mapping.sort((x, y)  => y.mins - x.mins)[0].mins
-          return `${issue} ${mins}`
-        }
-  }
-
-  filterHighestPurge = () =>{
-    const array = [...this.state.purge]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-      
-
-      const resines = [...filter]
-      const mapping = resines.map( resine =>
-        {
-          const reducePurge = filter.filter( item => item.resine === resine.resine)
-          .reduce( (a, b) =>{
-            return a + b.purge || 0
-          },0)
-          return {resine: resine.resine, purge: reducePurge }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.purge || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0 purge'
-        } else {
-          const resine = mapping.sort((x, y)  => y.purge - x.purge)[0].resine
-          
-          const hightesResine = filter.filter( element => element.resine === resine ).map( item => {
-            const reduceResine = filter.filter( it => it.machine === item.machine)
-            .reduce( (a, b) =>{
-              return a + b.purge || 0
-            },0)
-            return {machine: item.machine, purge: reduceResine}
-          })
-
-          const machine = hightesResine.sort((x, y)  => y.purge - x.purge)[0].machine
-          const purge =  hightesResine.sort((x, y)  => y.purge - x.purge)[0].purge
-          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
-          return `#${machineNumber} ${purge}`
-        }
-  }
-
-  filterHighestDefect = () =>{
-    const array = [...this.state.ng]
-    const filter = array.filter( 
-      item => item.date >= this.state.monday 
-      && item.date <= this.state.sunday)
-      
-
-      const defects = [...filter]
-      const mapping = defects.map( defect =>
-        {
-          const reduceDefect = filter.filter( item => item.defect === defect.defect && item.partNumber === defect.partNumber)
-          .reduce( (a, b) =>{
-            return a + b.defectPcs || 0
-          },0)
-          return {defect: defect.defect, pcs: reduceDefect, partNumber: defect.partNumber }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.pcs || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0 defect'
-        } else {
-          const defect = mapping.sort((x, y)  => y.pcs - x.pcs)[0].defect
-          const partNumber = mapping.sort((x, y)  => y.pcs - x.pcs)[0].partNumber
-          
-          const hightesDefect= filter.filter( element => element.defect === defect ).map( item => {
-            const reduceDefect = filter.filter( it => it.machine === item.machine && it.partNumber === partNumber && it.defect === defect)
-            .reduce( (a, b) =>{
-              return a + b.defectPcs || 0
-            },0)
-            return {machine: item.machine, pcs: reduceDefect, code: item.defectCode}
-          })
-
-          const machine = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].machine
-          const code = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].code
-          const pcs =  hightesDefect.sort((x, y)  => y.pcs- x.pcs)[0].pcs
-          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
-          return `${code} #${machineNumber} ${pcs}`
-        }
-  }
-
-  filterHighestDefectByDay = (day) =>{
-    const array = [...this.state.ng]
-    const filter = array.filter( 
-      item => item.date === day)
-      
-
-      const defects = [...filter]
-      const mapping = defects.map( defect =>
-        {
-          const reduceDefect = filter.filter( item => item.defect === defect.defect && item.partNumber === defect.partNumber)
-          .reduce( (a, b) =>{
-            return a + b.defectPcs || 0
-          },0)
-          return {defect: defect.defect, pcs: reduceDefect, partNumber: defect.partNumber }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.pcs || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0'
-        } else {
-          const defect = mapping.sort((x, y)  => y.pcs - x.pcs)[0].defect
-          const partNumber = mapping.sort((x, y)  => y.pcs - x.pcs)[0].partNumber
-          
-          const hightesDefect= filter.filter( element => element.defect === defect ).map( item => {
-            const reduceDefect = filter.filter( it => it.machine === item.machine && it.partNumber === partNumber && it.defect === defect)
-            .reduce( (a, b) =>{
-              return a + b.defectPcs || 0
-            },0)
-            return {machine: item.machine, pcs: reduceDefect, code: item.defectCode}
-          })
-
-          const machine = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].machine
-          const code = hightesDefect.sort((x, y)  => y.pcs - x.pcs)[0].code
-          const pcs =  hightesDefect.sort((x, y)  => y.pcs- x.pcs)[0].pcs
-          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
-          return `${code} #${machineNumber} ${pcs}`
-        }
-  }
-
-  filterHighestPurgeByDay = (day) =>{
-    const array = [...this.state.purge]
-    const filter = array.filter( 
-      item => item.date === day)
-      
-
-      const resines = [...filter]
-      const mapping = resines.map( resine =>
-        {
-          const reducePurge = filter.filter( item => item.resine === resine.resine)
-          .reduce( (a, b) =>{
-            return a + b.purge || 0
-          },0)
-          return {resine: resine.resine, purge: reducePurge }
-        })
-
-        const reduceMapping = mapping.reduce( (a, b) =>{
-          return a + b.purge || 0
-        },0)
-
-        if(reduceMapping === 0){
-          return '0'
-        } else {
-          const resine = mapping.sort((x, y)  => y.purge - x.purge)[0].resine
-          
-          const hightesResine = filter.filter( element => element.resine === resine ).map( item => {
-            const reduceResine = filter.filter( it => it.machine === item.machine)
-            .reduce( (a, b) =>{
-              return a + b.purge || 0
-            },0)
-            return {machine: item.machine, purge: reduceResine}
-          })
-
-          const machine = hightesResine.sort((x, y)  => y.purge - x.purge)[0].machine
-          const purge =  hightesResine.sort((x, y)  => y.purge - x.purge)[0].purge
-          const machineNumber = this.props.machines.find( element => element._id === machine).machineNumber
-          return `#${machineNumber} ${purge}`
-        }
-  }
+  
 
   showReports = () =>{
     console.log(this.state, this.props)
@@ -1831,6 +1476,11 @@ renderDowntimeByMachineGraphic = () =>{
       return this.setState({render: e.target.name, graphic: e.target.name, data, title2: 'Production by Model'})
     }
     else{ return }
+  }
+
+  changePeriod = (e) =>{
+    const period = e.target.name;
+    return this.setState({period})
   }
 
   changeShift = (e) =>{
@@ -1875,6 +1525,10 @@ renderDowntimeByMachineGraphic = () =>{
 
   filterActive = (name) =>{
     return name === this.state.render ? 'shiftActive' : null 
+  }
+
+  periodActive = (name) =>{
+    return name === this.state.period ? 'periodActive' : null 
   }
 
   indicatorActive = (name) =>{
@@ -1927,25 +1581,47 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderHeaderTable(){
-    return (
-      <table className='efficiency_tablehader'>
-        <thead>
-          <tr>
-    <th className='efficiency_header_machine' colSpan='3' rowSpan='2'>Production By {this.state.render}</th>
-            <th className={this.formatDateField(this.state.monday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Mon</div><div>{this.state.monday}</div></th>
-            <th className={this.formatDateField(this.state.tuesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Tue</div><div>{this.state.tuesday}</div></th>
-            <th className={this.formatDateField(this.state.wednesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Wed</div><div>{this.state.wednesday}</div></th>
-            <th className={this.formatDateField(this.state.thursday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Thu</div><div>{this.state.thursday}</div></th>
-            <th className={this.formatDateField(this.state.friday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Fri</div><div>{this.state.friday}</div></th>
-            <th className={this.formatDateField(this.state.saturday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
-            <th className={this.formatDateField(this.state.sunday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
-            <th className='efficiency_header_week' colSpan='2' rowSpan='1'>Total</th>
-            {/* <th className='efficiency_header_highest'>Highest (mins)</th>
-            <th className='efficiency_header_item'>Indicator Item</th> */}
-          </tr>
-        </thead>
-      </table>
-    )
+    if( this.state.period === 'week' ){
+      return (
+        <table className='efficiency_tablehader'>
+          <thead>
+            <tr>
+      <th className='efficiency_header_machine' colSpan='3' rowSpan='2'>Production By {this.state.render}</th>
+              <th className={this.formatDateField(this.state.monday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Mon</div><div>{this.state.monday}</div></th>
+              <th className={this.formatDateField(this.state.tuesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Tue</div><div>{this.state.tuesday}</div></th>
+              <th className={this.formatDateField(this.state.wednesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Wed</div><div>{this.state.wednesday}</div></th>
+              <th className={this.formatDateField(this.state.thursday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Thu</div><div>{this.state.thursday}</div></th>
+              <th className={this.formatDateField(this.state.friday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Fri</div><div>{this.state.friday}</div></th>
+              <th className={this.formatDateField(this.state.saturday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sat</div><div>{this.state.saturday}</div></th>
+              <th className={this.formatDateField(this.state.sunday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>Sun</div><div>{this.state.sunday}</div></th>
+              <th className='efficiency_header_week' colSpan='2' rowSpan='1'><div>Total</div><div>Week</div></th>
+              {/* <th className='efficiency_header_highest'>Highest (mins)</th>
+              <th className='efficiency_header_item'>Indicator Item</th> */}
+            </tr>
+          </thead>
+        </table>
+      )
+    } else if ( this.state.period === 'month' ){ 
+      return (
+        <table className='efficiency_tablehader'>
+          <thead>
+            <tr>
+              <th className='efficiency_header_machine' colSpan='3' rowSpan='2'>Production By {this.state.render}</th>
+              <th className={this.formatDateField(this.state.monday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position1}</div><div>{this.state.subheader.position1}</div></th>
+              <th className={this.formatDateField(this.state.tuesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position2}</div><div>{this.state.subheader.position2}</div></th>
+              <th className={this.formatDateField(this.state.wednesday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position3}</div><div>{this.state.subheader.position3}</div></th>
+              <th className={this.formatDateField(this.state.thursday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position4}</div><div>{this.state.subheader.position4}</div></th>
+              <th className={this.formatDateField(this.state.friday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position5}</div><div>{this.state.subheader.position5}</div></th>
+              <th className={this.formatDateField(this.state.saturday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position6}</div><div>{this.state.subheader.position6}</div></th>
+              <th className={this.formatDateField(this.state.sunday, 'efficiency_header_day')} colSpan='2' rowSpan='1'><div>{this.state.header.position7}</div><div>{this.state.subheader.position7}</div></th>
+              <th className='efficiency_header_week' colSpan='2' rowSpan='1'><div>{this.state.header.position8}</div><div>{this.state.subheader.position8}</div></th>
+              {/* <th className='efficiency_header_highest'>Highest (mins)</th>
+              <th className='efficiency_header_item'>Indicator Item</th> */}
+            </tr>
+          </thead>
+        </table>
+      )
+    }
   }
 
   renderHeader(){
@@ -1956,13 +1632,15 @@ renderDowntimeByMachineGraphic = () =>{
           <table className='controls_table'>
             <tbody>
               <tr>
+                <td>Period:</td><td><button name='week' className={this.periodActive('week')} onClick={this.changePeriod}>Week</button><button className={this.periodActive('month')} name='month' onClick={this.changePeriod}>Month</button></td>
                 <td>Shifts:</td>
                 <td><button name='12' className={this.shiftActive('12')} onClick={this.changeShift}>Shift 1&2</button><button name='1' className={this.shiftActive('1')} onClick={this.changeShift}>Shift 1</button><button name='2' className={this.shiftActive('2')} onClick={this.changeShift}>Shift 2</button></td>
                 <td>Change Week:</td>
                 <td><button onClick={this.goBack}>Go Back</button><button onClick={this.goForward}>Go Forward</button></td>
                 <td>Filter By:</td>
                 <td><button name='Machine' className={this.filterActive('Machine')} onClick={this.changeTo}>Machine</button><button name='Model' className={this.filterActive('Model')} onClick={this.changeTo}>Model</button><button name='Molde' className={this.filterActive('Molde')} onClick={this.changeTo}>Molde</button>
-                <button name='Machine' className={this.indicatorActive('on')} onClick={this.turnOnIndicators}>Indicators ▼</button></td>
+                <button name='Machine' className={this.indicatorActive('on')} onClick={this.turnOnIndicators}>Indicators ▼</button>
+                </td>
                 <td>Go to Date:</td>
                 <td><input type='date' onChange={this.goToDate}></input></td>
               </tr>
@@ -2250,6 +1928,13 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
 
+  reduceDefectListByIdDate = (arr, id ) =>{
+    const reduce = arr.filter( item => item.id === id).reduce( (a, b) =>{
+      return a + b.pcs || 0
+    },0)
+    return reduce
+  }
+
   reduceDefectListByDate = (arr, date, id) =>{
     const reduce = arr.filter( item => item.id === id && item.date === date).reduce( (a, b) =>{
       return a + b.pcs || 0
@@ -2257,6 +1942,25 @@ renderDowntimeByMachineGraphic = () =>{
     return reduce
   }
   
+  renderTotaldefects = (arr) =>{
+    const uniqueDefectList = Array.from(new Set(arr.map( ({id})  =>{ 
+      const reduce = arr.find( item => item.id === id )
+      return reduce })))
+
+      return uniqueDefectList.map( ({defectCode, id}) =>
+        <tr>
+          <td className='efficiency_total_machine'>Total OK (pcs)</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.monday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.tuesday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.wednesday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.thursday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.friday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.saturday, id)}</td>
+          <td className='efficiency_total_day'>{this.reduceDefectListByIdDate(arr, this.state.sunday, id)}</td>
+          <td className='efficiency_total_week'>total</td>
+      </tr>
+      ) 
+  }
 
   renderDefectList = (arr) =>{
     const uniqueDefectList = Array.from(new Set(arr.map( ({id})  =>{ 
@@ -2375,103 +2079,203 @@ renderDowntimeByMachineGraphic = () =>{
   }
 
   renderTotalRow = () =>{
-    return ( 
-      <table className='efficiency_tableTotal'>
-        <tbody>
-          <tr>
-            <td className='efficiency_total_machine'>Total Real (pcs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalReal(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalReal()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}></button> Total NG (pcs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalNG(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalNG()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'>Total OK (pcs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOK(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalOK()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'>Total Plan (pcs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPlan(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalPlan()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'>Total Worktime (hrs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalWTime(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalWTime()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}></button> Total Downtime (hrs)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalDTime(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalDTime()}</td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'>Total OEE (%)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalOEE(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalOEE()} </td>
-          </tr>
-          <tr>
-            <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}></button> Total Purge (g)</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.monday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.tuesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.wednesday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.thursday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.friday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.saturday)}</td>
-            <td className='efficiency_total_day'>{this.filterDayTotalPurge(this.state.sunday)}</td>
-            <td className='efficiency_total_week'>{this.filterWeekTotalPurge()}</td>
-          </tr>
-          {this.renderIndicator()}
-          {this.renderPurgeIndicator()}
-          {this.renderDefectIndicator()}
-        </tbody>
-      </table>
-    )
+    if(this.state.period === 'week'){
+      return ( 
+        <table className='efficiency_tableTotal'>
+          <tbody>
+            <tr>
+              <td className='efficiency_total_machine'>Total Real (pcs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalReal(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalReal(this.state.production, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}></button> Total NG (pcs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalNG(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalNG(this.state.production, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total OK (pcs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOK(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalOK(this.state.production, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total Plan (pcs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPlan(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalPlan(this.state.production, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total Worktime (hrs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalWTime(this.state.production, this.state.monday, this.state.monday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}></button> Total Downtime (hrs)</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalDTime(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalDTime(this.state.production, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total OEE (%)</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalOEE(this.state.production, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalOEE(this.state.production, this.state.monday, this.state.sunday)} </td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}></button> Total Purge (g)</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.monday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.tuesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.wednesday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.thursday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.friday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.saturday)}</td>
+              <td className='efficiency_total_day'>{filterDayTotalPurge(this.state.purge, this.state.sunday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalPurge(this.state.purge, this.state.monday, this.state.sunday)}</td>
+            </tr>
+            {this.renderIndicator()}
+            {this.renderPurgeIndicator()}
+            {this.renderDefectIndicator()}
+          </tbody>
+        </table>
+      )
+    } else if(this.state.period === 'month'){
+      return ( 
+        <table className='efficiency_tableTotal'>
+          <tbody>
+            <tr>
+              <td className='efficiency_total_machine'>Total Real (pcs)</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.realtable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.realtable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='NG' onClick={this.detailDowntime} className={this.detailActive('NG')}></button> Total NG (pcs)</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.ngtable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.ngtable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total OK (pcs)</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oktable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.oktable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total Plan (pcs)</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.plantable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.plantable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total Worktime (hrs)</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.worktimetable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.worktimetable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}></button> Total Downtime (hrs)</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.downtimetable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.downtimetable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'>Total OEE (%)</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.oeetable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.oeetable.position8 || 0 }</td>
+            </tr>
+            <tr>
+              <td className='efficiency_total_machine'><button name='Purge' onClick={this.detailDowntime} className={this.detailActive('Purge')}></button> Total Purge (g)</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position1 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position2 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position3 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position4 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position5 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position6 || 0 }</td>
+              <td className='efficiency_total_day'>{this.state.purgetable.position7 || 0 }</td>
+              <td className='efficiency_total_week'>{this.state.purgetable.position8 || 0 }</td>
+            </tr>
+            {this.renderIndicator()}
+            {this.renderPurgeIndicator()}
+            {this.renderDefectIndicator()}
+          </tbody>
+        </table>
+      )
+    }
   }
 
   renderIndicator = () =>{
@@ -2480,14 +2284,14 @@ renderDowntimeByMachineGraphic = () =>{
       return (
         <tr>
           <td className='efficiency_total_machine'>DT Indicator (mins)</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.monday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.tuesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.wednesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.thursday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.friday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.saturday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighest(this.state.sunday)}</td>
-          <td className='efficiency_total_week'>{this.filterHighestIndicator()}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.monday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.tuesday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.wednesday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.thursday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.friday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.saturday)}</td>
+          <td className='efficiency_total_day'>{filterHighest(this.state.downtime, this.state.sunday)}</td>
+          <td className='efficiency_total_week'>{filterHighestIndicator(this.state.downtime, this.state.monday, this.state.sunday)}</td>
         </tr>
       )
     } else{ return null }
@@ -2499,14 +2303,14 @@ renderDowntimeByMachineGraphic = () =>{
       return (
         <tr>
           <td className='efficiency_total_machine'>Purge Indicator (g)</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.monday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.tuesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.wednesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.thursday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.friday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.saturday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestPurgeByDay(this.state.sunday)}</td>
-          <td className='efficiency_total_week'>{this.filterHighestPurge()}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.monday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.tuesday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.wednesday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.thursday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.friday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.saturday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestPurgeByDay(this.state.purge, this.state.sunday, this.props.machines)}</td>
+          <td className='efficiency_total_week'>{filterHighestPurge(this.state.purge, this.state.monday, this.state.sunday, this.props.machines)}</td>
         </tr>
       )
     } else{ return null }
@@ -2518,14 +2322,14 @@ renderDowntimeByMachineGraphic = () =>{
       return (
         <tr>
           <td className='efficiency_total_machine'>Defect Indicator (pcs)</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.monday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.tuesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.wednesday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.thursday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.friday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.saturday)}</td>
-          <td className='efficiency_total_day'>{this.filterHighestDefectByDay(this.state.sunday)}</td>
-          <td className='efficiency_total_week'>{this.filterHighestDefect()}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.monday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.tuesday, this.props.machines, )}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.wednesday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.thursday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.friday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.saturday, this.props.machines)}</td>
+          <td className='efficiency_total_day'>{filterHighestDefectByDay(this.state.ng, this.state.sunday, this.props.machines)}</td>
+          <td className='efficiency_total_week'>{filterHighestDefect(this.state.ng, this.state.monday, this.state.sunday, this.props.machines)}</td>
         </tr>
       )
     } else{ return null }
