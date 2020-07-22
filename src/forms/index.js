@@ -16,6 +16,8 @@ import AddProgram from './AddProgram.js'
 import UpdateProgram from './UpdateProgram.js'
 import AddReport from './AddReport.js'
 import UpdateReport from './UpdateReport.js'
+import NewWorker from './NewWorker'
+import UpdateWorker from './UpdateWorker'
 
 export {
     AddMold,
@@ -35,6 +37,8 @@ export {
     AddProgram,
     UpdateProgram,
     AddReport,
-    UpdateReport
+    UpdateReport,
+    NewWorker,
+    UpdateWorker
 }
 

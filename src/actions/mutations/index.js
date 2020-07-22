@@ -16,7 +16,8 @@ import modifyDefect from './modifyDefect'
 import modifyProgram from './modifyProgram'
 import modifyReport from './modifyReport'
 import modifyUser from './modifyUser'
+import addWorker from './addWorker'
 
 export { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser,
     modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport,
-modifyUser }
+modifyUser, addWorker }

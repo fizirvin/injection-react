@@ -12,6 +12,7 @@ import Production from './Production.js'
 import Downtime from './Downtime.js'
 import Users from './Users.js'
 import Record from './Record.js'
+import WorkersList from './WorkersList'
 
 export { 
     Home, 
@@ -27,5 +28,6 @@ export {
     Production, 
     Downtime,
     Users,
-    Record
+    Record,
+    WorkersList
 } 

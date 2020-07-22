@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, Machines, Material, Models, Issues, 
-  Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record } from './pages'
+  Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList } from './pages'
 import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
-  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser } from './forms';
-import { initialQuery } from './actions/queries'
+  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
+import { initialQuery, workerQuery } from './actions/queries'
 import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
-  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport } from './actions/mutations'
+  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
-import { url, opts } from './actions/config'
+import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
 import './pages/styles/layout.css'
 import './pages/Production.css'
@@ -34,6 +34,7 @@ class App extends Component {
     defects: [],
     programs: [],
     reports: [],
+    profiles: [],
     downtimeByDate: [],
     defectsByDate: [],
     productionByDate: [],
@@ -55,7 +56,12 @@ class App extends Component {
     opts.body = JSON.stringify(initialQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
-    console.log('holalalala', data)
+    
+
+    hr_opts.body = JSON.stringify(workerQuery)
+    const hr_res = await fetch(hr_server, hr_opts);
+    const hr_data = await hr_res.json();
+    console.log('holalalala', hr_data, data)
     this.setState({ 
       machines: data.data.machines,
       materials: data.data.materials, 
@@ -72,11 +78,30 @@ class App extends Component {
       resinesByDate: data.data.resinesByDate,
       users: data.data.users,
       initial49: initial49,
-      end: end
+      end: end,
+      profiles: hr_data.data.profiles,
     })
   }
 
   close = message => this.setState({[message]: 'new'});
+
+  newWorker = async (input) =>{
+    addWorker.variables = { input }
+
+    hr_opts.body = JSON.stringify(addWorker)
+    const res = await fetch(hr_server, hr_opts);
+    const data = await res.json();
+    if(data.errors){
+      console.log(data.errors)
+      return this.setState({workerMessage: 'error'})
+
+    } else {
+      const profile = data.data.newProfile
+      const profiles = [...this.state.profiles, profile]
+      console.log(profile)
+      return this.setState({profiles, workerMessage: 'sucess'})
+    }
+  }
 
   addUser = async ({name, level, password})=>{
     const input = { name, level, password }
@@ -777,6 +802,22 @@ class App extends Component {
 
               <Route path="/record" exact component={ props => ( <Record {...props} 
                 /> )} 
+              />
+              <Route path="/employees" exact component={ props => ( <WorkersList {...props}
+              profiles={this.state.profiles}
+              /> )} />
+              <Route path="/employees/new" exact component={ props => ( <NewWorker {...props}
+              message={this.state.workerMessage}
+              close={this.close} 
+              newWorker={this.newWorker}
+              /> )} 
+              />
+              <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props}
+              profiles={this.state.profiles}
+              message={this.state.workerMessage}
+              close={this.close} 
+              newWorker={this.newWorker}
+              /> )} 
               />
             </Switch> 
           </div>
