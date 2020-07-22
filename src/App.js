@@ -6,7 +6,7 @@ import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMate
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery } from './actions/queries'
 import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
-  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker } from './actions/mutations'
+  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
@@ -100,6 +100,27 @@ class App extends Component {
       const profiles = [...this.state.profiles, profile]
       console.log(profile)
       return this.setState({profiles, workerMessage: 'sucess'})
+    }
+  }
+
+  updateWorker = async (_id, obj) =>{
+    console.log(_id)
+    const input = {...obj}
+    modifyWorker.variables = { _id, input }
+
+    hr_opts.body = JSON.stringify(modifyWorker)
+    const res = await fetch(hr_server, hr_opts);
+    const data = await res.json();
+    if(data.errors){
+      console.log(data.errors)
+      return this.setState({workerMessage: 'error'})
+
+    } else {
+      
+      let profile = data.data.updateProfile;
+      let profiles = [...this.state.profiles];
+      profiles[profiles.findIndex(el => el._id === profile._id)] = profile;
+      this.setState({ profiles, workerMessage: 'sucess'});
     }
   }
 
@@ -816,7 +837,7 @@ class App extends Component {
               profiles={this.state.profiles}
               message={this.state.workerMessage}
               close={this.close} 
-              newWorker={this.newWorker}
+              updateWorker={this.updateWorker}
               /> )} 
               />
             </Switch> 

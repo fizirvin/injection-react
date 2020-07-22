@@ -27,6 +27,8 @@ class WorkersList extends Component{
                     position={profile.position}
                     picture_URL={profile.picture_URL}
                     team={profile.team}
+                    active={profile.active}
+                    
                 />
             )
         }

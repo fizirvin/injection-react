@@ -17,7 +17,8 @@ class NewWorker extends Component {
     position: '',
     team: '',
     filePath: '',
-    message: ''
+    message: '',
+    button: false
   }
 
     async componentDidMount(){
@@ -26,7 +27,7 @@ class NewWorker extends Component {
 
     onSubmit = async e =>{
         e.preventDefault();
-        
+        this.setState({button: true})
         const { file } = this.state
         if(!file){
             
@@ -208,7 +209,7 @@ class NewWorker extends Component {
                 {this.imagePreview()}
                 <Link to="/employees"><button type="button">Close</button></Link>
                 {/* <button type="button" onClick={this.showState}>state</button> */}
-                <input type="submit" value="Submit"></input>
+                <input type="submit" value="Submit" disabled={this.state.button}></input>
             </form>
         </div>
         }

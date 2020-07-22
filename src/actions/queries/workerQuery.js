@@ -11,6 +11,8 @@ const workerQuery = { query: `query {
         picture_URL
         gender
         team
+        active
+        entryNum
       }
   }`,
 };

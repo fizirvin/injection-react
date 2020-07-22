@@ -3,10 +3,12 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { url_image, opts_image } from '../actions/config'
 
+
 class UpdateWorker extends Component {
   state={
     file: '',
     imagePreviewUrl: '',
+    active:'',
     number: '',
     firstname: '',
     lastname: '',
@@ -18,7 +20,9 @@ class UpdateWorker extends Component {
     team: '',
     filePath: '',
     message: '',
-    entr: '2020-07-31'
+    entryNum: '',
+    prevPhoto: '',
+    button: false
   }
 
   componentDidMount(){
@@ -31,23 +35,25 @@ class UpdateWorker extends Component {
 
     onSubmit = async e =>{
         e.preventDefault();
-        
+        this.setState({button: true})
         const { file } = this.state
         if(!file){
-            
-            const input = { 
+            const time = 'T00:00:00.000-06:00'
+            const entry = String(this.state.entryNum) + time
+            const input = {
                 team: this.state.team,
                 firstname: this.state.firstname,
                 lastname: this.state.lastname,
                 gender: this.state.gender,
-                entry: this.state.entry,
+                entry: entry,
                 department: this.state.department,
                 area: this.state.area,
                 position: this.state.position,
+                active: this.state.active
                 
             }
-            console.log(input)
-            return this.props.newWorker(input)
+            
+            return this.props.updateWorker(this.state._id, input)
 
         } else {
             
@@ -55,20 +61,22 @@ class UpdateWorker extends Component {
             opts_image.body = formData;
             const res_image = await fetch(url_image, opts_image);
             const data3 = await res_image.json();
-
+            const time = 'T00:00:00.000-06:00'
+            const entry = String(this.state.entryNum) + time
             const input = { 
                 team: this.state.team,
                 firstname: this.state.firstname,
                 lastname: this.state.lastname,
                 gender: this.state.gender,
-                entry: this.state.entry,
+                entry: entry,
                 department: this.state.department,
                 area: this.state.area,
                 position: this.state.position,
-                picture_URL: data3.imageUrl
+                picture_URL: data3.imageUrl,
+                active: this.state.active
             }
-            console.log(input)
-            return this.props.newWorker(input)
+            
+            return this.props.updateWorker(this.state._id, input)
         }
         
     }
@@ -82,15 +90,27 @@ class UpdateWorker extends Component {
     }
 
     onChangeTime = e =>{
-        const time = 'T00:00:00.000-06:00'
-        this.setState({[e.target.name]: String(e.target.value) + time}); 
+        
+        this.setState({[e.target.name]: e.target.value}); 
     };
+
+    onActiveChange = e => this.setState({active: !this.state.active})
+
+    setPhotoUrl = () =>{
+        return this.setState({prevPhoto: '', picture_URL: this.state.prevPhoto, message: ''})
+    }
     
     imagePreview = () =>{
-        if (this.state.imagePreviewUrl) {
-            return <div className="image-container" ><img src={this.state.imagePreviewUrl} alt="icon" width="150" height='150' /> </div>
-        } else{
-            return  <div>{this.state.message}</div>
+        
+        if (!this.state.message && this.state.imagePreviewUrl || this.state.picture_URL) {
+            
+            return <div className="image-container" ><img src={this.state.imagePreviewUrl || this.state.picture_URL} alt="icon" width="150" height='150' /> </div>
+        } 
+        else if(this.state.message){
+            return  <div>{this.state.message}<button type="button" onClick={this.setPhotoUrl}>Ok</button></div>
+        }
+        else{
+            return null;
         }    
     }
 
@@ -102,7 +122,8 @@ class UpdateWorker extends Component {
                 const input = document.getElementById('image')
                 input.value = ''
                 console.log('too much', input.value)
-                return this.setState({filePath: '', message: 'File is too big, please set a file smaller than 25 KB'})
+                const prevPhoto = this.state.picture_URL
+                return this.setState({filePath: '', prevPhoto, picture_URL: '', message: 'File is too big, please set a file smaller than 25 KB'})
             }
             else {
                 const reader = new FileReader();
@@ -131,7 +152,7 @@ class UpdateWorker extends Component {
     renderOption(){
         if(this.props.message === 'sucess'){
             return <div className="modal-content">
-                <h4>New Employee Set Correctly</h4>
+                <h4>Employee Updated Correctly</h4>
                 <Link to="/employees"><button type="button" onClick={this.onClose}>Close</button></Link>
             </div>
         }
@@ -143,7 +164,7 @@ class UpdateWorker extends Component {
         }
         else{
             return <div className="modal-content">
-            <h2>New Employee</h2>
+            <h2>Update Employee</h2>
             <form id='form' onSubmit={this.onSubmit} encType="multipart/form-data">
                 <table>
                     <tbody>
@@ -176,7 +197,7 @@ class UpdateWorker extends Component {
                         </tr>
                         <tr>
                             <td><label htmlFor='entry'>Entry Date: </label></td>
-                            <td><input onChange={this.onChangeTime} name='entry' type='date' id='entry' size='30' required></input></td>
+                            <td><input onChange={this.onChangeTime} name='entryNum' value={this.state.entryNum} type='date' id='entry' size='30' required></input></td>
                         </tr>
                         <tr>
                             <td><label htmlFor='department'>Department: </label></td>
@@ -205,6 +226,13 @@ class UpdateWorker extends Component {
                             </td>
                         </tr>
                         <tr>
+                            <td><label>Active: </label></td>
+                            <td><input type="checkbox" 
+                            name='active' 
+                            checked={this.state.active}
+                            onChange={this.onActiveChange}></input></td>
+                        </tr>
+                        <tr>
                             <td><label htmlFor='image'>Picture: </label></td>
                             <td><input type="file" name="image" id='image' onChange={this.fileChangedHandler} value={this.state.path} accept=".png, .jpg, .jpeg"></input></td>
                         </tr>
@@ -213,7 +241,7 @@ class UpdateWorker extends Component {
                 {this.imagePreview()}
                 <Link to="/employees"><button type="button">Close</button></Link>
                 {/* <button type="button" onClick={this.showState}>state</button> */}
-                {/* <input type="submit" value="Submit"></input> */}
+                <input type="submit" value="Submit" disabled={this.state.button}></input>
             </form>
         </div>
         }
