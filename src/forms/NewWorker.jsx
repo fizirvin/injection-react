@@ -195,7 +195,7 @@ class NewWorker extends Component {
                             <td><select id='position' onChange={this.onInput} name='position' value={this.state.position} required>
                                     <option disabled value="">select</option>
                                     <option value="Operator">Operator</option>
-                                    <option value="Inpsector">Inspector</option>
+                                    <option value="Inspector">Inspector</option>
                                     <option value="Leader">Leader</option>
                                 </select>
                             </td>
