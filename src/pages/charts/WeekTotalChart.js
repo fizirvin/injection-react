@@ -65,9 +65,7 @@ class WeekTotalChart extends Component {
 
     // data has changed, so recalculate scale domains
     
-    const okMax = d3.max(data, d => d.ok);
-    const ngMax = d3.max(data, d => d.ng);
-    const remainningMax = d3.max(data, d => d.remainning)
+    
     const max = d3.max(data, d => d.ok + d.ng + d.remainning )
     
     yScale.domain([0, max]);

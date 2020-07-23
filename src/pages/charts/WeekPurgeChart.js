@@ -7,9 +7,9 @@ const h = parseInt(document.documentElement.clientHeight * (45/100))
 const width = w;
 const height = h;
 const margin = {top: 30, right: 20, bottom: 70, left: 50};
-const red = '#eb6a5b';
+
 const blue = '#52b6ca';
-const orchid = '#F8F8FF';
+
 
 
 class WeekPurgeChart extends Component {

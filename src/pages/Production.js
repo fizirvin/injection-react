@@ -93,7 +93,7 @@ class Production extends React.Component {
 
     const {render, production, downtime } = this.state
     const data = this.setGraphicFilter(state.monday, state.sunday, render, production )
-    const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
+    // const data2 = this.setGraphicFirst(state.monday, state.sunday, downtime)
     const week = this.GraphAllWeekFirst(state.monday, state.tuesday, state.wednesday, state.thursday, state.friday, state.saturday, state.sunday, production)
     // const data = this.setGraphicFirst(state.monday, state.sunday)
     // const data3 = this.setGraphicFirstPurge(state.monday, state.sunday, purge)
@@ -1151,7 +1151,7 @@ renderDowntimeByMachineGraphic = () =>{
 
   reduceOEE = (date, id) =>{
     const real = this.reduceReal(date, id)
-    const ng = this.reduceNG(date, id)
+    // const ng = this.reduceNG(date, id)
     const ok = this.reduceOK(date, id)
     const plan = this.reducePlan(date, id)
     const wtime = this.reduceTime(date, id)

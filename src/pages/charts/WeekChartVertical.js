@@ -64,7 +64,7 @@ class WeekChartVertical extends Component {
     const okMax = d3.max(data, d => d.ok);
     const ngMax = d3.max(data, d => d.ng)
     const max = okMax + ngMax
-    const colorDomain = d3.extent(data, d => d.avg);
+    
     yScale.domain([0, max]);
     xScale.domain(data.map(d => d.part))
     

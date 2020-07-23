@@ -8,15 +8,17 @@ class Worker extends Component{
 
     render(){
         const gender = this.props.gender === 'male' ? male : female
+        const team = this.props.team === 'varias'? 'number_rutas' : 'number_amealco'
         return (
             <div className='worker_container'>
                 <table className='worker_table'>
                     <tbody>
                         <tr>
+                            <td rowSpan='2' colSpan='1' className='index_field'>{this.props.index}</td>
                             <td rowSpan='2' colSpan='1' className='image_field'><img className="image_profile" src={this.props.picture_URL || gender } alt="worker" height="50" width="50"/></td>
-                            <td rowSpan='1' colSpan='2' className='name_field'><h3>{this.props.firstname + ' ' + this.props.lastname}</h3></td>
-                            <td rowSpan='1' colSpan='1' className='entry_field'>Entry: {this.props.entry}</td>
-                            <td rowSpan='1' colSpan='1' className='number_field'>ID: {this.props.number}</td>
+                            <td rowSpan='1' colSpan='2' className={`name_field ${team}`}><h3>{this.props.firstname + ' ' + this.props.lastname}</h3></td>
+                            <td rowSpan='1' colSpan='1' className={`entry_field ${team}`}>Entry: {this.props.entry}</td>
+                            <td rowSpan='1' colSpan='1' className={`number_field ${team}`}>ID: {this.props.number}</td>
                             <td rowSpan='2' colSpan='1' className='update_field'><Link to={`/employees/update/${this.props._id}`}><img alt="" height= "26" src={update}/></Link></td>
                         </tr>
                         <tr>
