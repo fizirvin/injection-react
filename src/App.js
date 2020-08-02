@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, Machines, Material, Models, Issues, 
-  Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList } from './pages'
+  Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
 import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery } from './actions/queries'
@@ -840,6 +840,10 @@ class App extends Component {
               updateWorker={this.updateWorker}
               /> )} 
               />
+              <Route path="/product" exact component={ props => ( <Product {...props}
+                production={this.state.productionByDate}
+                purge={this.state.resinesByDate}
+              /> )} />
             </Switch> 
           </div>
         </div>

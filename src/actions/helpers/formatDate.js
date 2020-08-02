@@ -21,6 +21,6 @@ function formatDate(format){
     const formatM = M();
     formatDate = y + '-'+ formatM + '-'+ formatD
     return formatDate
-  }
+}
 
-  export default formatDate
+export default formatDate;
