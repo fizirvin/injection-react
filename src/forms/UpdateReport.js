@@ -168,8 +168,7 @@ class UpdateReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
-
+    
     const downtime = this.state.downtime;
     const items = downtime.filter( item => item.issueId !== id);
     const getDowntime = downtime.find( item => item.issueId === id);
@@ -253,7 +252,6 @@ class UpdateReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
       
     let selected = [...this.state.selected];
     const items = this.state.selected.filter( item => item.program !== id);
@@ -320,8 +318,7 @@ class UpdateReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
-
+    
     const defects = [...this.state.defects];
     const getDefect = defects.find( defect => defect.program === programId && defect.defect === id);
     const items = defects.filter(item => item !== getDefect);
@@ -338,7 +335,6 @@ class UpdateReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
     
     const resines = this.state.resines;
     const items = resines.filter( item => item.resine !== id);
@@ -354,7 +350,6 @@ class UpdateReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
       
     let selected = [...this.state.selected];
     const items = this.state.selected.filter( item => item.program !== id);
@@ -386,8 +381,6 @@ class UpdateReport extends Component {
     const prevalue = parseFloat(e.target.value);
     const value = this.precise_round(prevalue, 2);
     let selected = [...this.state.selected];
-    
-    
     
     selected[selected.findIndex(el => el.program === e.target.name)].production.time = value;
     const time = value;
@@ -1001,8 +994,7 @@ class UpdateReport extends Component {
 
       let resines = this.state.resines
       if(newArray.length === 0 ){ resines = []; TDTime = this.state.time}
-      else{ resines = resines}
-
+      
       return this.setState({ selected: newArray, defects: defects, TNG, TProd, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
     }
   }
@@ -1290,7 +1282,7 @@ validateSubmit = () =>{
   else if(TWTime !== 0 && TReal <= 0){ return false }
   else if(TOK < 0 ){ return false }
   else if(!validateNG){ return false }
-  else if(!validateNegative){ return false, console.log('6') }
+  else if(!validateNegative){ return false }
   else{ return true }
 }
 

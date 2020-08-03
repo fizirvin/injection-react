@@ -1,3 +1,76 @@
+function precise_round(num, dec){
+  const num_sign = num >= 0 ? 1 : -1;
+  const value =  (Math.round((num*Math.pow(10,dec))+(num_sign*0.0001))/Math.pow(10,dec)).toFixed(dec);
+  const valid = isNaN(value) ? 0 : parseFloat(value)
+  return isFinite(valid) ? valid : 0
+}
+
+const dayColumn = (production, day, purges) =>{
+  const filter = production.filter( item => item.date === day)
+  const filterPurge = purges.filter( item => item.date === day)
+  const real = filter.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = filter.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = filter.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = filter.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  const purge = filterPurge.reduce( (a, b) =>{
+    return a + b.purge || 0
+  },0)
+
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
+}
+
+const weekColumn = (production, purges) =>{
+  const real = production.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = production.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = production.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = production.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = production.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = production.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  const purge = purges.reduce( (a, b) =>{
+    return a + b.purge || 0
+  },0)
+
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
+}
+
 function filter1(array, month){
     const filter = array.filter( item => item.date === month)
     const reduce = filter.reduce( (a, b) =>{
@@ -86,13 +159,6 @@ function filterWeekTotalPlan(array, monday, sunday ){
 
     return reduce
 }
-
-function precise_round(num, dec){
-    const num_sign = num >= 0 ? 1 : -1;
-    const value =  (Math.round((num*Math.pow(10,dec))+(num_sign*0.0001))/Math.pow(10,dec)).toFixed(dec);
-    const valid = isNaN(value) ? 0 : parseFloat(value)
-    return isFinite(valid) ? valid : 0
-  }
 
 function filterDayTotalWTime(array, day){
     const filter = array.filter( item => item.date === day)
@@ -427,5 +493,7 @@ export { filter1, filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, fil
     filterHighestPurgeByDay,
     filterHighestPurge,
     filterHighestDefectByDay,
-    filterHighestDefect
+    filterHighestDefect,
+    dayColumn,
+    weekColumn
 } 

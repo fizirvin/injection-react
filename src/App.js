@@ -797,7 +797,7 @@ class App extends Component {
               reports={this.state.downtimeByDate}
               /> )} />
 
-              <Route path="/production" exact component={ props => ( <Production {...props}
+              <Route path="/product" exact component={ props => ( <Production {...props}
               issues={this.state.issues}
               machines={this.state.machines}
               models={this.state.models}
@@ -840,7 +840,7 @@ class App extends Component {
               updateWorker={this.updateWorker}
               /> )} 
               />
-              <Route path="/product" exact component={ props => ( <Product {...props}
+              <Route path="/production" exact component={ props => ( <Product {...props}
                 production={this.state.productionByDate}
                 purge={this.state.resinesByDate}
               /> )} />

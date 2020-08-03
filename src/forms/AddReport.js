@@ -206,7 +206,6 @@ class AddReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
     
     const resines = this.state.resines;
     const items = resines.filter( item => item.resine !== id);
@@ -222,7 +221,6 @@ class AddReport extends Component {
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
-    else { value = value }
       
     let selected = [...this.state.selected];
     const items = this.state.selected.filter( item => item.program !== id);
@@ -869,8 +867,7 @@ class AddReport extends Component {
 
       let resines = this.state.resines
       if(newArray.length === 0 ){ resines = []; TDTime = this.state.time }
-      else{ resines = resines}
-
+    
       return this.setState({ selected: newArray, defects: defects, TNG, TProd, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
     }
   }

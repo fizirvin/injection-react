@@ -3,7 +3,7 @@ import formatDate from './formatDate'
 import { filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, filterWeekTotalNG, filterDayTotalOK,
     filterWeekTotalOK, filterDayTotalPlan, filterWeekTotalPlan, filterDayTotalWTime, filterWeekTotalWTime, filterDayTotalDTime,
     filterWeekTotalDTime, filterDayTotalOEE, filterWeekTotalOEE, filterDayTotalPurge, filterWeekTotalPurge, filterHighest,
-    filterHighestIndicator, filterHighestPurgeByDay, filterHighestPurge, filterHighestDefectByDay, filterHighestDefect } from './filters'
+    filterHighestIndicator, filterHighestPurgeByDay, filterHighestPurge, filterHighestDefectByDay, filterHighestDefect, dayColumn, weekColumn } from './filters'
 import { filterMoldeDate, reduceRealMolde, reduceNGMolde, reduceOKMolde, reducePlanMolde, reduceTimeMolde, reduceDownTimeMolde, 
     filterTotalMoldeReal,
     filterTotalMoldeNG,
@@ -126,5 +126,7 @@ export {
     filterTotalDTime,
     filterTotalOEE,
     reducePurge,
-    filterTotalPurge  
+    filterTotalPurge,
+    dayColumn,
+    weekColumn  
 }

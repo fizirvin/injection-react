@@ -1,7 +1,7 @@
 import React from 'react'
 import '../../styles/header.css'
-
-const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setGo, date, setDate }) =>{
+import { formatDate } from '../../../actions/helpers'
+const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay }) =>{
  
   const onPeriod = (e) =>{
     const period = e.target.value
@@ -18,14 +18,34 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setGo, 
     return setFilter(filter)
   }
 
-  const onGo = (e)=>{
-    const go = e.target.name
-    return setGo(go)
+  const onForward = (e)=>{
+    const date1 = today;
+    const date = new Date(date1);
+    const nextWeek = date.getDate()+7;
+    date.setDate(nextWeek);
+    const newToday = formatDate(date)+'T01:00:00.000-06:00';
+    return setToday(newToday)
+  }
+
+  const onBack = ()=>{
+    const date1 = today;
+    const date = new Date(date1);
+    const pastWeek = date.getDate()-7;
+    date.setDate(pastWeek);
+    const newToday = formatDate(date)+'T01:00:00.000-06:00';
+    return setToday(newToday)
   }
 
   const onDate = (e)=>{
-    const date = e.target.value
-    return setDate(date)
+    const newDate = e.target.value
+
+    const date1 = newDate + 'T01:00:00.000-06:00'
+    const date2 = new Date(date1);
+    const today= formatDate(date2)+'T01:00:00.000-06:00';
+        
+    setToday(today)
+
+    return setDay(newDate)
   }
 
   return (
@@ -42,8 +62,8 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setGo, 
             <label>Shift:</label>   
             <select name='shift' value={shift} onChange={onShift}>
               <option value='both'>Shifts 1&2</option>
-              <option value='shift1'>Shift 1</option>
-              <option value='shift2'>Shift 2</option>
+              <option value='1'>Shift 1</option>
+              <option value='2'>Shift 2</option>
             </select>
           </div>  
           <div>
@@ -57,8 +77,8 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setGo, 
           </div>
           <div>
             <label>Go to Date:</label>
-            <input type='date' value={date} onChange={onDate}></input>
-            <button name='back' onClik={onGo}>Go Back</button><button name='forward' onClik={onGo}>Go Forward</button>
+            <input type='date' value={day} onChange={onDate}></input>
+            <button name='back' onClick={onBack}>Go Back</button><button name='forward' onClick={onForward}>Go Forward</button>
           </div>
       </div>
     </div>

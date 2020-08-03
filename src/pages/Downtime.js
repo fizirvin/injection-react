@@ -108,6 +108,9 @@ class Downtime extends React.Component {
         break;
       case 6:
         day = 6;
+        break;
+        default:
+        day = 6; 
     }
     return day
   }
