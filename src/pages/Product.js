@@ -28,26 +28,7 @@ const Product = ({production, purge}) =>{
     useEffect(() =>{
         const date = new Date();
         const today = formatDate(date)+'T01:00:00.000-06:00'
-        // const monday = getDateofTable(1, today)
-        // const tuesday = getDateofTable(2, today)
-        // const wednesday = getDateofTable(3, today)
-        // const thursday = getDateofTable(4, today)
-        // const friday = getDateofTable(5, today)
-        // const saturday = getDateofTable(6, today)
-        // const sunday = getDateofTable(7, today)
-
-        // const week = {
-        //     monday,
-        //     tuesday,
-        //     wednesday,
-        //     thursday,
-        //     friday,
-        //     saturday,
-        //     sunday
-        // } 
         return setToday(today)
-        // return setWeek(week)
-
     },[ ])
 
     useEffect(() =>{
@@ -88,14 +69,6 @@ const Product = ({production, purge}) =>{
         return setFields(fields)
 
     },[week])
-
-    // useEffect(()=>{
-    //     const date1 = day + 'T01:00:00.000-06:00'
-    //     const date2 = new Date(date1);
-    //     const today= formatDate(date2)+'T01:00:00.000-06:00';
-        
-    //     return setToday(today)
-    // },[day])
 
     useEffect(() =>{
         const monday = getDateofTable(1, today)
