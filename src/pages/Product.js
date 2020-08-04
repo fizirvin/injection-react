@@ -192,7 +192,7 @@ const Product = ({production, purge}) =>{
                 return setTrimesterReports(reports) 
             }
         }
-    },[period, shift, production, purge, trimester])
+    },[period, shift, production, purge, trimester, today])
 
     useEffect(() =>{
         const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = week    
@@ -256,7 +256,7 @@ const Product = ({production, purge}) =>{
             return setColumns(array)
         }
         
-    },[trimesterReports, trimester, trimesterPurges])
+    },[trimesterReports, trimester, trimesterPurges, today])
 
     const renderHeader = () =>{
         return production.length > 0 && fields? <HeaderTable filter={filter} fields={fields}/> : <div>...Loading</div>

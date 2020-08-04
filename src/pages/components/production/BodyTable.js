@@ -63,7 +63,7 @@ const BodyTable = ({columns, period}) =>{
           </tr>
         </tbody>
       }
-      else if(period === 'day'){
+      else if(period === 'day' && columns.length > 5){
         return <tbody>
         <tr>
           <td className='efficiency_total_machine'>Total Real (pcs)</td>
