@@ -20,20 +20,36 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToda
 
   const onForward = (e)=>{
     const date1 = today;
-    const date = new Date(date1);
-    const nextWeek = date.getDate()+7;
-    date.setDate(nextWeek);
-    const newToday = formatDate(date)+'T01:00:00.000-06:00';
-    return setToday(newToday)
+      const date = new Date(date1);
+    if(period === 'day'){
+      const nextWeek = date.getDate()+7;
+      date.setDate(nextWeek);
+      const newToday = formatDate(date)+'T01:00:00.000-06:00';
+      return setToday(newToday)
+    }
+    else if( period === 'trimester'){
+      const nextWeek = date.getDate()+92;
+      date.setDate(nextWeek);
+      const newToday = formatDate(date)+'T01:00:00.000-06:00';
+      return setToday(newToday)
+    }
   }
 
   const onBack = ()=>{
     const date1 = today;
     const date = new Date(date1);
-    const pastWeek = date.getDate()-7;
-    date.setDate(pastWeek);
-    const newToday = formatDate(date)+'T01:00:00.000-06:00';
-    return setToday(newToday)
+    if(period === 'day'){
+      const pastWeek = date.getDate()-7;
+      date.setDate(pastWeek);
+      const newToday = formatDate(date)+'T01:00:00.000-06:00';
+      return setToday(newToday)
+    }
+    else if(period === 'trimester'){
+      const pastWeek = date.getDate()-92;
+      date.setDate(pastWeek);
+      const newToday = formatDate(date)+'T01:00:00.000-06:00';
+      return setToday(newToday)
+    }
   }
 
   const onDate = (e)=>{
@@ -54,8 +70,8 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToda
           <div>
             <label>Period:</label>   
             <select name='period' value={period} onChange={onPeriod}>
-              <option value='week'>Week</option>
-              <option value='month'>Month</option>
+              <option value='day'>Day</option>
+              <option value='trimester'>Trimester</option>
             </select>
           </div>
           <div>

@@ -2,29 +2,25 @@ import React, { useState, useEffect } from 'react'
 import Header from './components/production/Header'
 import HeaderTable from './components/production/HeaderTable'
 import BodyTable from './components/production/BodyTable'
-import { formatDate, getDateofTable, dayColumn, weekColumn } from '../actions/helpers'
+import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn } from '../actions/helpers'
 
 const Product = ({production, purge}) =>{
-    const [ period, setPeriod ] = useState('week')
+    const [ period, setPeriod ] = useState('day')
     const [ shift, setShift ] = useState('both')
     const [ filter, setFilter ] = useState('machine')
     const [ today, setToday ] = useState()
     const [ day, setDay ] = useState('')
 
     const [ fields, setFields ] = useState()
-    const [ column1, setColumn1 ] = useState({pos1: ''})
-    const [ column2, setColumn2 ] = useState({pos1: ''})
-    const [ column3, setColumn3 ] = useState({pos1: ''})
-    const [ column4, setColumn4 ] = useState({pos1: ''})
-    const [ column5, setColumn5 ] = useState({pos1: ''})
-    const [ column6, setColumn6 ] = useState({pos1: ''})
-    const [ column7, setColumn7 ] = useState({pos1: ''})
-    const [ column8, setColumn8 ] = useState({pos1: ''})
-    
-    const [ reports, setReports ] = useState([])
-    const [ purges, setPurges ] = useState([])
-    const [ week, setWeek ] = useState({})
+    const [columns, setColumns ] = useState()
 
+    const [ weekReports, setWeekReports ] = useState([])
+    const [ weekPurges, setWeekPurges ] = useState([])
+    const [ trimesterReports, setTrimesterReports ] = useState([])
+    const [ trimesterPurges, setTrimesterPurges ] = useState([])
+    const [ week, setWeek ] = useState({})
+    const [ trimester, setTrimester ] = useState({})
+    
     useEffect(() =>{
         const date = new Date();
         const today = formatDate(date)+'T01:00:00.000-06:00'
@@ -32,223 +28,243 @@ const Product = ({production, purge}) =>{
     },[ ])
 
     useEffect(() =>{
-        const fields = {
-            field1: {
-                pos1: 'Mon',
-                pos2: week.monday
-            },
-            field2: {
-                pos1: 'Tue',
-                pos2: week.tuesday
-            },
-            field3: {
-                pos1: 'Wed',
-                pos2: week.wednesday
-            },
-            field4: {
-                pos1: 'Thu',
-                pos2: week.thursday
-            },
-            field5: {
-                pos1: 'Fri',
-                pos2: week.friday
-            },
-            field6: {
-                pos1: 'Sat',
-                pos2: week.saturday
-            },
-            field7: {
-                pos1: 'Sun',
-                pos2: week.sunday
-            },
-            field8: {
-                pos1: 'Total',
-                pos2: 'Week'
+        if( period === 'day'){
+            const fields = [
+                {
+                    pos1: 'Mon',
+                    pos2: week.monday
+                },
+                {
+                    pos1: 'Tue',
+                    pos2: week.tuesday
+                },
+                {
+                    pos1: 'Wed',
+                    pos2: week.wednesday
+                },
+                {
+                    pos1: 'Thu',
+                    pos2: week.thursday
+                },
+                {
+                    pos1: 'Fri',
+                    pos2: week.friday
+                },
+                {
+                    pos1: 'Sat',
+                    pos2: week.saturday
+                },
+                {
+                    pos1: 'Sun',
+                    pos2: week.sunday
+                },
+                {
+                    pos1: 'Total',
+                    pos2: 'Week'
+                }
+            ]
+            return setFields(fields)
+        } else if(period === 'trimester'){
+            const  months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            const fields = [
+                {
+                    pos1: months[parseInt(trimester.first)],
+                    pos2: trimester.first
+                },
+                {
+                    pos1: months[parseInt(trimester.second)],
+                    pos2: trimester.second
+                },
+                {
+                    pos1: months[parseInt(trimester.third)],
+                    pos2: trimester.third
+                },
+                {
+                    pos1: 'Total',
+                    pos2: 'Trimester'
+                }
+            ]
+            return setFields(fields)
+        }
+
+    },[trimester, week, period])
+
+    useEffect(() =>{
+        if(period === 'day'){
+            if( !today){ return }
+            else {
+                const monday = getDateofTable(1, today)
+                const tuesday = getDateofTable(2, today)
+                const wednesday = getDateofTable(3, today)
+                const thursday = getDateofTable(4, today)
+                const friday = getDateofTable(5, today)
+                const saturday = getDateofTable(6, today)
+                const sunday = getDateofTable(7, today)
+        
+                const week = {
+                    monday,
+                    tuesday,
+                    wednesday,
+                    thursday,
+                    friday,
+                    saturday,
+                    sunday
+                } 
+                return setWeek(week)                                   
+            }
+        } else if(period === 'trimester'){
+            const date = new Date(today);
+            const m = date.getMonth()+1
+            const trimester = m >= 1 && m <=3 ? 'first' : m >= 4 && m <= 6 ? 'second' : m >= 7 && m <= 9 ? 'third' : 'fourth'
+            if( trimester === 'first'){
+                const newTrimester = {
+                    first: '01',
+                    second: '02',
+                    third: '03'
+                }
+                return setTrimester(newTrimester)
+            }
+            else if (trimester === 'second'){
+                const newTrimester = {
+                    first: '04',
+                    second: '05',
+                    third: '06'
+                }
+                return setTrimester(newTrimester)
+            }else if( trimester === 'third'){
+                const newTrimester = {
+                    first: '07',
+                    second: '08',
+                    third: '09'
+                }
+                return setTrimester(newTrimester)
+            }else if( trimester === 'fourth'){
+                const newTrimester = {
+                    first: '10',
+                    second: '11',
+                    third: '12'
+                }
+                return setTrimester(newTrimester)
+            }  
+        }
+        
+    }, [period, today])
+
+    useEffect(() =>{
+        if(period !== 'day'){ 
+            return 
+        } else {
+            if(shift === 'both'){
+                const reports = production.filter( item => item.date >= week.monday && item.date <= week.sunday )  
+                const purges = purge.filter(item => item.date >= week.monday && item.date <= week.sunday)   
+                setWeekPurges(purges)
+                return setWeekReports(reports) 
+            }
+            else{
+                const reports = production.filter( item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday )  
+                const purges = purge.filter(item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday)   
+                setWeekPurges(purges)
+                return setWeekReports(reports) 
             }
         }
-        return setFields(fields)
-
-    },[week])
+    },[period, shift, production, purge, week])
 
     useEffect(() =>{
-        const monday = getDateofTable(1, today)
-        const tuesday = getDateofTable(2, today)
-        const wednesday = getDateofTable(3, today)
-        const thursday = getDateofTable(4, today)
-        const friday = getDateofTable(5, today)
-        const saturday = getDateofTable(6, today)
-        const sunday = getDateofTable(7, today)
+        if(period !== 'trimester'){ 
+            return 
+        } else {
+            if(shift === 'both'){
+                const date = new Date(today);
+                const y = date.getFullYear()
+                const { first, third } = trimester
+                const reports = production.filter( item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)
+                const purges = purge.filter(item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
+                setTrimesterPurges(purges)
+                return setTrimesterReports(reports) 
+            }
+            else{
+                const date = new Date(today);
+                const y = date.getFullYear()
+                const { first, third } = trimester
+                const reports = production.filter( item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31` )  
+                const purges = purge.filter(item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
+                setTrimesterPurges(purges)
+                return setTrimesterReports(reports) 
+            }
+        }
+    },[period, shift, production, purge, trimester])
 
-        const week = {
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday
-        } 
-        return setWeek(week)
+    useEffect(() =>{
+        const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = week    
+        if(!monday){
+            return 
+        }
+        else {
+            const daysColumns = [ monday, tuesday, wednesday, thursday, friday, saturday, sunday ]
+            const arrayColumns = daysColumns.map( item =>{
+                const column = dayColumn(weekReports, item, weekPurges)
+                const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+                return { real, ng, ok, plan, wtime, dtime, oee, purge}
+            })
+
+            const column = weekColumn( weekReports, weekPurges )
+            const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+            const column8 = {
+                real,
+                ng,
+                ok,
+                plan,
+                wtime,
+                dtime,
+                oee,
+                purge
+            }
+            const array = [...arrayColumns, column8]
+            return setColumns(array)
+        }
         
-    }, [today])
+    },[weekReports, week, weekPurges])
 
     useEffect(() =>{
-        if(shift === 'both'){
-            const reports = production.filter( item => item.date >= week.monday && item.date <= week.sunday )  
-            const purges = purge.filter(item => item.date >= week.monday && item.date <= week.sunday)   
-            setPurges(purges)
-            return setReports(reports) 
+        const { first, second, third } = trimester    
+        if(!first){
+            return 
         }
-        else{
-            const reports = production.filter( item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday )  
-            const purges = purge.filter(item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday)   
-            setPurges(purges)
-            return setReports(reports) 
-        }
-    },[shift, production, purge, week])
+        else {
+                const date = new Date(today);
+                const y = date.getFullYear()
+                const trimesterColumns = [ first, second, third ]
+                const arrayColumns = trimesterColumns.map( item =>{
+                const column = monthColumn(trimesterReports, y, item, trimesterPurges)
+                const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+                return { real, ng, ok, plan, wtime, dtime, oee, purge}
+            })
 
-    useEffect(() =>{
-        const { monday } = week
-        const column = dayColumn(reports, monday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column1 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
+            const column = weekColumn( trimesterReports, trimesterPurges )
+            const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+            const column8 = {
+                real,
+                ng,
+                ok,
+                plan,
+                wtime,
+                dtime,
+                oee,
+                purge
+            }
+            const array = [...arrayColumns, column8]
+            return setColumns(array)
         }
-        return setColumn1(column1)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { tuesday } = week
-        const column = dayColumn(reports, tuesday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column2 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn2(column2)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { wednesday } = week
-        const column = dayColumn(reports, wednesday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column3 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn3(column3)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { thursday } = week
-        const column = dayColumn(reports, thursday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column4 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn4(column4)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { friday } = week
-        const column = dayColumn(reports, friday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column5 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn5(column5)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { saturday } = week
-        const column = dayColumn(reports, saturday, purges)
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column6 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn6(column6)
-    },[reports, week, purges])
-
-    useEffect(() =>{
-        const { sunday } = week
-        const column = dayColumn( reports, sunday, purges )
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column7 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn7(column7)
-    },[reports, week, purges])
-   
-    useEffect(() =>{
-        const column = weekColumn( reports, purges )
-        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-        const column8 = {
-            real,
-            ng,
-            ok,
-            plan,
-            wtime,
-            dtime,
-            oee,
-            purge
-        }
-        return setColumn8(column8)
-    },[reports, purges ])
+        
+    },[trimesterReports, trimester, trimesterPurges])
 
     const renderHeader = () =>{
         return production.length > 0 && fields? <HeaderTable filter={filter} fields={fields}/> : <div>...Loading</div>
     }
 
     const renderBody = () =>{
-        return !column1 | !column2 | !column3 | !column4 | !column5 | !column6 | !column7 | !column8 ? <div>...Loading</div> : 
-        <BodyTable column1={column1} column2={column2} column3={column3} column4={column4} column5={column5} column6={column6} column7={column7} column8={column8}/>
+        return !columns ? <div>...Loading</div> : 
+        <BodyTable columns={columns} period={period}/>
     }
 
 

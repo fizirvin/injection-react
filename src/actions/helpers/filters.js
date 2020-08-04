@@ -71,6 +71,43 @@ const weekColumn = (production, purges) =>{
   return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
 }
 
+const monthColumn = (production, year, month, purges) =>{
+  const filter = production.filter( item => item.date >= `${year}-${month}-01` && item.date <= `${year}-${month}-31`)
+  const filterPurge = purges.filter( item => item.date >= `${year}-${month}-01` && item.date <= `${year}-${month}-31`)
+  const real = filter.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = filter.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = filter.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = filter.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  const purge = filterPurge.reduce( (a, b) =>{
+    return a + b.purge || 0
+  },0)
+
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
+}
+
+
+
+
 function filter1(array, month){
     const filter = array.filter( item => item.date === month)
     const reduce = filter.reduce( (a, b) =>{
@@ -495,5 +532,6 @@ export { filter1, filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, fil
     filterHighestDefectByDay,
     filterHighestDefect,
     dayColumn,
-    weekColumn
+    weekColumn,
+    monthColumn
 } 

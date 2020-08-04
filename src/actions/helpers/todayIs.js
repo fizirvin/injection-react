@@ -47,7 +47,7 @@ function todayIs(date){
     const dayOfMonth = today.getDate();
     const difference = number - todayIs(today);
     const set = dayOfMonth + difference;
-    const set2= set - 50
+    const set2= set - 93
     const date= today.setDate(set2);
     
     return formatDate(date)

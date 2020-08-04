@@ -128,6 +128,8 @@
     align-content: space-between;
 }
 
+
+
 .efficiency_total_machine_indicator{
     /* background-color: rgba(0, 2, 139, 0.808); */
     background-color: #52b6ca;
@@ -146,6 +148,36 @@
     border: solid 1px;
     font-size: 80%; 
     
+}
+.trimester_total_day{
+    font-size: 85%;
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 18%;
+    text-align: center;
+    border: solid 1px;
+    font-size: 80%; 
+    
+}
+
+.trimester_total_title{
+    background-color: rgba(5, 131, 53, 0.404);
+    text-align: right;
+    width: 28%;
+    border: solid 1px;
+    font-weight: bold;
+    font-size: 80%;
+    align-content: space-between;
+    
+}
+
+.trimester_total{
+    font-size: 85%;
+    background-color: rgba(5, 131, 53, 0.404);
+    width: 18%;
+    text-align: center;
+    border: solid 1px;
+    font-size: 80%; 
+    font-weight: bold;
 }
 
 .efficiency_total_week{
