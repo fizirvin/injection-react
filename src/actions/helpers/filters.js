@@ -5,6 +5,74 @@ function precise_round(num, dec){
   return isFinite(valid) ? valid : 0
 }
 
+const machineDetail = (weekReports, days, weekPurges )=>{
+  const uniqueMachineList = Array.from(new Set(weekReports.map( ({machine })  =>{ 
+    const list = weekReports.find( item => item.machine === machine )
+    return list }
+  )))
+    
+  const machines = uniqueMachineList.map( machine =>{
+    const machineReports = weekReports.filter( item => item.machine === machine.machine )
+    const purges = weekPurges.filter( item => item.machine === machine.machine )
+    const arrayColumns = days.map( day =>{
+      const column = dayColumn( machineReports, day, purges )
+      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+    })
+
+    const column = weekColumn( machineReports, purges )
+    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee,
+      purge
+    }
+    const array = [...arrayColumns, column8]
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array }
+  })
+
+  return machines    
+}
+
+const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges )=>{
+  const uniqueMachineList = Array.from(new Set(trimesterReports.map( ({machine })  =>{ 
+    const list = trimesterReports.find( item => item.machine === machine )
+    return list }
+  )))
+    
+  const machines = uniqueMachineList.map( machine =>{
+    const machineReports = trimesterReports.filter( item => item.machine === machine.machine )
+    const purges = trimesterPurges.filter( item => item.machine === machine.machine )
+    const arrayColumns = trimesterColumns.map( month =>{
+      const column = monthColumn( machineReports, y, month, purges )
+      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+    })
+
+    const column = weekColumn( machineReports, purges )
+    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee,
+      purge
+    }
+    const array = [...arrayColumns, column8]
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array }
+  })
+
+  return machines    
+}
+
 const dayColumn = (production, day, purges) =>{
   const filter = production.filter( item => item.date === day)
   const filterPurge = purges.filter( item => item.date === day)
@@ -38,6 +106,8 @@ const dayColumn = (production, day, purges) =>{
     
   return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
 }
+
+
 
 const weekColumn = (production, purges) =>{
   const real = production.reduce( (a, b) =>{
@@ -533,5 +603,7 @@ export { filter1, filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, fil
     filterHighestDefect,
     dayColumn,
     weekColumn,
-    monthColumn
+    monthColumn,
+    machineDetail,
+    machineTrimesterDetail
 } 

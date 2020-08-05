@@ -444,12 +444,14 @@ class App extends Component {
         const id = item._id
         const shift = item.shift
         const machine = item.machine._id
+        const machineNumber = item.machine.machineNumber
         const production = item.production.map( prod =>{
           return { 
             report: id, 
             date: date,
             shift: shift, 
-            machine: machine, 
+            machine: machine,
+            machineNumber: machineNumber, 
             part: prod.partNumber._id, 
             molde: prod.molde._id,
             real: prod.real, 
@@ -586,12 +588,14 @@ class App extends Component {
           const id = item._id
           const shift = item.shift
           const machine = item.machine._id
+          const machineNumber = item.machine.machineNumber
           const production = item.production.map( prod =>{
             return { 
               report: id, 
               date: date,
               shift: shift, 
-              machine: machine, 
+              machine: machine,
+              machineNumber: machineNumber, 
               part: prod.partNumber._id, 
               molde: prod.molde._id,
               real: prod.real, 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Header from './components/production/Header'
 import HeaderTable from './components/production/HeaderTable'
 import BodyTable from './components/production/BodyTable'
-import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn } from '../actions/helpers'
+import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail } from '../actions/helpers'
 
 const Product = ({production, purge}) =>{
     const [ period, setPeriod ] = useState('day')
@@ -14,6 +14,8 @@ const Product = ({production, purge}) =>{
     const [ fields, setFields ] = useState()
     const [columns, setColumns ] = useState()
 
+    const [ weekMachineReports, setWeekMachineReports ] = useState([])
+    const [ trimesterMachineReports, setTrimesterMachineReports ] = useState([])
     const [ weekReports, setWeekReports ] = useState([])
     const [ weekPurges, setWeekPurges ] = useState([])
     const [ trimesterReports, setTrimesterReports ] = useState([])
@@ -206,7 +208,8 @@ const Product = ({production, purge}) =>{
                 const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
                 return { real, ng, ok, plan, wtime, dtime, oee, purge}
             })
-
+            const machineReports = machineDetail(weekReports, daysColumns, weekPurges );
+            
             const column = weekColumn( weekReports, weekPurges )
             const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
             const column8 = {
@@ -220,6 +223,7 @@ const Product = ({production, purge}) =>{
                 purge
             }
             const array = [...arrayColumns, column8]
+            setWeekMachineReports(machineReports)
             return setColumns(array)
         }
         
@@ -239,6 +243,7 @@ const Product = ({production, purge}) =>{
                 const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
                 return { real, ng, ok, plan, wtime, dtime, oee, purge}
             })
+            const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
 
             const column = weekColumn( trimesterReports, trimesterPurges )
             const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
@@ -252,7 +257,9 @@ const Product = ({production, purge}) =>{
                 oee,
                 purge
             }
+
             const array = [...arrayColumns, column8]
+            setTrimesterMachineReports(machineReports)
             return setColumns(array)
         }
         
@@ -264,7 +271,7 @@ const Product = ({production, purge}) =>{
 
     const renderBody = () =>{
         return !columns ? <div>...Loading</div> : 
-        <BodyTable columns={columns} period={period}/>
+        <BodyTable columns={columns} period={period} weekMachineReports={weekMachineReports} trimesterMachineReports={trimesterMachineReports}/>
     }
 
 
@@ -283,12 +290,9 @@ const Product = ({production, purge}) =>{
                 setDay={setDay}
             />
            <div className='downtime_graphs'>
-                <div className='downtime_container'>
+                <div className='product_container'>
                     {renderHeader()}
                     {renderBody()}
-                    <div className='downtime_table_body'>
-               
-                    </div>
                 </div>
                 <div className='graphics_container'>
               

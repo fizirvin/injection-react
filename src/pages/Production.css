@@ -25,6 +25,15 @@
     max-height: 86vh;
 }
 
+.product_container{
+    display: block;
+    width: 65%;
+    height: 100vh;
+    min-height: 86vh;
+    max-height: 86vh;
+    overflow-y: scroll;
+}
+
 .svg_downtime{
     margin-top: 0;
     margin-bottom: 0;
@@ -178,6 +187,11 @@
     border: solid 1px;
     font-size: 80%; 
     font-weight: bold;
+}
+
+.title_row_production{
+    display: flex;
+    justify-content: space-between;
 }
 
 .efficiency_total_week{

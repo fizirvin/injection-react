@@ -4,6 +4,7 @@ const initialQuery = { query: `query
             report
             date
             machine
+            machineNumber
             shift
             part
             molde
