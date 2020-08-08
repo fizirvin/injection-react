@@ -1596,7 +1596,7 @@ renderDowntimeByMachineGraphic = () =>{
               <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.friday)}</td>
               <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.saturday)}</td>
               <td className='efficiency_total_day'>{filterDayTotalWTime(this.state.production, this.state.sunday)}</td>
-              <td className='efficiency_total_week'>{filterWeekTotalWTime(this.state.production, this.state.monday, this.state.monday)}</td>
+              <td className='efficiency_total_week'>{filterWeekTotalWTime(this.state.production, this.state.monday, this.state.sunday)}</td>
             </tr>
             <tr>
               <td className='efficiency_total_machine'><button name='Downtime' onClick={this.detailDowntime} className={this.detailActive('Downtime')}></button> Total Downtime (hrs)</td>
