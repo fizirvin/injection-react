@@ -1,7 +1,7 @@
 import React from 'react'
 import '../../styles/header.css'
 import { formatDate } from '../../../actions/helpers'
-const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay }) =>{
+const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay, detail, setDetail }) =>{
  
   const onPeriod = (e) =>{
     const period = e.target.value
@@ -16,6 +16,11 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToda
   const onFilter = (e) =>{
     const filter = e.target.value
     return setFilter(filter)
+  }
+
+  const onDetail = (e) =>{
+    
+    return setDetail(!detail)
   }
 
   const onForward = (e)=>{
@@ -89,7 +94,7 @@ const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToda
               <option value='model'>Model</option>
               <option value='molde'>Molde</option>
             </select>
-            <button name='Machine'>Indicators ▼</button>
+            <button name='detail' value='filter' onClick={onDetail} className={detail ? 'detailRed' : 'detailBlue'}>Detail ▼</button>
           </div>
           <div>
             <label>Go to Date:</label>

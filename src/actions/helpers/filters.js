@@ -5,6 +5,98 @@ function precise_round(num, dec){
   return isFinite(valid) ? valid : 0
 }
 
+const moldeDetail = (weekReports, days, weekPurges )=>{
+  const uniqueMoldeList = Array.from(new Set(weekReports.map( ({ molde })  =>{ 
+    const list = weekReports.find( item => item.molde === molde )
+    return list }
+  )))
+    
+  const moldes = uniqueMoldeList.map( molde =>{
+    const moldeReports = weekReports.filter( item => item.molde === molde.molde )
+    const purges = weekPurges.filter( item => item.molde === molde.molde )
+    const arrayColumns = days.map( day =>{
+      const column = dayColumn( moldeReports, day, purges )
+      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+    })
+
+    const column = weekColumn( moldeReports, purges )
+    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee,
+      purge
+    }
+    const array = [...arrayColumns, column8]
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array }
+  })
+
+  return moldes    
+}
+
+const modelDetail = (weekReports, days, weekDefects )=>{
+  const uniqueModelList = Array.from(new Set(weekReports.map( ({ part })  =>{ 
+    const list = weekReports.find( item => item.part === part )
+    return list }
+  )))
+    
+  const models = uniqueModelList.map( part =>{
+    const modelReports = weekReports.filter( item => item.part === part.part )
+    const defectArray = weekDefects.filter( item => item.partNumber === part.part)
+
+    const arrayColumns = days.map( day =>{
+      const column = dayColumnModel( modelReports, day)
+      const { real, ng, ok, plan, wtime, dtime, oee } = column
+      return { real, ng, ok, plan, wtime, dtime, oee }
+    })
+
+    const column = weekColumnModel( modelReports )
+    const { real, ng, ok, plan, wtime, dtime, oee } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee
+    }
+    const array = [...arrayColumns, column8]
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsDays = days.map(day =>{
+        const list = defectArray.filter(item => item.date === day && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsDays, total]
+      return {defectCode: def.defectCode, part: def.partNumber, defecto: defecto}
+    })
+
+
+    return { model: part.part, partName: part.partName, reports: array, defects }
+  })
+
+  return models    
+}
+
 const machineDetail = (weekReports, days, weekPurges )=>{
   const uniqueMachineList = Array.from(new Set(weekReports.map( ({machine })  =>{ 
     const list = weekReports.find( item => item.machine === machine )
@@ -37,6 +129,99 @@ const machineDetail = (weekReports, days, weekPurges )=>{
   })
 
   return machines    
+}
+
+const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges )=>{
+  const uniqueMoldeList = Array.from(new Set(trimesterReports.map( ({molde })  =>{ 
+    const list = trimesterReports.find( item => item.molde === molde )
+    return list }
+  )))
+    
+  const moldes = uniqueMoldeList.map( molde =>{
+    const moldeReports = trimesterReports.filter( item => item.molde === molde.molde )
+    const purges = trimesterPurges.filter( item => item.molde ===molde.molde )
+    const arrayColumns = trimesterColumns.map( month =>{
+      const column = monthColumn( moldeReports, y, month, purges )
+      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+    })
+
+    const column = weekColumn( moldeReports, purges )
+    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee,
+      purge
+    }
+    const array = [...arrayColumns, column8]
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array }
+  })
+
+  return moldes    
+}
+
+const modelTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterDefects )=>{
+  const uniqueModelList = Array.from(new Set(trimesterReports.map( ({part })  =>{ 
+    const list = trimesterReports.find( item => item.part === part )
+    return list }
+  )))
+    
+  const models = uniqueModelList.map( part =>{
+    const modelReports = trimesterReports.filter( item => item.part === part.part )
+    const defectArray = trimesterDefects.filter( item => item.partNumber === part.part)
+    
+    const arrayColumns = trimesterColumns.map( month =>{
+      const column = monthColumnModel( modelReports, y, month )
+      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+    })
+
+    const column = weekColumnModel( modelReports )
+    const { real, ng, ok, plan, wtime, dtime, oee } = column
+    const column8 = {
+      real,
+      ng,
+      ok,
+      plan,
+      wtime,
+      dtime,
+      oee
+    }
+    const array = [...arrayColumns, column8]
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsMonths = trimesterColumns.map(month =>{
+        const list = defectArray.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsMonths, total]
+      return {defectCode: def.defectCode, part: def.partNumber, defecto: defecto}
+    })
+
+    
+
+    return { model: part.part, partName: part.partName, reports: array, defects }
+  })
+
+  return models    
 }
 
 const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges )=>{
@@ -107,6 +292,64 @@ const dayColumn = (production, day, purges) =>{
   return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
 }
 
+const dayColumnModel = (production, day ) =>{
+  const filter = production.filter( item => item.date === day)
+  const real = filter.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = filter.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = filter.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = filter.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee }
+}
+
+const weekColumnModel = (production ) =>{
+  const real = production.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = production.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = production.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = production.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = production.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = production.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee }
+}
 
 
 const weekColumn = (production, purges) =>{
@@ -175,6 +418,37 @@ const monthColumn = (production, year, month, purges) =>{
   return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee, purge }
 }
 
+const monthColumnModel = (production, year, month ) =>{
+  const filter = production.filter( item => item.date >= `${year}-${month}-01` && item.date <= `${year}-${month}-31`)
+  
+  const real = filter.reduce( (a, b) =>{
+    return a + b.real || 0
+  },0)
+  const ng = filter.reduce( (a, b) =>{
+    return a + b.ng || 0
+  },0)
+  const ok = filter.reduce( (a, b) =>{
+    return a + b.ok || 0
+  },0)
+  const plan = filter.reduce( (a, b) =>{
+    return a + b.plan || 0
+  },0)
+  const wtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.wtime.$numberDecimal) || 0
+  },0)
+  const dtime = filter.reduce( (a, b) =>{
+    return a + parseFloat(b.dtime.$numberDecimal) || 0
+  },0)
+  
+
+  const time = parseInt(wtime + dtime) 
+  const availability = precise_round(( wtime / time )*100, 2)
+  const performance = precise_round(( real / plan )*100, 2)
+  const quality = precise_round(( ok / real )*100, 2)
+  const oee = precise_round( ((availability*performance*quality)/10000), 2 )
+    
+  return { real, ng, ok, plan, wtime: precise_round(wtime,2), dtime: precise_round(dtime,2), oee }
+}
 
 
 
@@ -605,5 +879,9 @@ export { filter1, filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, fil
     weekColumn,
     monthColumn,
     machineDetail,
-    machineTrimesterDetail
+    machineTrimesterDetail,
+    modelDetail,
+    moldeDetail,
+    modelTrimesterDetail,
+    moldeTrimesterDetail
 } 

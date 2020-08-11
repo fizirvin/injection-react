@@ -5,3 +5,11 @@
 .controlls{
     display: flex
 }
+
+.detailRed{
+    background-color: tomato;
+}
+
+.detailBlue{
+    background-color: teal;
+}

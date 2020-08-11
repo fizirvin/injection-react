@@ -2,24 +2,34 @@ import React, { useState, useEffect } from 'react'
 import Header from './components/production/Header'
 import HeaderTable from './components/production/HeaderTable'
 import BodyTable from './components/production/BodyTable'
-import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail } from '../actions/helpers'
+import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail, modelDetail, 
+    moldeDetail, modelTrimesterDetail, moldeTrimesterDetail } from '../actions/helpers'
 
-const Product = ({production, purge}) =>{
+const Product = ({production, purge, defects}) =>{
     const [ period, setPeriod ] = useState('day')
     const [ shift, setShift ] = useState('both')
     const [ filter, setFilter ] = useState('machine')
     const [ today, setToday ] = useState()
     const [ day, setDay ] = useState('')
+    const [ detail, setDetail ] = useState(false)
 
     const [ fields, setFields ] = useState()
     const [columns, setColumns ] = useState()
 
     const [ weekMachineReports, setWeekMachineReports ] = useState([])
     const [ trimesterMachineReports, setTrimesterMachineReports ] = useState([])
+    const [ weekModelReports, setWeekModelReports ] = useState([])
+    const [ trimesterModelReports, setTrimesterModelReports ] = useState([])
+    const [ weekMoldeReports, setWeekMoldeReports ] = useState([])
+    const [ trimesterMoldeReports, setTrimesterMoldeReports ] = useState([])
+
+
     const [ weekReports, setWeekReports ] = useState([])
     const [ weekPurges, setWeekPurges ] = useState([])
+    const [ weekDefects, setWeekDefects ] = useState([])
     const [ trimesterReports, setTrimesterReports ] = useState([])
     const [ trimesterPurges, setTrimesterPurges ] = useState([])
+    const [ trimesterDefects, setTrimesterDefects ] = useState([])
     const [ week, setWeek ] = useState({})
     const [ trimester, setTrimester ] = useState({})
     
@@ -158,18 +168,22 @@ const Product = ({production, purge}) =>{
         } else {
             if(shift === 'both'){
                 const reports = production.filter( item => item.date >= week.monday && item.date <= week.sunday )  
-                const purges = purge.filter(item => item.date >= week.monday && item.date <= week.sunday)   
+                const purges = purge.filter(item => item.date >= week.monday && item.date <= week.sunday)
+                const defect = defects.filter(item => item.date >= week.monday && item.date <= week.sunday)    
                 setWeekPurges(purges)
+                setWeekDefects(defect)
                 return setWeekReports(reports) 
             }
             else{
                 const reports = production.filter( item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday )  
-                const purges = purge.filter(item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday)   
+                const purges = purge.filter(item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday)
+                const defect = defects.filter(item => item.shift === shift && item.date >= week.monday && item.date <= week.sunday)    
                 setWeekPurges(purges)
+                setWeekDefects(defect)
                 return setWeekReports(reports) 
             }
         }
-    },[period, shift, production, purge, week])
+    },[period, shift, production, purge, defects, week])
 
     useEffect(() =>{
         if(period !== 'trimester'){ 
@@ -180,8 +194,10 @@ const Product = ({production, purge}) =>{
                 const y = date.getFullYear()
                 const { first, third } = trimester
                 const reports = production.filter( item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)
-                const purges = purge.filter(item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
+                const purges = purge.filter(item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)
+                const defect = defects.filter(item => item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
                 setTrimesterPurges(purges)
+                setTrimesterDefects(defect)
                 return setTrimesterReports(reports) 
             }
             else{
@@ -189,12 +205,14 @@ const Product = ({production, purge}) =>{
                 const y = date.getFullYear()
                 const { first, third } = trimester
                 const reports = production.filter( item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31` )  
-                const purges = purge.filter(item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
+                const purges = purge.filter(item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)
+                const defect = defects.filter(item => item.shift === shift && item.date >= `${y}-${first}-01` && item.date <= `${y}-${third}-31`)   
                 setTrimesterPurges(purges)
+                setTrimesterDefects(defect)
                 return setTrimesterReports(reports) 
             }
         }
-    },[period, shift, production, purge, trimester, today])
+    },[period, shift, production, purge, trimester, today, defects])
 
     useEffect(() =>{
         const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = week    
@@ -208,7 +226,6 @@ const Product = ({production, purge}) =>{
                 const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
                 return { real, ng, ok, plan, wtime, dtime, oee, purge}
             })
-            const machineReports = machineDetail(weekReports, daysColumns, weekPurges );
             
             const column = weekColumn( weekReports, weekPurges )
             const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
@@ -223,11 +240,23 @@ const Product = ({production, purge}) =>{
                 purge
             }
             const array = [...arrayColumns, column8]
-            setWeekMachineReports(machineReports)
-            return setColumns(array)
+            setColumns(array)
+        
+            if( filter === 'machine'){
+                const machineReports = machineDetail(weekReports, daysColumns, weekPurges );
+                return setWeekMachineReports(machineReports)
+            }
+            if( filter === 'model'){
+                const modelReports = modelDetail(weekReports, daysColumns, weekDefects)
+                return setWeekModelReports(modelReports)
+            }
+            if( filter === 'molde'){
+                const moldeReports = moldeDetail(weekReports, daysColumns, weekPurges)
+                return setWeekMoldeReports(moldeReports)
+            }
         }
         
-    },[weekReports, week, weekPurges])
+    },[filter, weekReports, week, weekPurges, weekDefects])
 
     useEffect(() =>{
         const { first, second, third } = trimester    
@@ -243,7 +272,6 @@ const Product = ({production, purge}) =>{
                 const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
                 return { real, ng, ok, plan, wtime, dtime, oee, purge}
             })
-            const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
 
             const column = weekColumn( trimesterReports, trimesterPurges )
             const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
@@ -259,11 +287,22 @@ const Product = ({production, purge}) =>{
             }
 
             const array = [...arrayColumns, column8]
-            setTrimesterMachineReports(machineReports)
-            return setColumns(array)
+            setColumns(array)
+            if( filter === 'machine'){
+                const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
+                return setTrimesterMachineReports(machineReports)
+            }
+            if( filter === 'model'){
+                const modelReports = modelTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
+                return setTrimesterModelReports(modelReports)
+            }
+            if( filter === 'molde'){
+                const moldeReports = moldeTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
+                return setTrimesterMoldeReports(moldeReports)
+            }
         }
         
-    },[trimesterReports, trimester, trimesterPurges, today])
+    },[filter, trimesterReports, trimester, trimesterPurges, today, trimesterDefects])
 
     const renderHeader = () =>{
         return production.length > 0 && fields? <HeaderTable filter={filter} fields={fields}/> : <div>...Loading</div>
@@ -271,7 +310,12 @@ const Product = ({production, purge}) =>{
 
     const renderBody = () =>{
         return !columns ? <div>...Loading</div> : 
-        <BodyTable columns={columns} period={period} weekMachineReports={weekMachineReports} trimesterMachineReports={trimesterMachineReports}/>
+        <BodyTable filter={filter} columns={columns} period={period} weekMoldeReports={weekMoldeReports} weekModelReports={weekModelReports} weekMachineReports={weekMachineReports} 
+            trimesterMachineReports={trimesterMachineReports}
+            trimesterModelReports={trimesterModelReports}
+            trimesterMoldeReports={trimesterMoldeReports}
+            detail={detail}
+        />
     }
 
 
@@ -288,6 +332,8 @@ const Product = ({production, purge}) =>{
                 setToday={setToday}
                 day={day}
                 setDay={setDay}
+                detail={detail} 
+                setDetail={setDetail}
             />
            <div className='downtime_graphs'>
                 <div className='product_container'>

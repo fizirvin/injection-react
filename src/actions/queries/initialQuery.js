@@ -7,7 +7,9 @@ const initialQuery = { query: `query
             machineNumber
             shift
             part
+            partName
             molde
+            moldeNumber
             real
             ng
             ok

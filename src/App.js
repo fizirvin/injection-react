@@ -61,26 +61,32 @@ class App extends Component {
     hr_opts.body = JSON.stringify(workerQuery)
     const hr_res = await fetch(hr_server, hr_opts);
     const hr_data = await hr_res.json();
-    console.log('holalalala', hr_data, data)
-    this.setState({ 
-      machines: data.data.machines,
-      materials: data.data.materials, 
-      moldes: data.data.moldes,
-      cycles: data.data.cycles, 
-      models: data.data.parts, 
-      issues: data.data.issues,
-      defects: data.data.defects,
-      programs: data.data.programs,
-      reports: data.data.reports,
-      productionByDate: data.data.productionByDate,
-      downtimeByDate: data.data.downtimeByDate,
-      defectsByDate: data.data.defectsByDate,
-      resinesByDate: data.data.resinesByDate,
-      users: data.data.users,
-      initial49: initial49,
-      end: end,
-      profiles: hr_data.data.profiles,
-    })
+    if(data.errors || hr_data.erros ){
+      return console.log(data.errors)
+    }
+    else {
+      console.log('holalalala', hr_data, data)
+      return this.setState({ 
+        machines: data.data.machines,
+        materials: data.data.materials, 
+        moldes: data.data.moldes,
+        cycles: data.data.cycles, 
+        models: data.data.parts, 
+        issues: data.data.issues,
+        defects: data.data.defects,
+        programs: data.data.programs,
+        reports: data.data.reports,
+        productionByDate: data.data.productionByDate,
+        downtimeByDate: data.data.downtimeByDate,
+        defectsByDate: data.data.defectsByDate,
+        resinesByDate: data.data.resinesByDate,
+        users: data.data.users,
+        initial49: initial49,
+        end: end,
+        profiles: hr_data.data.profiles,
+      })
+
+    }
   }
 
   close = message => this.setState({[message]: 'new'});
@@ -452,8 +458,10 @@ class App extends Component {
             shift: shift, 
             machine: machine,
             machineNumber: machineNumber, 
-            part: prod.partNumber._id, 
+            part: prod.partNumber._id,
+            partName: prod.partNumber.partName, 
             molde: prod.molde._id,
+            moldeNumber: prod.molde.moldeNumber,
             real: prod.real, 
             ng: prod.ng, 
             ok: prod.ok,
@@ -597,7 +605,9 @@ class App extends Component {
               machine: machine,
               machineNumber: machineNumber, 
               part: prod.partNumber._id, 
+              partName: prod.partNumber.partName, 
               molde: prod.molde._id,
+              moldeNumber: prod.molde.moldeNumber,
               real: prod.real, 
               ng: prod.ng, 
               ok: prod.ok,
@@ -847,6 +857,7 @@ class App extends Component {
               <Route path="/production" exact component={ props => ( <Product {...props}
                 production={this.state.productionByDate}
                 purge={this.state.resinesByDate}
+                defects={this.state.defectsByDate}
               /> )} />
             </Switch> 
           </div>

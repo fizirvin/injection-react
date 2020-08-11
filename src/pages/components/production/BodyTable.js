@@ -1,6 +1,16 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 
-const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports}) =>{
+const BodyTable = ({
+  columns, 
+  period, 
+  weekMachineReports, 
+  trimesterMachineReports, 
+  weekModelReports,
+  weekMoldeReports,
+  trimesterModelReports,
+  trimesterMoldeReports,
+  detail,  
+  filter}) =>{
   const [ weekReal, setWeekReal ] = useState(false)
   const [ weekNG, setWeekNG ] = useState(false)
   const [ weekOK, setWeekOK ] = useState(false)
@@ -92,7 +102,7 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
   }
 
   const renderRealDetail = () =>{
-    if(weekReal) {
+    if(weekReal && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{machineNumber}</div></div></td>
@@ -100,10 +110,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if( weekReal && filter === 'model'){
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{partName}</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.real}</td>)}
+        </tr>
+      })
+    }
+    else if( weekReal && filter === 'molde'){
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{moldeNumber}</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.real}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTRealDetail = () =>{
-    if(TReal) {
+    if(TReal && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{machineNumber}</div></div></td>
@@ -111,10 +137,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TReal && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{partName}</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.real}</td>)}
+        </tr>
+      })
+    }
+    else if(TReal && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{moldeNumber}</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.real}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderNGDetail = () =>{
-    if(weekNG) {
+    if(weekNG && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -122,10 +164,32 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekNG && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports, defects}) =>{
+        return <Fragment key={model}><tr>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName }</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
+        </tr>
+        {detail && defects.map(defect=><tr key={defect.defectCode}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+        </tr>)    
+        }
+        </Fragment>
+      })
+    }
+    else if(weekNG && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber }</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTNGDetail = () =>{
-    if(TNG) {
+    if(TNG && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -133,10 +197,33 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TNG && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports, defects}) =>{
+        return <Fragment key={model}><tr>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName }</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
+        </tr>
+        {detail && defects.map(defect=><tr key={defect.defectCode}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+        </tr>)
+
+        }
+        </Fragment>
+      })
+    }
+    else if(TNG && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.ng}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderOKDetail = () =>{
-    if(weekOK) {
+    if(weekOK && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -144,10 +231,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekOK && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ok}</td>)}
+        </tr>
+      })
+    }
+    else if(weekOK && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ok}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTOKDetail = () =>{
-    if(TOK) {
+    if(TOK && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -155,10 +258,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TOK && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.ok}</td>)}
+        </tr>
+      })
+    }
+    else if(TOK && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.ok}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderPlanDetail = () =>{
-    if(weekPlan) {
+    if(weekPlan && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -166,10 +285,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekPlan && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.plan}</td>)}
+        </tr>
+      })
+    }
+    else if(weekPlan && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.plan}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTPlanDetail = () =>{
-    if(TPlan) {
+    if(TPlan && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -177,10 +312,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TPlan && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.plan}</td>)}
+        </tr>
+      })
+    }
+    else if(TPlan && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.plan}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderWTimeDetail = () =>{
-    if(weekWTime) {
+    if(weekWTime && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -188,10 +339,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekWTime && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.wtime}</td>)}
+        </tr>
+      })
+    }
+    else if(weekWTime && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.wtime}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTWTimeDetail = () =>{
-    if(TWTime) {
+    if(TWTime && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -199,10 +366,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TWTime && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.wtime}</td>)}
+        </tr>
+      })
+    }
+    else if(TWTime && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.wtime}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderDTimeDetail = () =>{
-    if(weekDTime) {
+    if(weekDTime && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -210,10 +393,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekDTime && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.dtime}</td>)}
+        </tr>
+      })
+    }
+    else if(weekDTime && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.dtime}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTDTimeDetail = () =>{
-    if(TDTime) {
+    if(TDTime && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -221,10 +420,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TDTime && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.dtime}</td>)}
+        </tr>
+      })
+    }
+    else if(TDTime && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.dtime}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderOEEDetail = () =>{
-    if(weekOEE) {
+    if(weekOEE && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -232,10 +447,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(weekOEE && filter === 'model') {
+      return weekModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.oee}</td>)}
+        </tr>
+      })
+    }
+    else if(weekOEE && filter === 'molde') {
+      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.oee}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderTOEEDetail = () =>{
-    if(TOEE) {
+    if(TOEE && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -243,10 +474,26 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
       })
     }
+    else if(TOEE && filter === 'model') {
+      return trimesterModelReports.map( ({model, partName, reports}) =>{
+        return <tr key={model}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ partName}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.oee}</td>)}
+        </tr>
+      })
+    }
+    else if(TOEE && filter === 'molde') {
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
+        return <tr key={molde}>
+          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
+           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.oee}</td>)}
+        </tr>
+      })
+    }
   }
 
   const renderPurgeDetail = () =>{
-    if(weekPurge) {
+    if(weekPurge && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
@@ -257,13 +504,22 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
   }
 
   const renderTPurgeDetail = () =>{
-    if(TPurge) {
+    if(TPurge && filter === 'machine') {
       return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
         return <tr key={machine}>
           <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
            {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.purge}</td>)}
         </tr>
       })
+    }
+  }
+
+  const renderPurgeButton = () =>{
+    if(filter === 'machine') {
+      return <button onClick={onPurge}>▼</button>
+    }
+    else{
+      return <div></div>
     }
   }
   
@@ -327,7 +583,7 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
           </tr>
           {renderTOEEDetail()}
           <tr>
-            <td className='trimester_total_title'><div className='title_row_production'><button onClick={onPurge}>▼</button><div>Total Purge (g)</div></div></td>
+            <td className='trimester_total_title'><div className='title_row_production'>{renderPurgeButton()}<div>Total Purge (g)</div></div></td>
             <td className='trimester_total_day'>{columns[0].purge}</td>
             <td className='trimester_total_day'>{columns[1].purge}</td>
             <td className='trimester_total_day'>{columns[2].purge}</td>
@@ -423,7 +679,7 @@ const BodyTable = ({columns, period, weekMachineReports, trimesterMachineReports
         </tr>
         {renderOEEDetail()}
         <tr>
-          <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onPurge}>▼</button><div>Total Purge (g)</div></div></td>
+          <td className='efficiency_total_machine'><div className='title_row_production'>{renderPurgeButton()}<div>Total Purge (g)</div></div></td>
           <td className='efficiency_total_day'>{columns[0].purge}</td>
           <td className='efficiency_total_day'>{columns[1].purge}</td>
           <td className='efficiency_total_day'>{columns[2].purge}</td>
