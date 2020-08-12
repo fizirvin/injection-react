@@ -26,7 +26,7 @@
 
 .detail_defect_machine{
     /* background-color: rgba(0, 2, 139, 0.808); */
-    background-color: rgb(117, 14, 14);
+    background-color: rgb(111, 109, 248);
     text-align: right;
     width: 20%;
     border: solid 1px;
@@ -37,7 +37,7 @@
 
 .detail_defect_day{
     font-size: 85%;
-    background-color: rgb(117, 14, 14);
+    background-color: rgb(111, 109, 248);
     width: 10%;
     text-align: center;
     border: solid 1px;

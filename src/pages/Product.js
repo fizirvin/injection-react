@@ -16,7 +16,8 @@ const Product = ({production, purge, defects}) =>{
 
     const [ trimesterFields, setTrimesterFields ] = useState()
     const [ weekFields, setWeekFields ] = useState()
-    const [columns, setColumns ] = useState([])
+    const [ weekColumns, setWeekColumns ] = useState([])
+    const [ trimesterColumns, setTrimesterColumns ] = useState([])
 
     const [ weekMachineReports, setWeekMachineReports ] = useState([])
     const [ trimesterMachineReports, setTrimesterMachineReports ] = useState([])
@@ -37,7 +38,7 @@ const Product = ({production, purge, defects}) =>{
 
     const [ weekDefectDetail, setWeekDefectDetail ] = useState({})
     const [ trimesterDefectDetail, setTrimesterDefectDetail ] = useState({})
-    const [ loading, setLoading ] = useState(true)
+    
     
     useEffect(() =>{
         const date = new Date();
@@ -128,7 +129,7 @@ const Product = ({production, purge, defects}) =>{
                     saturday,
                     sunday
                 } 
-                setLoading(false)
+                
                 return setWeek(week)                                   
             }
         } else if(period === 'trimester'){
@@ -163,7 +164,6 @@ const Product = ({production, purge, defects}) =>{
                     second: '11',
                     third: '12'
                 }
-                setLoading(false)
                 return setTrimester(newTrimester)
             }  
         }
@@ -245,32 +245,25 @@ const Product = ({production, purge, defects}) =>{
             purge
         }
         const array = [...arrayColumns, column8]
-        setColumns(array)
+        setWeekColumns(array)
     
         if( filter === 'machine'){
             const machineReports = machineDetail(weekReports, daysColumns, weekPurges, weekDefects );
             const defectDetail = defectWeekDetail(daysColumns, weekDefects)
             setWeekDefectDetail(defectDetail)
-            setWeekMachineReports(machineReports)
+            return setWeekMachineReports(machineReports)
         }
         if( filter === 'model'){
             const modelReports = modelDetail(weekReports, daysColumns, weekDefects)
             const defectDetail = defectWeekDetail(daysColumns, weekDefects)
             setWeekDefectDetail(defectDetail)
-            setWeekModelReports(modelReports)
+            return setWeekModelReports(modelReports)
         }
         if( filter === 'molde'){
             const moldeReports = moldeDetail(weekReports, daysColumns, weekDefects)
             const defectDetail = defectWeekDetail(daysColumns, weekDefects)
             setWeekDefectDetail(defectDetail)
-            setWeekMoldeReports(moldeReports)
-        }
-        if(array.length === 8 && monday){
-            
-            return setLoading(false)
-        }
-        else{
-            return setLoading(true)
+            return setWeekMoldeReports(moldeReports)
         }
      
     },[filter, week, weekReports, weekPurges, weekDefects])
@@ -304,33 +297,25 @@ const Product = ({production, purge, defects}) =>{
             }
 
             const array = [...arrayColumns, column8]
-            setColumns(array)
+            setTrimesterColumns(array)
             if( filter === 'machine'){
                 const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges, trimesterDefects );
                 const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
                 setTrimesterDefectDetail(defectDetail)
-                setTrimesterMachineReports(machineReports)
+                return setTrimesterMachineReports(machineReports)
             }
             if( filter === 'model'){
                 const modelReports = modelTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
                 const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
                 setTrimesterDefectDetail(defectDetail)
-                setTrimesterModelReports(modelReports)
+                return setTrimesterModelReports(modelReports)
             }
             if( filter === 'molde'){
                 const moldeReports = moldeTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
                 const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
                 setTrimesterDefectDetail(defectDetail)
-                setTrimesterMoldeReports(moldeReports)
+                return setTrimesterMoldeReports(moldeReports)
             }
-            if(array.length === 4){
-                
-                return setLoading(false)
-            }
-            else{
-                return setLoading(true)
-            }
-            
         }
         
     },[filter, trimester, trimesterReports, trimesterPurges, today, trimesterDefects])
@@ -343,12 +328,10 @@ const Product = ({production, purge, defects}) =>{
     }
 
     const renderBody = () =>{
-        return loading ? <div>...Loading</div> :
-        // period === 'day' && columns.length !== 8  ? <div>...hello{console.log(columns)}</div> :
-        // period === 'trimester' && columns.length !== 4 ? <div>...Loading</div> :
-        <BodyTable 
+        return <BodyTable 
             filter={filter} 
-            columns={columns} 
+            weekColumns={weekColumns}
+            trimesterColumns={trimesterColumns} 
             period={period} 
             weekMoldeReports={weekMoldeReports} 
             weekModelReports={weekModelReports} 
@@ -378,8 +361,6 @@ const Product = ({production, purge, defects}) =>{
                 setDay={setDay}
                 detail={detail} 
                 setDetail={setDetail}
-                setLoading={setLoading}
-                loading={loading}
             />
            <div className='downtime_graphs'>
                 <div className='product_container'>

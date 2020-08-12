@@ -2,7 +2,8 @@ import React, { Fragment, useState } from 'react'
 import '../../styles/bodyTable.css'
 
 const BodyTable = ({
-  columns, 
+  weekColumns,
+  trimesterColumns, 
   period, 
   weekMachineReports, 
   trimesterMachineReports, 
@@ -105,14 +106,14 @@ const BodyTable = ({
   }
 
   const renderDetailDefect = () =>{
-    return detail && trimesterDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
+    return TNG && trimesterDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
       <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
       {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
     </tr>)
   }
 
   const renderWeekDetailDefect = () =>{
-    return detail && weekDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
+    return weekNG && weekDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
       <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
       {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
     </tr>)
@@ -254,8 +255,8 @@ const BodyTable = ({
           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
         </tr>
         {detail && defects.map(defect=><tr key={defect.defectCode}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
-          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+          <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
         </tr>)
 
         }
@@ -566,7 +567,8 @@ const BodyTable = ({
   }
   
   const renderColumns = () =>{
-      if(period === 'trimester'){
+      if(period === 'trimester' && trimesterColumns.length === 4){
+        const columns = trimesterColumns
         return <tbody>
           <tr>
             <td className='trimester_total_title'><div className='title_row_production'><button onClick={onReal}>▼</button><div>Total Real (pcs)</div></div></td>
@@ -583,8 +585,8 @@ const BodyTable = ({
             <td className='efficiency_total_day'>{columns[2].ng}</td>
             <td className='trimester_total'>{columns[3].ng}</td>
           </tr>
-          {renderTNGDetail()}
           {renderDetailDefect()}
+          {renderTNGDetail()}
           <tr>
             <td className='trimester_total_title'><div className='title_row_production'><button onClick={onOK}>▼</button><div>Total OK (pcs)</div></div></td>
             <td className='trimester_total_day'>{columns[0].ok}</td>
@@ -635,7 +637,8 @@ const BodyTable = ({
           {renderTPurgeDetail()}
         </tbody>
       }
-      else if(period === 'day' && columns.length === 8){
+      else if(period === 'day' && weekColumns.length === 8){
+        const columns = weekColumns
         return <tbody>
         <tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onReal}>▼</button><div>Total Real (pcs)</div></div></td>
@@ -660,8 +663,9 @@ const BodyTable = ({
           <td className='efficiency_total_day'>{columns[6].ng}</td>
           <td className='efficiency_total_week'>{columns[7].ng}</td>
         </tr>
-        {renderNGDetail()}
         {renderWeekDetailDefect()}
+        {renderNGDetail()}
+        
         <tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onOK}>▼</button><div>Total OK (pcs)</div></div></td>
           <td className='efficiency_total_day'>{columns[0].ok}</td>
@@ -735,6 +739,9 @@ const BodyTable = ({
         </tr>
         {renderPurgeDetail()}
       </tbody>
+      }
+      else{
+        return
       }
     }
 

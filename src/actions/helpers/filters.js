@@ -201,11 +201,12 @@ const defectWeekDetail = (days, weekDefects )=>{
     .reduce( (a, b) =>{
       return a + b.defectPcs || 0
     },0)
+
     const defect = [...defectsDays, total]
     return { defectCode: def.defectCode, defect: defect }
   })
  
-  return defects    
+  return defects.sort((x, y)  => y.defect.reduce((a, b)=>{return a + b}) - x.defect.reduce((a, b)=>{return a + b}))    
 }
 
 const defectTrimesterDetail = (y, trimesterColumns, trimesterDefects )=>{
@@ -233,7 +234,7 @@ const defectTrimesterDetail = (y, trimesterColumns, trimesterDefects )=>{
     return {defectCode: def.defectCode, defect: defect}
   })
 
-  return defects   
+  return defects.sort((x, y)  => y.defect.reduce((a, b)=>{return a + b}) - x.defect.reduce((a, b)=>{return a + b}))  
 }
 
 
