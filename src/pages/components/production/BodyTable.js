@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import '../../styles/bodyTable.css'
 
 const BodyTable = ({
   columns, 
@@ -9,6 +10,8 @@ const BodyTable = ({
   weekMoldeReports,
   trimesterModelReports,
   trimesterMoldeReports,
+  trimesterDefectDetail,
+  weekDefectDetail, 
   detail,  
   filter}) =>{
   const [ weekReal, setWeekReal ] = useState(false)
@@ -101,6 +104,20 @@ const BodyTable = ({
     }
   }
 
+  const renderDetailDefect = () =>{
+    return detail && trimesterDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
+      {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
+  const renderWeekDetailDefect = () =>{
+    return detail && weekDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
+      {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
   const renderRealDetail = () =>{
     if(weekReal && filter === 'machine') {
       return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
@@ -157,11 +174,17 @@ const BodyTable = ({
 
   const renderNGDetail = () =>{
     if(weekNG && filter === 'machine') {
-      return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
-        </tr>
+      return weekMachineReports.map( ({machine, machineNumber, reports, defects}) =>{
+        return <Fragment key={machine}><tr>
+        <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+        {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
+      </tr>
+      {detail && defects.map(defect=><tr key={defect.defectCode}>
+        <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+        {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+      </tr>)    
+      }
+      </Fragment>
       })
     }
     else if(weekNG && filter === 'model') {
@@ -171,30 +194,42 @@ const BodyTable = ({
           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
         </tr>
         {detail && defects.map(defect=><tr key={defect.defectCode}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
-          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+          <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
         </tr>)    
         }
         </Fragment>
       })
     }
     else if(weekNG && filter === 'molde') {
-      return weekMoldeReports.map( ({molde, moldeNumber, reports}) =>{
-        return <tr key={molde}>
+      return weekMoldeReports.map( ({molde, moldeNumber, reports, defects}) =>{
+        return <Fragment key={molde}><tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber }</div></div></td>
           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
         </tr>
+        {detail && defects.map(defect=><tr key={defect.defectCode}>
+          <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+        </tr>)    
+        }
+        </Fragment>
       })
     }
   }
 
   const renderTNGDetail = () =>{
     if(TNG && filter === 'machine') {
-      return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-          {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.ng}</td>)}
-        </tr>
+      return trimesterMachineReports.map( ({machine, machineNumber, reports, defects}) =>{
+        return <Fragment key={machine}><tr>
+        <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+        {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
+      </tr>
+      {detail && defects.map(defect=><tr key={defect.defectCode}>
+        <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+        {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+      </tr>)
+      }
+      </Fragment>
       })
     }
     else if(TNG && filter === 'model') {
@@ -204,8 +239,8 @@ const BodyTable = ({
           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
         </tr>
         {detail && defects.map(defect=><tr key={defect.defectCode}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
-          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+          <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
         </tr>)
 
         }
@@ -213,11 +248,18 @@ const BodyTable = ({
       })
     }
     else if(TNG && filter === 'molde') {
-      return trimesterMoldeReports.map( ({molde, moldeNumber, reports}) =>{
-        return <tr key={molde}>
-          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ moldeNumber}</div></div></td>
-          {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.ng}</td>)}
+      return trimesterMoldeReports.map( ({molde, moldeNumber, reports, defects}) =>{
+        return <Fragment key={molde}><tr>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ moldeNumber }</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.ng}</td>)}
         </tr>
+        {detail && defects.map(defect=><tr key={defect.defectCode}>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ defect.defectCode }</div></div></td>
+          {defect.defecto.map((it, index)=><td key={index} className='efficiency_total_day'>{it}</td>)}
+        </tr>)
+
+        }
+        </Fragment>
       })
     }
   }
@@ -542,6 +584,7 @@ const BodyTable = ({
             <td className='trimester_total'>{columns[3].ng}</td>
           </tr>
           {renderTNGDetail()}
+          {renderDetailDefect()}
           <tr>
             <td className='trimester_total_title'><div className='title_row_production'><button onClick={onOK}>▼</button><div>Total OK (pcs)</div></div></td>
             <td className='trimester_total_day'>{columns[0].ok}</td>
@@ -592,7 +635,7 @@ const BodyTable = ({
           {renderTPurgeDetail()}
         </tbody>
       }
-      else if(period === 'day' && columns.length > 5){
+      else if(period === 'day' && columns.length === 8){
         return <tbody>
         <tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onReal}>▼</button><div>Total Real (pcs)</div></div></td>
@@ -618,6 +661,7 @@ const BodyTable = ({
           <td className='efficiency_total_week'>{columns[7].ng}</td>
         </tr>
         {renderNGDetail()}
+        {renderWeekDetailDefect()}
         <tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onOK}>▼</button><div>Total OK (pcs)</div></div></td>
           <td className='efficiency_total_day'>{columns[0].ok}</td>
@@ -693,7 +737,8 @@ const BodyTable = ({
       </tbody>
       }
     }
-    return ( 
+
+    return (
       <table className='efficiency_tableTotal'>
         {renderColumns()}
       </table>

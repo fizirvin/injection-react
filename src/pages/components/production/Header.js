@@ -1,20 +1,23 @@
 import React from 'react'
 import '../../styles/header.css'
 import { formatDate } from '../../../actions/helpers'
-const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay, detail, setDetail }) =>{
+const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay, detail, setDetail, setLoading, loading }) =>{
  
   const onPeriod = (e) =>{
     const period = e.target.value
+    setLoading(true)
     return setPeriod(period)
   }
 
   const onShift = (e) =>{
     const shift = e.target.value
+    setLoading(true)
     return setShift(shift)
   }
   
   const onFilter = (e) =>{
     const filter = e.target.value
+    setLoading(true)
     return setFilter(filter)
   }
 

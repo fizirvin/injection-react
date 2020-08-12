@@ -5,7 +5,7 @@ function precise_round(num, dec){
   return isFinite(valid) ? valid : 0
 }
 
-const moldeDetail = (weekReports, days, weekPurges )=>{
+const moldeDetail = (weekReports, days, weekDefects )=>{
   const uniqueMoldeList = Array.from(new Set(weekReports.map( ({ molde })  =>{ 
     const list = weekReports.find( item => item.molde === molde )
     return list }
@@ -13,15 +13,16 @@ const moldeDetail = (weekReports, days, weekPurges )=>{
     
   const moldes = uniqueMoldeList.map( molde =>{
     const moldeReports = weekReports.filter( item => item.molde === molde.molde )
-    const purges = weekPurges.filter( item => item.molde === molde.molde )
+    const defectArray = weekDefects.filter( item => item.molde === molde.molde)
+
     const arrayColumns = days.map( day =>{
-      const column = dayColumn( moldeReports, day, purges )
-      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+      const column = dayColumnModel( moldeReports, day )
+      const { real, ng, ok, plan, wtime, dtime, oee } = column
+      return { real, ng, ok, plan, wtime, dtime, oee }
     })
 
-    const column = weekColumn( moldeReports, purges )
-    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column = weekColumnModel( moldeReports )
+    const { real, ng, ok, plan, wtime, dtime, oee } = column
     const column8 = {
       real,
       ng,
@@ -29,11 +30,33 @@ const moldeDetail = (weekReports, days, weekPurges )=>{
       plan,
       wtime,
       dtime,
-      oee,
-      purge
+      oee
     }
     const array = [...arrayColumns, column8]
-    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array }
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsDays = days.map(day =>{
+        const list = defectArray.filter(item => item.date === day && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsDays, total]
+      return {defectCode: def.defectCode, molde: def.molde, defecto: defecto}
+    })
+
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects }
   })
 
   return moldes    
@@ -97,7 +120,7 @@ const modelDetail = (weekReports, days, weekDefects )=>{
   return models    
 }
 
-const machineDetail = (weekReports, days, weekPurges )=>{
+const machineDetail = (weekReports, days, weekPurges, weekDefects )=>{
   const uniqueMachineList = Array.from(new Set(weekReports.map( ({machine })  =>{ 
     const list = weekReports.find( item => item.machine === machine )
     return list }
@@ -106,6 +129,8 @@ const machineDetail = (weekReports, days, weekPurges )=>{
   const machines = uniqueMachineList.map( machine =>{
     const machineReports = weekReports.filter( item => item.machine === machine.machine )
     const purges = weekPurges.filter( item => item.machine === machine.machine )
+    const defectArray = weekDefects.filter( item => item.machine === machine.machine )
+
     const arrayColumns = days.map( day =>{
       const column = dayColumn( machineReports, day, purges )
       const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
@@ -125,13 +150,95 @@ const machineDetail = (weekReports, days, weekPurges )=>{
       purge
     }
     const array = [...arrayColumns, column8]
-    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array }
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsDays = days.map(day =>{
+        const list = defectArray.filter(item => item.date === day && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsDays, total]
+      return {defectCode: def.defectCode, machine: def.machine, defecto: defecto}
+    })
+
+
+
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects }
   })
 
   return machines    
 }
 
-const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges )=>{
+const defectWeekDetail = (days, weekDefects )=>{
+  
+  const uniqueDefectList = Array.from(new Set(weekDefects.map( ({ defect })  =>{ 
+    const list = weekDefects.find( item => item.defect === defect )
+    return list }
+  )))
+
+  const defects = uniqueDefectList.map( def =>{
+    const defectsDays = days.map(day =>{
+      const list = weekDefects.filter(item => item.date === day && item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      return list
+    })
+
+    const total = weekDefects.filter(item => item.defect === def.defect)
+    .reduce( (a, b) =>{
+      return a + b.defectPcs || 0
+    },0)
+    const defect = [...defectsDays, total]
+    return { defectCode: def.defectCode, defect: defect }
+  })
+ 
+  return defects    
+}
+
+const defectTrimesterDetail = (y, trimesterColumns, trimesterDefects )=>{
+  
+  const uniqueDefectList = Array.from(new Set(trimesterDefects.map( ({ defect })  =>{ 
+    const list = trimesterDefects.find( item => item.defect === defect )
+    return list }
+  )))
+
+  const defects = uniqueDefectList.map( def =>{
+    const defectsMonths = trimesterColumns.map(month =>{
+      const list = trimesterDefects.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      return list
+    })
+
+    const total = trimesterDefects.filter(item => item.defect === def.defect)
+    .reduce( (a, b) =>{
+      return a + b.defectPcs || 0
+    },0)
+    const defect = [...defectsMonths, total]
+
+    return {defectCode: def.defectCode, defect: defect}
+  })
+
+  return defects   
+}
+
+
+
+const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterDefects )=>{
   const uniqueMoldeList = Array.from(new Set(trimesterReports.map( ({molde })  =>{ 
     const list = trimesterReports.find( item => item.molde === molde )
     return list }
@@ -139,15 +246,16 @@ const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPu
     
   const moldes = uniqueMoldeList.map( molde =>{
     const moldeReports = trimesterReports.filter( item => item.molde === molde.molde )
-    const purges = trimesterPurges.filter( item => item.molde ===molde.molde )
+    const defectArray = trimesterDefects.filter( item => item.molde === molde.molde)
+
     const arrayColumns = trimesterColumns.map( month =>{
-      const column = monthColumn( moldeReports, y, month, purges )
-      const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-      return { real, ng, ok, plan, wtime, dtime, oee, purge}
+      const column = monthColumnModel( moldeReports, y, month )
+      const { real, ng, ok, plan, wtime, dtime, oee } = column
+      return { real, ng, ok, plan, wtime, dtime, oee }
     })
 
-    const column = weekColumn( moldeReports, purges )
-    const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+    const column = weekColumnModel( moldeReports )
+    const { real, ng, ok, plan, wtime, dtime, oee } = column
     const column8 = {
       real,
       ng,
@@ -155,11 +263,35 @@ const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPu
       plan,
       wtime,
       dtime,
-      oee,
-      purge
+      oee
     }
     const array = [...arrayColumns, column8]
-    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array }
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsMonths = trimesterColumns.map(month =>{
+        const list = defectArray.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsMonths, total]
+      return {defectCode: def.defectCode, molde: def.molde, defecto: defecto}
+    })
+
+    
+
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects }
   })
 
   return moldes    
@@ -224,7 +356,7 @@ const modelTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterDe
   return models    
 }
 
-const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges )=>{
+const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterPurges, trimesterDefects )=>{
   const uniqueMachineList = Array.from(new Set(trimesterReports.map( ({machine })  =>{ 
     const list = trimesterReports.find( item => item.machine === machine )
     return list }
@@ -233,6 +365,8 @@ const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimester
   const machines = uniqueMachineList.map( machine =>{
     const machineReports = trimesterReports.filter( item => item.machine === machine.machine )
     const purges = trimesterPurges.filter( item => item.machine === machine.machine )
+    const defectArray = trimesterDefects.filter( item => item.machine === machine.machine )
+
     const arrayColumns = trimesterColumns.map( month =>{
       const column = monthColumn( machineReports, y, month, purges )
       const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
@@ -252,7 +386,30 @@ const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimester
       purge
     }
     const array = [...arrayColumns, column8]
-    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array }
+
+    const uniqueDefectList = Array.from(new Set(defectArray.map( ({ defect })  =>{ 
+      const list = defectArray.find( item => item.defect === defect )
+      return list }
+    )))
+
+    const defects = uniqueDefectList.map( def =>{
+      const defectsMonths = trimesterColumns.map(month =>{
+        const list = defectArray.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.defect === def.defect)
+        .reduce( (a, b) =>{
+          return a + b.defectPcs || 0
+        },0)
+        return list
+      })
+
+      const total = defectArray.filter(item => item.defect === def.defect)
+      .reduce( (a, b) =>{
+        return a + b.defectPcs || 0
+      },0)
+      const defecto = [...defectsMonths, total]
+      return {defectCode: def.defectCode, machine: def.machine, defecto: defecto}
+    })
+
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects }
   })
 
   return machines    
@@ -883,5 +1040,7 @@ export { filter1, filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, fil
     modelDetail,
     moldeDetail,
     modelTrimesterDetail,
-    moldeTrimesterDetail
+    moldeTrimesterDetail,
+    defectTrimesterDetail,
+    defectWeekDetail
 } 

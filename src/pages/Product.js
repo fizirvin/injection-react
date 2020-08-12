@@ -3,7 +3,8 @@ import Header from './components/production/Header'
 import HeaderTable from './components/production/HeaderTable'
 import BodyTable from './components/production/BodyTable'
 import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail, modelDetail, 
-    moldeDetail, modelTrimesterDetail, moldeTrimesterDetail } from '../actions/helpers'
+    moldeDetail, modelTrimesterDetail, moldeTrimesterDetail, defectTrimesterDetail,
+    defectWeekDetail } from '../actions/helpers'
 
 const Product = ({production, purge, defects}) =>{
     const [ period, setPeriod ] = useState('day')
@@ -13,8 +14,9 @@ const Product = ({production, purge, defects}) =>{
     const [ day, setDay ] = useState('')
     const [ detail, setDetail ] = useState(false)
 
-    const [ fields, setFields ] = useState()
-    const [columns, setColumns ] = useState()
+    const [ trimesterFields, setTrimesterFields ] = useState()
+    const [ weekFields, setWeekFields ] = useState()
+    const [columns, setColumns ] = useState([])
 
     const [ weekMachineReports, setWeekMachineReports ] = useState([])
     const [ trimesterMachineReports, setTrimesterMachineReports ] = useState([])
@@ -32,6 +34,10 @@ const Product = ({production, purge, defects}) =>{
     const [ trimesterDefects, setTrimesterDefects ] = useState([])
     const [ week, setWeek ] = useState({})
     const [ trimester, setTrimester ] = useState({})
+
+    const [ weekDefectDetail, setWeekDefectDetail ] = useState({})
+    const [ trimesterDefectDetail, setTrimesterDefectDetail ] = useState({})
+    const [ loading, setLoading ] = useState(true)
     
     useEffect(() =>{
         const date = new Date();
@@ -75,7 +81,7 @@ const Product = ({production, purge, defects}) =>{
                     pos2: 'Week'
                 }
             ]
-            return setFields(fields)
+            return setWeekFields(fields)
         } else if(period === 'trimester'){
             const  months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
             const fields = [
@@ -96,10 +102,10 @@ const Product = ({production, purge, defects}) =>{
                     pos2: 'Trimester'
                 }
             ]
-            return setFields(fields)
+            return setTrimesterFields(fields)
         }
 
-    },[trimester, week, period])
+    },[period, trimester, week ])
 
     useEffect(() =>{
         if(period === 'day'){
@@ -122,6 +128,7 @@ const Product = ({production, purge, defects}) =>{
                     saturday,
                     sunday
                 } 
+                setLoading(false)
                 return setWeek(week)                                   
             }
         } else if(period === 'trimester'){
@@ -156,6 +163,7 @@ const Product = ({production, purge, defects}) =>{
                     second: '11',
                     third: '12'
                 }
+                setLoading(false)
                 return setTrimester(newTrimester)
             }  
         }
@@ -183,7 +191,7 @@ const Product = ({production, purge, defects}) =>{
                 return setWeekReports(reports) 
             }
         }
-    },[period, shift, production, purge, defects, week])
+    },[period, week, shift, production, purge, defects])
 
     useEffect(() =>{
         if(period !== 'trimester'){ 
@@ -215,48 +223,57 @@ const Product = ({production, purge, defects}) =>{
     },[period, shift, production, purge, trimester, today, defects])
 
     useEffect(() =>{
-        const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = week    
-        if(!monday){
-            return 
-        }
-        else {
-            const daysColumns = [ monday, tuesday, wednesday, thursday, friday, saturday, sunday ]
-            const arrayColumns = daysColumns.map( item =>{
-                const column = dayColumn(weekReports, item, weekPurges)
-                const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-                return { real, ng, ok, plan, wtime, dtime, oee, purge}
-            })
-            
-            const column = weekColumn( weekReports, weekPurges )
+        const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = week
+        if(!monday){return}    
+        const daysColumns = [ monday, tuesday, wednesday, thursday, friday, saturday, sunday ]
+        const arrayColumns = daysColumns.map( item =>{
+            const column = dayColumn(weekReports, item, weekPurges)
             const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
-            const column8 = {
-                real,
-                ng,
-                ok,
-                plan,
-                wtime,
-                dtime,
-                oee,
-                purge
-            }
-            const array = [...arrayColumns, column8]
-            setColumns(array)
+            return { real, ng, ok, plan, wtime, dtime, oee, purge}
+        })
         
-            if( filter === 'machine'){
-                const machineReports = machineDetail(weekReports, daysColumns, weekPurges );
-                return setWeekMachineReports(machineReports)
-            }
-            if( filter === 'model'){
-                const modelReports = modelDetail(weekReports, daysColumns, weekDefects)
-                return setWeekModelReports(modelReports)
-            }
-            if( filter === 'molde'){
-                const moldeReports = moldeDetail(weekReports, daysColumns, weekPurges)
-                return setWeekMoldeReports(moldeReports)
-            }
+        const column = weekColumn( weekReports, weekPurges )
+        const { real, ng, ok, plan, wtime, dtime, oee, purge } = column
+        const column8 = {
+            real,
+            ng,
+            ok,
+            plan,
+            wtime,
+            dtime,
+            oee,
+            purge
         }
-        
-    },[filter, weekReports, week, weekPurges, weekDefects])
+        const array = [...arrayColumns, column8]
+        setColumns(array)
+    
+        if( filter === 'machine'){
+            const machineReports = machineDetail(weekReports, daysColumns, weekPurges, weekDefects );
+            const defectDetail = defectWeekDetail(daysColumns, weekDefects)
+            setWeekDefectDetail(defectDetail)
+            setWeekMachineReports(machineReports)
+        }
+        if( filter === 'model'){
+            const modelReports = modelDetail(weekReports, daysColumns, weekDefects)
+            const defectDetail = defectWeekDetail(daysColumns, weekDefects)
+            setWeekDefectDetail(defectDetail)
+            setWeekModelReports(modelReports)
+        }
+        if( filter === 'molde'){
+            const moldeReports = moldeDetail(weekReports, daysColumns, weekDefects)
+            const defectDetail = defectWeekDetail(daysColumns, weekDefects)
+            setWeekDefectDetail(defectDetail)
+            setWeekMoldeReports(moldeReports)
+        }
+        if(array.length === 8 && monday){
+            
+            return setLoading(false)
+        }
+        else{
+            return setLoading(true)
+        }
+     
+    },[filter, week, weekReports, weekPurges, weekDefects])
 
     useEffect(() =>{
         const { first, second, third } = trimester    
@@ -289,31 +306,58 @@ const Product = ({production, purge, defects}) =>{
             const array = [...arrayColumns, column8]
             setColumns(array)
             if( filter === 'machine'){
-                const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
-                return setTrimesterMachineReports(machineReports)
+                const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges, trimesterDefects );
+                const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
+                setTrimesterDefectDetail(defectDetail)
+                setTrimesterMachineReports(machineReports)
             }
             if( filter === 'model'){
                 const modelReports = modelTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
-                return setTrimesterModelReports(modelReports)
+                const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
+                setTrimesterDefectDetail(defectDetail)
+                setTrimesterModelReports(modelReports)
             }
             if( filter === 'molde'){
-                const moldeReports = moldeTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges );
-                return setTrimesterMoldeReports(moldeReports)
+                const moldeReports = moldeTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
+                const defectDetail = defectTrimesterDetail( y, trimesterColumns, trimesterDefects)
+                setTrimesterDefectDetail(defectDetail)
+                setTrimesterMoldeReports(moldeReports)
             }
+            if(array.length === 4){
+                
+                return setLoading(false)
+            }
+            else{
+                return setLoading(true)
+            }
+            
         }
         
-    },[filter, trimesterReports, trimester, trimesterPurges, today, trimesterDefects])
+    },[filter, trimester, trimesterReports, trimesterPurges, today, trimesterDefects])
 
     const renderHeader = () =>{
-        return production.length > 0 && fields? <HeaderTable filter={filter} fields={fields}/> : <div>...Loading</div>
+        if(production.length === 0 ){ return <div>...loading</div>}
+        return period === 'day' && weekFields ? <HeaderTable filter={filter} fields={weekFields}/> : 
+        period === 'trimester' && trimesterFields ? <HeaderTable filter={filter} fields={trimesterFields}/> :
+        <div>...loading</div>
     }
 
     const renderBody = () =>{
-        return !columns ? <div>...Loading</div> : 
-        <BodyTable filter={filter} columns={columns} period={period} weekMoldeReports={weekMoldeReports} weekModelReports={weekModelReports} weekMachineReports={weekMachineReports} 
+        return loading ? <div>...Loading</div> :
+        // period === 'day' && columns.length !== 8  ? <div>...hello{console.log(columns)}</div> :
+        // period === 'trimester' && columns.length !== 4 ? <div>...Loading</div> :
+        <BodyTable 
+            filter={filter} 
+            columns={columns} 
+            period={period} 
+            weekMoldeReports={weekMoldeReports} 
+            weekModelReports={weekModelReports} 
+            weekMachineReports={weekMachineReports} 
             trimesterMachineReports={trimesterMachineReports}
             trimesterModelReports={trimesterModelReports}
             trimesterMoldeReports={trimesterMoldeReports}
+            trimesterDefectDetail={trimesterDefectDetail}
+            weekDefectDetail={weekDefectDetail}
             detail={detail}
         />
     }
@@ -334,6 +378,8 @@ const Product = ({production, purge, defects}) =>{
                 setDay={setDay}
                 detail={detail} 
                 setDetail={setDetail}
+                setLoading={setLoading}
+                loading={loading}
             />
            <div className='downtime_graphs'>
                 <div className='product_container'>
