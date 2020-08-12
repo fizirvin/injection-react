@@ -56,7 +56,9 @@ const moldeDetail = (weekReports, days, weekDefects )=>{
       return {defectCode: def.defectCode, molde: def.molde, defecto: defecto}
     })
 
-    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects }
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
+
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects: sortDefects }
   })
 
   return moldes    
@@ -113,8 +115,8 @@ const modelDetail = (weekReports, days, weekDefects )=>{
       return {defectCode: def.defectCode, part: def.partNumber, defecto: defecto}
     })
 
-
-    return { model: part.part, partName: part.partName, reports: array, defects }
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
+    return { model: part.part, partName: part.partName, reports: array, defects: sortDefects }
   })
 
   return models    
@@ -173,9 +175,9 @@ const machineDetail = (weekReports, days, weekPurges, weekDefects )=>{
       return {defectCode: def.defectCode, machine: def.machine, defecto: defecto}
     })
 
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
 
-
-    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects }
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects: sortDefects }
   })
 
   return machines    
@@ -290,9 +292,9 @@ const moldeTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterDe
       return {defectCode: def.defectCode, molde: def.molde, defecto: defecto}
     })
 
-    
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
 
-    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects }
+    return { molde: molde.molde, moldeNumber: molde.moldeNumber, reports: array, defects: sortDefects }
   })
 
   return moldes    
@@ -349,9 +351,9 @@ const modelTrimesterDetail = (trimesterReports, y, trimesterColumns, trimesterDe
       return {defectCode: def.defectCode, part: def.partNumber, defecto: defecto}
     })
 
-    
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
 
-    return { model: part.part, partName: part.partName, reports: array, defects }
+    return { model: part.part, partName: part.partName, reports: array, defects: sortDefects }
   })
 
   return models    
@@ -410,7 +412,9 @@ const machineTrimesterDetail = (trimesterReports, y, trimesterColumns, trimester
       return {defectCode: def.defectCode, machine: def.machine, defecto: defecto}
     })
 
-    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects }
+    const sortDefects = defects.sort((x, y)  => y.defecto.reduce((a, b)=>{return a + b}) - x.defecto.reduce((a, b)=>{return a + b})) 
+
+    return { machine: machine.machine, machineNumber: machine.machineNumber, reports: array, defects: sortDefects }
   })
 
   return machines    
