@@ -12,7 +12,11 @@ const BodyTable = ({
   trimesterModelReports,
   trimesterMoldeReports,
   trimesterDefectDetail,
-  weekDefectDetail, 
+  weekDefectDetail,
+  weekDowntimeDetail,
+  trimesterDowntimeDetail,
+  trimesterPurgeDetail,
+  weekPurgeDetail,   
   detail,  
   filter}) =>{
   const [ weekReal, setWeekReal ] = useState(false)
@@ -112,10 +116,38 @@ const BodyTable = ({
     </tr>)
   }
 
+  const renderDetailPurge = () =>{
+    return TPurge && trimesterPurgeDetail.map( ({resines, resine}) =><tr key={resine}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
+      {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
+  const renderWeekDetailPurge = () =>{
+    return weekPurge && weekPurgeDetail.map( ({resines, resine}) =><tr key={resine}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
+      {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
   const renderWeekDetailDefect = () =>{
     return weekNG && weekDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
       <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
       {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
+  const renderWeekDetailDowntime = () =>{
+    return weekDTime && weekDowntimeDetail.map( ({issueCode, downtime}) =><tr key={issueCode}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
+      {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    </tr>)
+  }
+
+  const renderTrimesterDetailDowntime = () =>{
+    return TDTime && trimesterDowntimeDetail.map( ({issueCode, downtime}) =><tr key={issueCode}>
+      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
+      {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
     </tr>)
   }
 
@@ -429,11 +461,17 @@ const BodyTable = ({
 
   const renderDTimeDetail = () =>{
     if(weekDTime && filter === 'machine') {
-      return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.dtime}</td>)}
+      return weekMachineReports.map( ({machine, machineNumber, reports, downtime}) =>{
+        return <Fragment key={machine}><tr>
+          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+          {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.dtime}</td>)}
         </tr>
+        {detail && downtime.map(issue=><tr key={issue.issueCode}>
+          <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ issue.issueCode } (mins)</div></div></td>
+            {issue.issues.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+          </tr>)    
+        }
+      </Fragment>
       })
     }
     else if(weekDTime && filter === 'model') {
@@ -456,11 +494,17 @@ const BodyTable = ({
 
   const renderTDTimeDetail = () =>{
     if(TDTime && filter === 'machine') {
-      return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.dtime}</td>)}
-        </tr>
+      return trimesterMachineReports.map( ({machine, machineNumber, reports, downtime}) =>{
+        return <Fragment key={machine}><tr>
+        <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+        {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.dtime}</td>)}
+      </tr>
+      {detail && downtime.map(issue=><tr key={issue.issueCode}>
+        <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ issue.issueCode } (mins)</div></div></td>
+        {issue.issues.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+      </tr>)
+      }
+      </Fragment>
       })
     }
     else if(TDTime && filter === 'model') {
@@ -537,22 +581,34 @@ const BodyTable = ({
 
   const renderPurgeDetail = () =>{
     if(weekPurge && filter === 'machine') {
-      return weekMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-           {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.purge}</td>)}
-        </tr>
+      return weekMachineReports.map( ({machine, machineNumber, reports, purge}) =>{
+        return <Fragment key={machine}><tr>
+            <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+            {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.purge}</td>)}
+          </tr>
+          {detail && purge.map( resine =><tr key={ resine.resine}>
+            <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ resine.resine }</div></div></td>
+            { resine.resines.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+          </tr>)
+          }
+        </Fragment>
       })
     }
   }
 
   const renderTPurgeDetail = () =>{
     if(TPurge && filter === 'machine') {
-      return trimesterMachineReports.map( ({machine, machineNumber, reports}) =>{
-        return <tr key={machine}>
-          <td className='trimester_total_title'><div className='title_row_production'><div></div><div>{ machineNumber}</div></div></td>
-           {reports.map( (report, index) =><td key={index} className='trimester_total_day'>{report.purge}</td>)}
-        </tr>
+      return trimesterMachineReports.map( ({machine, machineNumber, reports, purge}) =>{
+        return <Fragment key={machine}><tr>
+            <td className='efficiency_total_machine'><div className='title_row_production'><div></div><div>{ machineNumber }</div></div></td>
+            {reports.map( (report, index) =><td key={index} className='efficiency_total_day'>{report.purge}</td>)}
+          </tr>
+          {detail && purge.map( resine =><tr key={ resine.resine}>
+            <td className='detail_total_machine'><div className='detail_row_production'><div></div><div>{ resine.resine }</div></div></td>
+            { resine.resines.map((it, index)=><td key={index} className='detail_total_day'>{it}</td>)}
+          </tr>)
+          }
+        </Fragment>
       })
     }
   }
@@ -618,6 +674,7 @@ const BodyTable = ({
             <td className='trimester_total_day'>{columns[2].dtime}</td>
             <td className='trimester_total'>{columns[3].dtime}</td>
           </tr>
+          {renderTrimesterDetailDowntime()}
           {renderTDTimeDetail()}
           <tr>
             <td className='trimester_total_title'><div className='title_row_production'><button onClick={onOEE}>▼</button><div>Total OEE (%)</div></div></td>
@@ -634,6 +691,7 @@ const BodyTable = ({
             <td className='trimester_total_day'>{columns[2].purge}</td>
             <td className='trimester_total'>{columns[3].purge}</td>
           </tr>
+          {renderDetailPurge()}
           {renderTPurgeDetail()}
         </tbody>
       }
@@ -713,6 +771,7 @@ const BodyTable = ({
           <td className='efficiency_total_day'>{columns[6].dtime}</td>
           <td className='efficiency_total_week'>{columns[7].dtime}</td>
         </tr>
+        {renderWeekDetailDowntime()}
         {renderDTimeDetail()}
         <tr>
           <td className='efficiency_total_machine'><div className='title_row_production'><button onClick={onOEE}>▼</button><div>Total OEE (%)</div></div></td>
@@ -737,6 +796,7 @@ const BodyTable = ({
           <td className='efficiency_total_day'>{columns[6].purge}</td>
           <td className='efficiency_total_week'>{columns[7].purge}</td>
         </tr>
+        {renderWeekDetailPurge()}
         {renderPurgeDetail()}
       </tbody>
       }

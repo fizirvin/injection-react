@@ -858,6 +858,7 @@ class App extends Component {
                 production={this.state.productionByDate}
                 purge={this.state.resinesByDate}
                 defects={this.state.defectsByDate}
+                downtime={this.state.downtimeByDate}
               /> )} />
             </Switch> 
           </div>
