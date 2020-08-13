@@ -70,6 +70,7 @@ const modifyReport = { query: `mutation
         issueId{
           _id
           issueName
+          issueCode
         }
         mins
       }
@@ -78,6 +79,7 @@ const modifyReport = { query: `mutation
         defect{
           _id
           defectName
+          defectCode
         }
         defectPcs
         molde{

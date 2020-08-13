@@ -488,7 +488,8 @@ class App extends Component {
               shift: shift, 
               machine: machine, 
               issue: downtime.issueId._id, 
-              issueName: downtime.issueId.issueName, 
+              issueName: downtime.issueId.issueName,
+              issueCode: downtime.issueId.issueCode,  
               mins: downtime.mins 
             }
           })
@@ -628,7 +629,15 @@ class App extends Component {
           const shift = item.shift
           const machine = item.machine._id
           const downtime = item.downtimeDetail.map( downtime =>{
-            return { report: id, date: date, shift, machine: machine, issue: downtime.issueId._id, issueName: downtime.issueId.issueName, mins: downtime.mins }
+            return { 
+              report: id, 
+              date: date, 
+              shift, 
+              machine: machine, 
+              issue: downtime.issueId._id, 
+              issueName: downtime.issueId.issueName,
+              issueCode: downtime.issueId.issueCode, 
+              mins: downtime.mins }
             })
             return downtime
           })
