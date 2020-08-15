@@ -267,8 +267,8 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
         if( filter === 'machine'){
             const machineReports = machineDetail(weekReports, daysColumns, weekPurges, weekDefects, weekDowntime );
             const defectDetail = defectWeekDetailMachine(daysColumns, weekDefects, machines)
-            const downtimeDetail = downtimeWeekDetail(daysColumns, weekDowntime)
-            const purgeDetail = purgeWeekDetail(daysColumns, weekPurges)
+            const downtimeDetail = downtimeWeekDetail(daysColumns, weekDowntime, machines)
+            const purgeDetail = purgeWeekDetail(daysColumns, weekPurges, machines)
             const defectIndicator = defectWeekIndicator(daysColumns, weekDefects, machines)
             setWeekDefectDetail(defectDetail)
             setWeekDowntimeDetail(downtimeDetail)
@@ -278,12 +278,24 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
         if( filter === 'model'){
             const modelReports = modelDetail(weekReports, daysColumns, weekDefects)
             const defectDetail = defectWeekDetailModel(daysColumns, weekDefects)
+
+            const downtimeDetail = downtimeWeekDetail(daysColumns, weekDowntime, machines)
+            const purgeDetail = purgeWeekDetail(daysColumns, weekPurges, machines)
+            setWeekDowntimeDetail(downtimeDetail)
+            setWeekPurgeDetail(purgeDetail)
+
             setWeekDefectDetail(defectDetail)
             return setWeekModelReports(modelReports)
         }
         if( filter === 'molde'){
             const moldeReports = moldeDetail(weekReports, daysColumns, weekDefects)
             const defectDetail = defectWeekDetailMolde(daysColumns, weekDefects)
+
+            const downtimeDetail = downtimeWeekDetail(daysColumns, weekDowntime, machines)
+            const purgeDetail = purgeWeekDetail(daysColumns, weekPurges, machines)
+            setWeekDowntimeDetail(downtimeDetail)
+            setWeekPurgeDetail(purgeDetail)
+            
             setWeekDefectDetail(defectDetail)
             return setWeekMoldeReports(moldeReports)
         }
@@ -323,8 +335,8 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
             if( filter === 'machine'){
                 const machineReports = machineTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterPurges, trimesterDefects, trimesterDowntime );
                 const defectDetail = defectTrimesterDetailMachine( y, trimesterColumns, trimesterDefects, machines)
-                const downtimeDetail = downtimeTrimesterDetail( y, trimesterColumns, trimesterDowntime )
-                const purgeDetail = purgeTrimesterDetail(y, trimesterColumns, trimesterPurges )
+                const downtimeDetail = downtimeTrimesterDetail( y, trimesterColumns, trimesterDowntime, machines )
+                const purgeDetail = purgeTrimesterDetail(y, trimesterColumns, trimesterPurges, machines )
                 setTrimesterDefectDetail(defectDetail)
                 setTrimesterDowntimeDetail(downtimeDetail)
                 setTrimesterPurgeDetail(purgeDetail)
@@ -333,12 +345,24 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
             if( filter === 'model'){
                 const modelReports = modelTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
                 const defectDetail = defectTrimesterDetailModel( y, trimesterColumns, trimesterDefects)
+
+                const downtimeDetail = downtimeTrimesterDetail( y, trimesterColumns, trimesterDowntime, machines )
+                const purgeDetail = purgeTrimesterDetail(y, trimesterColumns, trimesterPurges, machines )
+                setTrimesterDowntimeDetail(downtimeDetail)
+                setTrimesterPurgeDetail(purgeDetail)
+
                 setTrimesterDefectDetail(defectDetail)
                 return setTrimesterModelReports(modelReports)
             }
             if( filter === 'molde'){
                 const moldeReports = moldeTrimesterDetail(trimesterReports, y, trimesterColumns, trimesterDefects );
                 const defectDetail = defectTrimesterDetailMolde( y, trimesterColumns, trimesterDefects)
+
+                const downtimeDetail = downtimeTrimesterDetail( y, trimesterColumns, trimesterDowntime, machines )
+                const purgeDetail = purgeTrimesterDetail(y, trimesterColumns, trimesterPurges, machines )
+                setTrimesterDowntimeDetail(downtimeDetail)
+                setTrimesterPurgeDetail(purgeDetail)
+
                 setTrimesterDefectDetail(defectDetail)
                 return setTrimesterMoldeReports(moldeReports)
             }

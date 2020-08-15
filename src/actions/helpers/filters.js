@@ -288,7 +288,7 @@ const machineDetail = (weekReports, days, weekPurges, weekDefects, weekDowntime 
   return machines    
 }
 
-const purgeWeekDetail = ( days, weekPurges )=>{
+const purgeWeekDetail = ( days, weekPurges, machinesArray )=>{
   
   const uniquePurgeList = Array.from(new Set(weekPurges.map( ({ resine })  =>{ 
     const list = weekPurges.find( item => item.resine === resine )
@@ -310,8 +310,35 @@ const purgeWeekDetail = ( days, weekPurges )=>{
     },0)
 
     const resines = [...purgeWeek, total]
+
+    const purgeList = weekPurges.filter( item => item.resine === resine.resine )
+    const uniqueMachineList = Array.from(new Set(purgeList.map( ({ machine })  =>{ 
+      const list = purgeList.find( item => item.machine === machine )
+      return list }
+    )))
+    const detail = uniqueMachineList.map( mach =>{
+      const machinesDays = days.map(day =>{
+        const list = purgeList.filter(item => item.date === day && item.machine === mach.machine)
+        .reduce( (a, b) =>{
+          return a + b.purge || 0
+        },0)
+        return list
+      })
+  
+      const total = purgeList.filter(item => item.machine === mach.machine)
+      .reduce( (a, b) =>{
+        return a + b.purge || 0
+      },0)
+  
+      const machines = [...machinesDays, total]
+      const itemNumber = machinesArray.find( machine => machine._id === mach.machine).machineNumber
+      return { code: resine.resine, detail: machines, itemNumber }
+    }) 
+    
+    const sortDetail = detail.sort((x, y)  => y.detail.reduce((a, b)=>{return a + b}) - x.detail.reduce((a, b)=>{return a + b}))
+
     const name = `${resine.acronym} ${resine.color}`
-    return { resine: name, machine: resine.machine, resines }
+    return { resine: name, machine: resine.machine, resines, detail: sortDetail }
   })
  
   return purge.sort((x, y)  => y.resines.reduce((a, b)=>{return a + b}) - x.resines.reduce((a, b)=>{return a + b}))   
@@ -507,7 +534,7 @@ const defectWeekDetailMolde = (days, weekDefects )=>{
   return defects.sort((x, y)  => y.defect.reduce((a, b)=>{return a + b}) - x.defect.reduce((a, b)=>{return a + b}))    
 }
 
-const downtimeWeekDetail = (days, weekDowntime )=>{
+const downtimeWeekDetail = (days, weekDowntime, machinesArray )=>{
   
   const uniqueDowntimeList = Array.from(new Set(weekDowntime.map( ({ issue })  =>{ 
     const list = weekDowntime.find( item => item.issue === issue )
@@ -529,13 +556,40 @@ const downtimeWeekDetail = (days, weekDowntime )=>{
     },0)
 
     const downt = [...downtimeDays, total]
-    return { issueCode: iss.issueCode, downtime: downt }
+
+    const issueList = weekDowntime.filter( item => item.issue === iss.issue )
+    const uniqueMachineList = Array.from(new Set(issueList.map( ({ machine })  =>{ 
+      const list = issueList.find( item => item.machine === machine )
+      return list }
+    )))
+    const detail = uniqueMachineList.map( mach =>{
+      const machinesDays = days.map(day =>{
+        const list = issueList.filter(item => item.date === day && item.machine === mach.machine)
+        .reduce( (a, b) =>{
+          return a + b.mins || 0
+        },0)
+        return list
+      })
+  
+      const total = issueList.filter(item => item.machine === mach.machine)
+      .reduce( (a, b) =>{
+        return a + b.mins || 0
+      },0)
+  
+      const machines = [...machinesDays, total]
+      const itemNumber = machinesArray.find( machine => machine._id === mach.machine).machineNumber
+      return { code: iss.issueCode, detail: machines, itemNumber }
+    }) 
+    
+    const sortDetail = detail.sort((x, y)  => y.detail.reduce((a, b)=>{return a + b}) - x.detail.reduce((a, b)=>{return a + b}))
+    
+    return { issueCode: iss.issueCode, downtime: downt, detail: sortDetail }
   })
  
   return downtime.sort((x, y)  => y.downtime.reduce((a, b)=>{return a + b}) - x.downtime.reduce((a, b)=>{return a + b}))    
 }
 
-const downtimeTrimesterDetail = (y, trimesterColumns, trimesterDowntime )=>{
+const downtimeTrimesterDetail = (y, trimesterColumns, trimesterDowntime, machinesArray  )=>{
   
   const uniqueDowntimeList = Array.from(new Set(trimesterDowntime.map( ({ issue })  =>{ 
     const list = trimesterDowntime.find( item => item.issue === issue )
@@ -557,7 +611,34 @@ const downtimeTrimesterDetail = (y, trimesterColumns, trimesterDowntime )=>{
     },0)
 
     const downt = [...downtimeTrimester, total]
-    return { issueCode: iss.issueCode, downtime: downt }
+
+    const issueList = trimesterDowntime.filter( item => item.issue === iss.issue )
+    const uniqueMachineList = Array.from(new Set(issueList.map( ({ machine })  =>{ 
+      const list = issueList.find( item => item.machine === machine )
+      return list }
+    )))
+    const detail = uniqueMachineList.map( mach =>{
+      const machinesDays = trimesterColumns.map(month =>{
+        const list = issueList.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.machine === mach.machine)
+        .reduce( (a, b) =>{
+          return a + b.mins || 0
+        },0)
+        return list
+      })
+  
+      const total = issueList.filter(item => item.machine === mach.machine)
+      .reduce( (a, b) =>{
+        return a + b.mins || 0
+      },0)
+  
+      const machines = [...machinesDays, total]
+      const itemNumber = machinesArray.find( machine => machine._id === mach.machine).machineNumber
+      return { code: iss.issueCode, detail: machines, itemNumber }
+    }) 
+    
+    const sortDetail = detail.sort((x, y)  => y.detail.reduce((a, b)=>{return a + b}) - x.detail.reduce((a, b)=>{return a + b}))
+    
+    return { issueCode: iss.issueCode, downtime: downt, detail: sortDetail }
   })
  
   return downtime.sort((x, y)  => y.downtime.reduce((a, b)=>{return a + b}) - x.downtime.reduce((a, b)=>{return a + b}))    
@@ -752,7 +833,7 @@ const defectTrimesterDetail = (y, trimesterColumns, trimesterDefects )=>{
   return defects.sort((x, y)  => y.defect.reduce((a, b)=>{return a + b}) - x.defect.reduce((a, b)=>{return a + b}))  
 }
 
-const purgeTrimesterDetail = (y, trimesterColumns, trimesterPurges )=>{
+const purgeTrimesterDetail = (y, trimesterColumns, trimesterPurges, machinesArray )=>{
   
   const uniquePurgeList = Array.from(new Set(trimesterPurges.map( ({ resine })  =>{ 
     const list = trimesterPurges.find( item => item.resine === resine )
@@ -775,7 +856,36 @@ const purgeTrimesterDetail = (y, trimesterColumns, trimesterPurges )=>{
 
     const resines = [...purgeTrimester, total]
     const name = `${resine.acronym} ${resine.color}`
-    return { resine: name, machine: resine.machine, resines }
+
+    const purgeList = trimesterPurges.filter( item => item.resine === resine.resine )
+    const uniqueMachineList = Array.from(new Set(purgeList.map( ({ machine })  =>{ 
+      const list = purgeList.find( item => item.machine === machine )
+      return list }
+    )))
+    const detail = uniqueMachineList.map( mach =>{
+      const machinesDays = trimesterColumns.map(month =>{
+        const list = purgeList.filter(item => item.date >= `${y}-${month}-01` && item.date <= `${y}-${month}-31` && item.machine === mach.machine)
+        .reduce( (a, b) =>{
+          return a + b.purge || 0
+        },0)
+        return list
+      })
+  
+      const total = purgeList.filter(item => item.machine === mach.machine)
+      .reduce( (a, b) =>{
+        return a + b.purge || 0
+      },0)
+  
+      const machines = [...machinesDays, total]
+      const itemNumber = machinesArray.find( machine => machine._id === mach.machine).machineNumber
+      return { code: resine.resine, detail: machines, itemNumber }
+    }) 
+    
+    const sortDetail = detail.sort((x, y)  => y.detail.reduce((a, b)=>{return a + b}) - x.detail.reduce((a, b)=>{return a + b}))
+
+
+
+    return { resine: name, machine: resine.machine, resines, detail: sortDetail }
   })
  
   return purge.sort((x, y)  => y.resines.reduce((a, b)=>{return a + b}) - x.resines.reduce((a, b)=>{return a + b}))   

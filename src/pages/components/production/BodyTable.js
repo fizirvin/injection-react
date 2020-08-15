@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import Detail from './Detail'
+import DetailMachine from './DetailMachine'
 import '../../styles/bodyTable.css'
 
 const BodyTable = ({
@@ -118,17 +119,21 @@ const BodyTable = ({
   }
 
   const renderDetailPurge = () =>{
-    return TPurge && trimesterPurgeDetail.map( ({resines, resine}) =><tr key={resine}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
-      {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+    return TPurge && trimesterPurgeDetail.map( ({resines, resine, detail}) => <DetailMachine key={resine} code={resine} defect={resines} detail={detail}/>
+    // <tr key={resine}>
+    //   <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
+    //   {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    // </tr>
+    )
   }
 
   const renderWeekDetailPurge = () =>{
-    return weekPurge && weekPurgeDetail.map( ({resines, resine}) =><tr key={resine}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
-      {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+    return weekPurge && weekPurgeDetail.map( ({resines, resine, detail}) => <DetailMachine key={resine} code={resine} defect={resines} detail={detail}/>
+    // <tr key={resine}>
+    //   <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ resine }</div></div></td>
+    //   {resines.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    // </tr>
+    )
   }
 
   const renderWeekDetailDefect = () =>{
@@ -137,17 +142,22 @@ const BodyTable = ({
   }
 
   const renderWeekDetailDowntime = () =>{
-    return weekDTime && weekDowntimeDetail.map( ({issueCode, downtime}) =><tr key={issueCode}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
-      {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+    return weekDTime && weekDowntimeDetail.map( ({issueCode, downtime, detail}) => <DetailMachine key={issueCode} code={issueCode} defect={downtime} detail={detail}/>
+    
+      // <tr key={issueCode}>
+      //   <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
+      //   {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+      // </tr>
+    )
   }
 
   const renderTrimesterDetailDowntime = () =>{
-    return TDTime && trimesterDowntimeDetail.map( ({issueCode, downtime}) =><tr key={issueCode}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
-      {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+    return TDTime && trimesterDowntimeDetail.map( ({issueCode, downtime, detail}) =><DetailMachine key={issueCode} code={issueCode} defect={downtime} detail={detail}/>
+    // <tr key={issueCode}>
+    //   <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ issueCode } (mins)</div></div></td>
+    //   {downtime.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    // </tr>
+    )
   }
 
   const renderRealDetail = () =>{
@@ -613,12 +623,9 @@ const BodyTable = ({
   }
 
   const renderPurgeButton = () =>{
-    if(filter === 'machine') {
+    
       return <button onClick={onPurge}>▼</button>
-    }
-    else{
-      return <div></div>
-    }
+    
   }
   
   const renderColumns = () =>{
