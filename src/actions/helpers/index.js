@@ -6,7 +6,8 @@ import { filterDayTotalReal, filterWeekTotalReal, filterDayTotalNG, filterWeekTo
     filterHighestIndicator, filterHighestPurgeByDay, filterHighestPurge, filterHighestDefectByDay, filterHighestDefect, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail,
     modelDetail, moldeDetail, modelTrimesterDetail, moldeTrimesterDetail,
     defectTrimesterDetail, defectWeekDetail, downtimeWeekDetail, downtimeTrimesterDetail,
-    purgeTrimesterDetail, purgeWeekDetail } from './filters'
+    purgeTrimesterDetail, purgeWeekDetail,  defectWeekIndicator, defectWeekDetailMachine, defectWeekDetailModel,
+    defectWeekDetailMolde, defectTrimesterDetailMachine, defectTrimesterDetailModel, defectTrimesterDetailMolde } from './filters'
 import { filterMoldeDate, reduceRealMolde, reduceNGMolde, reduceOKMolde, reducePlanMolde, reduceTimeMolde, reduceDownTimeMolde, 
     filterTotalMoldeReal,
     filterTotalMoldeNG,
@@ -144,5 +145,12 @@ export {
     downtimeWeekDetail,
     downtimeTrimesterDetail,
     purgeTrimesterDetail,
-    purgeWeekDetail  
+    purgeWeekDetail,
+    defectWeekIndicator,
+    defectWeekDetailMachine,
+    defectWeekDetailModel,
+    defectWeekDetailMolde,
+    defectTrimesterDetailMachine,
+    defectTrimesterDetailModel,
+    defectTrimesterDetailMolde  
 }

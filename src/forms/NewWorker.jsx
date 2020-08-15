@@ -42,7 +42,7 @@ class NewWorker extends Component {
                 position: this.state.position,
                 
             }
-            console.log(input)
+            
             return this.props.newWorker(input)
 
         } else {

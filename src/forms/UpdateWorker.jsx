@@ -137,7 +137,7 @@ class UpdateWorker extends Component {
                 }
         
                 reader.readAsDataURL(file)
-                console.log(file.size)
+                
             }
         } else {
             return

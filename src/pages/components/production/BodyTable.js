@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import Detail from './Detail'
 import '../../styles/bodyTable.css'
 
 const BodyTable = ({
@@ -110,10 +111,10 @@ const BodyTable = ({
   }
 
   const renderDetailDefect = () =>{
-    return TNG && trimesterDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
-      {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+    return TNG && trimesterDefectDetail.map( ({defectCode, defect, detail}) =><Detail key={defectCode} defectCode={defectCode} defect={defect} detail={detail}/>)
+    //   <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
+    //   {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
+    // </tr>)
   }
 
   const renderDetailPurge = () =>{
@@ -131,10 +132,8 @@ const BodyTable = ({
   }
 
   const renderWeekDetailDefect = () =>{
-    return weekNG && weekDefectDetail.map( ({defectCode, defect}) =><tr key={defectCode}>
-      <td className='detail_defect_machine'><div className='detail_row_production'><div></div><div>{ defectCode }</div></div></td>
-      {defect.map((it, index)=><td key={index} className='detail_defect_day'>{it}</td>)}
-    </tr>)
+      return weekNG && weekDefectDetail.map( ({defectCode, defect, detail}) => <Detail key={defectCode} defectCode={defectCode} defect={defect} detail={detail}/>
+    )
   }
 
   const renderWeekDetailDowntime = () =>{
