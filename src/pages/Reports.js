@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TableData from './components/TableData'
 import TableHeader from './components/TableHeader'
-import RenderItems from './components/RenderItems'
+import Pagination from './components/Pagination'
 import Spinner from './components/Spinner'
 import './Reports.css'
 
@@ -15,6 +15,8 @@ class Reports extends Component {
     createdAt: '',
     updatedAt: '',
     target: '',
+    totalReports: this.props.totalReports,
+    reportsPage: this.props.reportsPage,
     reports: this.props.reports,
     header: [
       {h: 'Date', w: '11%'},
@@ -261,7 +263,7 @@ class Reports extends Component {
       return <div className='spinner_div'><Spinner></Spinner></div>
     } else {
       return (
-        <div className='programs_body_container'>
+        <div className='reports_list_body_container'>
           <table className='body_table'>
             <tbody>
               {this.renderList()}
@@ -278,7 +280,9 @@ class Reports extends Component {
         <div className='programs_table_container'>
           <TableHeader header={this.state.header} className={'programs_header_table'}/>
           {this.renderBodyContainer(this.state.reports)}
-          <RenderItems items={this.state.reports}/>
+          {this.state.reports.length === 0 ? null :
+           this.props.loadingPage ? <div className='reports_spinner_div'><Spinner></Spinner></div> : 
+          <Pagination totalReports={this.state.totalReports} items={this.state.reports.length} onNext={this.props.onNext} currentPage={this.state.reportsPage} lastPage={Math.ceil(this.state.totalReports / 100)}/> }
         </div>
         <div className='report_detail'>
             {this.renderDetailTable()}

@@ -1,3 +1,15 @@
+.reports_spinner_div{
+  margin-top: 0;
+}
+
+.reports_list_body_container{
+  overflow-x: hidden;
+  overflow-y: scroll;
+  margin-bottom: 0;
+  max-height: 78vh;
+  width: 100%;
+}
+
 .report_list{
   padding-left: 1%;
     font-size: 90%;

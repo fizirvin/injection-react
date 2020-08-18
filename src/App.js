@@ -4,7 +4,7 @@ import { Home, Moldes, Machines, Material, Models, Issues,
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
 import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
-import { initialQuery, workerQuery } from './actions/queries'
+import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
 import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
   modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
@@ -34,6 +34,9 @@ class App extends Component {
     defects: [],
     programs: [],
     reports: [],
+    totalReports: 0,
+    reportsPage: 1,
+    add: 0,
     profiles: [],
     downtimeByDate: [],
     defectsByDate: [],
@@ -41,7 +44,8 @@ class App extends Component {
     resinesByDate: [],
     users: [],
     initial49:'',
-    end:''
+    end:'',
+    loadingPage: false
   };
 
   async componentDidMount(){
@@ -75,7 +79,8 @@ class App extends Component {
         issues: data.data.issues,
         defects: data.data.defects,
         programs: data.data.programs,
-        reports: data.data.reports,
+        reports: data.data.reports.reports,
+        totalReports: data.data.reports.totalReports,
         productionByDate: data.data.productionByDate,
         downtimeByDate: data.data.downtimeByDate,
         defectsByDate: data.data.defectsByDate,
@@ -90,6 +95,29 @@ class App extends Component {
   }
 
   close = message => this.setState({[message]: 'new'});
+
+  loadReports = async (direction) =>{
+    let page = this.state.reportsPage;
+    if (direction === 'next') {
+      page++;
+      this.setState({ reportsPage: page, loadingPage: true });
+    }
+    const add = this.state.add
+    reportsQuery.variables = { page, add }
+    opts.body = JSON.stringify(reportsQuery)
+
+    const res = await fetch( url, opts );
+    const data = await res.json();
+    if(data.errors){
+      console.log(data.errors)
+      return
+    } else {
+      const newReports = data.data.reports.reports
+      const reports = [...this.state.reports, ...newReports ]
+      const totalReports = data.data.reports.totalReports
+      return this.setState({reports, totalReports, loadingPage: false})
+    }
+  }
 
   newWorker = async (input) =>{
     addWorker.variables = { input }
@@ -566,7 +594,9 @@ class App extends Component {
         const resinesByDate = [...this.state.resinesByDate, ...convertResine[0]]
         const defectsByDate = [...this.state.defectsByDate, ...convertDefects[0]]
         const cycles = [...this.state.cycles, ...convertMolde[0]]
-        return this.setState({reports, productionByDate, cycles, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
+        const totalReports = this.state.totalReports + 1
+        const add = this.state.add + 1
+        return this.setState({reports, add, productionByDate, totalReports, cycles, defectsByDate, downtimeByDate, resinesByDate, reportMessage: 'sucess'});
       } 
       else{
         return this.setState({reports: reports, reportMessage: 'sucess'});
@@ -795,7 +825,13 @@ class App extends Component {
                 moldes={this.state.moldes} 
                 models={this.state.models} message={this.state.programMessage} close={this.close} updateProgram={this.updateProgram}/> )} 
               />
-              <Route path="/reports" exact component={ props => ( <Reports {...props} reports={this.state.reports}/> )} />
+              <Route path="/reports" exact component={ props => ( <Reports {...props}
+                loadingPage={this.state.loadingPage}
+                onNext={ () => this.loadReports('next')}
+                reportsPage={this.state.reportsPage} 
+                totalReports={this.state.totalReports} 
+                reports={this.state.reports}/> )} 
+              />
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
                 defects={this.state.defects}
                 programs={this.state.programs} 

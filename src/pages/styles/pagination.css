@@ -1,0 +1,9 @@
+.pagination{
+    display: flex;
+    
+    justify-content: space-between;
+    margin-left: 3px;
+    margin-top: 3px;
+    font-size: 90%;
+    font-style: italic;
+}

@@ -142,97 +142,100 @@ const initialQuery = { query: `query
             capacity
         }
         reports{
-            _id
-            reportDate
-            shift
-            createdAt
-            updatedAt
-            userId{
-                name
-            }
-            machine{
-                _id
-                machineNumber
-                machineSerial
-            }
-            TReal
-            TNG
-            TOK
-            TPlan
-            TProd
-            TWTime
-            TDTime
-            TAvailability
-            TPerformance
-            TQuality
-            TOEE
-            production{
-                _id
-                program{
+            totalReports
+            reports{
                     _id
+                reportDate
+                shift
+                createdAt
+                updatedAt
+                userId{
+                    name
                 }
-                real
-                ng
-                ok
-                plan
-                prod
-                wtime
-                dtime
-                availability
-                performance
-                quality
-                oee
-                partNumber {
+                machine{
                     _id
-                    partNumber
-                    partName
-                    family
+                    machineNumber
+                    machineSerial
                 }
-                molde{
+                TReal
+                TNG
+                TOK
+                TPlan
+                TProd
+                TWTime
+                TDTime
+                TAvailability
+                TPerformance
+                TQuality
+                TOEE
+                production{
                     _id
-                    moldeNumber
-                    moldeSerial
-                    cavities
+                    program{
+                        _id
+                    }
+                    real
+                    ng
+                    ok
+                    plan
+                    prod
+                    wtime
+                    dtime
+                    availability
+                    performance
+                    quality
+                    oee
+                    partNumber {
+                        _id
+                        partNumber
+                        partName
+                        family
+                    }
+                    molde{
+                        _id
+                        moldeNumber
+                        moldeSerial
+                        cavities
+                    }
                 }
-            }
-            downtimeDetail {
-                _id
-                issueId{
+                downtimeDetail {
                     _id
-                    issueName
+                    issueId{
+                        _id
+                        issueName
+                    }
+                    mins
                 }
-                mins
-            }
-            resines {
-                _id
-                resine{
+                resines {
                     _id
-                description
+                    resine{
+                        _id
+                    description
+                    }
+                    purge
                 }
-                purge
-            }
-            defects{
-                _id
-                defect{
+                defects{
                     _id
-                    defectName
-                    defectCode
+                    defect{
+                        _id
+                        defectName
+                        defectCode
+                    }
+                    defectPcs
+                    molde{
+                        _id
+                        moldeNumber
+                    }
+                    partNumber{
+                        _id
+                        partNumber
+                        partName
+                        family
+                    }
+                    program{
+                        _id
+                    }
                 }
-                defectPcs
-                molde{
-                    _id
-                    moldeNumber
-                }
-                partNumber{
-                    _id
-                    partNumber
-                    partName
-                    family
-                }
-                program{
-                    _id
-                }
-            }
+            }   
         }
     }`
 }
