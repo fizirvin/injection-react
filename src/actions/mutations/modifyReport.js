@@ -96,6 +96,12 @@ const modifyReport = { query: `mutation
           _id
         }
       }
+      comments
+      workers{
+        team
+        inspector
+        operator
+      }
     }
   }`
 }

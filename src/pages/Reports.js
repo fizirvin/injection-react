@@ -5,6 +5,8 @@ import TableHeader from './components/TableHeader'
 import Pagination from './components/Pagination'
 import Spinner from './components/Spinner'
 import './Reports.css'
+import { workersQuery } from '../actions/queries'
+import { hr_server, hr_opts } from '../actions/config'
 
 class Reports extends Component {
   state ={
@@ -15,6 +17,10 @@ class Reports extends Component {
     createdAt: '',
     updatedAt: '',
     target: '',
+    comments: '',
+    operator: '',
+    inspector: '',
+    loading: false,
     totalReports: this.props.totalReports,
     reportsPage: this.props.reportsPage,
     reports: this.props.reports,
@@ -94,7 +100,7 @@ class Reports extends Component {
     if(this.state._id === id){ return null}
     else {
       const getDetail = this.props.reports.find( report => report._id === e.target.name );
-      const { _id, production, downtimeDetail, defects, resines, userId, createdAt, updatedAt } = await getDetail
+      const { _id, production, downtimeDetail, defects, resines, userId, comments, workers, createdAt, updatedAt } = await getDetail
       this.setState({
         _id: _id, 
         production: production,
@@ -103,9 +109,35 @@ class Reports extends Component {
         resines: resines, 
         target: id,
         name: userId.name,
+        comments: comments ||'',
+        inspector: '',
+        operator: '',
+        team: workers.team || '',
         createdAt: createdAt,
         updatedAt: updatedAt
       })
+      if(workers.operator && workers.inspector){
+        this.setState({loading: true})
+        workersQuery.variables = { inspectorId: workers.inspector, operatorId: workers.operator }
+        hr_opts.body = JSON.stringify(workersQuery)
+        const res = await fetch(hr_server, hr_opts);
+        const data = await res.json();
+        if(data.errors){
+          return console.log(data.errors)
+          
+    
+        } else {
+          const workers = data.data.workers
+          const { inspector, operator } = workers
+          const inspectorName = await inspector.firstname
+          const operatorName = await operator.firstname
+          console.log(inspectorName, operatorName)
+          return this.setState({inspector: inspectorName, operator: operatorName, loading: false})
+        }
+      }
+      else {
+        return
+      }
     }
   }
 
@@ -171,6 +203,15 @@ class Reports extends Component {
       <tbody>
       {this.renderDetailPurge()}
       </tbody>
+      
+        { this.state.comments && <tbody><tr><td className='row_detail_production' colSpan="8"><p>{`comments: ${this.state.comments}`}</p></td></tr></tbody>}
+      
+      {this.state.loading ? <tbody><tr><td className='row_detail_production' colSpan="8"><Spinner/></td></tr></tbody> : <tbody>
+      { this.state.team && <tr><td className='row_detail_production' colSpan="8">{`Team: ${this.state.team}`}</td></tr> }
+        { this.state.inspector && <tr><td className='row_detail_production' colSpan="8">{`Inspector: ${this.state.inspector}`}</td></tr> }
+        { this.state.operator &&  <tr><td className='row_detail_production' colSpan="8">{`Operator: ${this.state.operator}`}</td></tr> }
+      </tbody>}
+
       <tbody >
         <tr>
           <td className='row_detail_production tbody_author' colSpan="8">

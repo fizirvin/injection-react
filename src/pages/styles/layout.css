@@ -227,8 +227,36 @@
 
   .section_two{
     display: flex;
-
+    
   }
+
+  .comments-container{
+    width: 60%;
+    margin-left: 15px;
+  }
+
+  .comments-area{
+    display: flex;
+    align-items: center;
+  }
+
+  textArea{
+    resize: none;
+    font-size: 145%;
+  }
+
+  .operator{
+    background-color: green;
+  }
+
+  .inspector{
+    background-color: limegreen;
+  }
+
+  .leader{
+    background-color: magenta;
+  }
+
 
     .report_header{
       border: solid 1px;

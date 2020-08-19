@@ -24,8 +24,12 @@ class AddReport extends Component {
     show: 'molds',
     downtime: [],
     defects: [],
-    resines: [] 
-
+    resines: [], 
+    profiles: this.props.profiles,
+    team: '',
+    comments: '',
+    inspector: '',
+    operator: ''
   }
 
 
@@ -875,8 +879,11 @@ class AddReport extends Component {
 
   onSubmit = async (e) =>{
     e.preventDefault();    
-    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, downtime  } = this.state;
+    const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, 
+      TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, 
+      downtime, comments, team, inspector, operator  } = this.state;
     const production = selected.map( item => item.production )
+    const workers = {team, operator, inspector }
     const report = {
       reportDate: date+'T15:00:30.640+00:00',
       shift,
@@ -896,7 +903,9 @@ class AddReport extends Component {
       downtime,
       defects,
       resines,
-      userId: this.props.userId
+      userId: this.props.userId,
+      comments,
+      workers
     }
     
     return this.props.addReport(report)
@@ -1285,6 +1294,105 @@ validateSubmit = () =>{
     }
   }
 
+  onChangeTeam = (e)=>{
+    const team = e.target.value
+    const profiles = this.state.profiles.filter( profile => profile.team === team)
+    return this.setState({profiles, team})
+  }
+
+  onComments = (e) =>{
+    const comments = e.target.value
+    return this.setState({comments})
+  }
+
+  onInspector = (e) =>{
+    const inspector = e.target.value;
+    return this.setState({inspector})
+  }
+
+  onOperator = (e) =>{
+    const operator = e.target.value;
+    return this.setState({operator})
+  }
+
+  renderInspectorOption = () =>{
+    return this.state.profiles
+    .sort( (a,b) => {
+      if (a.position < b.position) return -1;
+      
+      return 0;
+    })
+    .map( item => {
+      const position = item.position === 'Inspector' ? 'inspector' : item.position === 'Operator' ? 'operator' : 'leader';
+      return <option key={item._id} value={item._id} className={position}>{`${item.position} - ${item.firstname} ${item.lastname}`}</option>
+    })
+  }
+
+  renderOperatorOption = () =>{
+    return this.state.profiles
+    .sort( (a,b) => {
+      if (a.position > b.position) return -1;
+      
+      return 0;
+      // if (a.firstname < b.firstname) return -1;
+      
+    })
+    .map( item => {
+      const position = item.position === 'Inspector' ? 'inspector' : item.position === 'Operator' ? 'operator' : 'leader';
+      return <option key={item._id} value={item._id} className={position}>{`${item.position} - ${item.firstname} ${item.lastname}`}</option>
+    })
+  }
+
+  renderComments = () =>{
+    if(!this.state.machine){ return null } 
+     else {
+        return (
+        <div className='comments-container'>
+          <div className='comments-area'>
+            <label>Comments:</label>
+            <textarea onChange={this.onComments} value={this.state.comments} className='textArea' rows='4' cols='35' maxLength='120'></textarea>
+          </div>
+          <div>
+            <table>
+              <tbody>
+                <tr>
+                  <td><label>Team: </label></td>
+                  <td>
+                    <select value={this.state.team} onChange={this.onChangeTeam}>
+                      <option value='' disabled>select</option>
+                      <option value='varias'>R Varias</option>
+                      <option value='amealco'>Amealco</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+              <tbody>
+                <tr>
+                  <td><label htmlFor='inspector'>Inspector: </label></td>
+                  <td>
+                    { this.state.team && <select id='inspector' value={this.state.inspector} onChange={this.onInspector}>
+                      <option value='' >select</option>
+                      {this.renderInspectorOption()}
+                    </select> }
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor='operator'>Operator: </label></td>
+                  <td>
+                    {this.state.team && <select id='operator' value={this.state.operator} onChange={this.onOperator}>
+                      <option value='' >select</option>
+                      {this.renderOperatorOption()}
+                    </select>}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )
+    }
+  }
+
   render() {
 
   
@@ -1299,6 +1407,7 @@ validateSubmit = () =>{
            {this.renderTitle()}
           <div className='section_two'>
             {this.renderContainer()}
+            {this.renderComments()}
             {/* <div className='downtime-table'>
               {this.renderDownTable()}
             </div> */}

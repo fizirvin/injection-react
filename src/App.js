@@ -455,10 +455,10 @@ class App extends Component {
     }
   }
 
-  addReport = async ({ reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
+  addReport = async ({ workers, comments, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
     const downtimeDetail = downtime
     const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE,
-      production, userId, downtimeDetail, defects, resines }
+      production, userId, downtimeDetail, defects, resines, workers, comments }
     addReport.variables = { input }
     opts.body = JSON.stringify(addReport)
     const res = await fetch(url, opts);
@@ -604,9 +604,9 @@ class App extends Component {
     }
   }
 
-  updateReport = async ({ _id, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
+  updateReport = async ({ _id, workers, comments, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, defects, resines, downtime })=>{
     const downtimeDetail = downtime
-    const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TProd, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
+    const input = { workers, comments, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TProd, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE,
       production, downtimeDetail, defects, resines }
     modifyReport.variables = { _id, input }
     opts.body = JSON.stringify(modifyReport)
@@ -833,6 +833,7 @@ class App extends Component {
                 reports={this.state.reports}/> )} 
               />
               <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
+                profiles={this.state.profiles}
                 defects={this.state.defects}
                 programs={this.state.programs} 
                 machines={this.state.machines}
@@ -842,6 +843,7 @@ class App extends Component {
                 message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
               />
               <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}
+                profiles={this.state.profiles}
                 defects={this.state.defects}
                 reports={this.state.reports} 
                 programs={this.state.programs} 

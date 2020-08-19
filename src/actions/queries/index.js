@@ -6,6 +6,7 @@ import weekpurgeQuery from './weekpurgequery'
 import daypurgeQuery from './daypurgequery'
 import workerQuery from './workerQuery'
 import reportsQuery from './reportsQuery'
+import workersQuery from './workersQuery'
 
 export { 
     initialQuery, 
@@ -15,5 +16,6 @@ export {
     weekpurgeQuery, 
     daypurgeQuery, 
     workerQuery,
-    reportsQuery 
+    reportsQuery,
+    workersQuery 
 }

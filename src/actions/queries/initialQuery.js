@@ -235,6 +235,12 @@ const initialQuery = { query: `query
                         _id
                     }
                 }
+                comments
+                workers{
+                    team
+                    inspector
+                    operator
+                }
             }   
         }
     }`
