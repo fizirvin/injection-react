@@ -4,10 +4,12 @@ const workersQuery = { query: `query
             operator{
                 _id
                 firstname
+                lastname
             }
             inspector{
                 _id
                 firstname
+                lastname
             }
         }
     }`,
