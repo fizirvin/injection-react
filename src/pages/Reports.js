@@ -130,9 +130,12 @@ class Reports extends Component {
           const workers = data.data.workers
           const { inspector, operator } = workers
           const inspectorName = await inspector.firstname
+          const inspectorLastname = await inspector.lastname
           const operatorName = await operator.firstname
-          console.log(inspectorName, operatorName)
-          return this.setState({inspector: inspectorName, operator: operatorName, loading: false})
+          const operatorLastname = await operator.lastname
+          
+          return this.setState({inspector: `${inspectorName} ${inspectorLastname}`, 
+          operator: `${operatorName} ${operatorLastname}`, loading: false})
         }
       }
       else {
@@ -204,10 +207,15 @@ class Reports extends Component {
       {this.renderDetailPurge()}
       </tbody>
       
-        { this.state.comments && <tbody><tr><td className='row_detail_production' colSpan="8"><p>{`comments: ${this.state.comments}`}</p></td></tr></tbody>}
+        { this.state.comments && <tbody>
+          <tr><td className='row_detail_production tbody_author' colSpan="8"></td></tr>
+          <tr><td className='row_detail_production' colSpan="8"><p>{`comments: ${this.state.comments}`}</p></td></tr></tbody>}
       
-      {this.state.loading ? <tbody><tr><td className='row_detail_production' colSpan="8"><Spinner/></td></tr></tbody> : <tbody>
-      { this.state.team && <tr><td className='row_detail_production' colSpan="8">{`Team: ${this.state.team}`}</td></tr> }
+      {this.state.loading ? <tbody><tr>
+        <td className='row_detail_production' colSpan="8"><Spinner/></td></tr></tbody> : <tbody>
+        <tr><td className='row_detail_production tbody_author' colSpan="8"></td></tr>
+      { this.state.team && <tr>
+        <td className='row_detail_production' colSpan="8">{`Team: ${this.state.team}`}</td></tr> }
         { this.state.inspector && <tr><td className='row_detail_production' colSpan="8">{`Inspector: ${this.state.inspector}`}</td></tr> }
         { this.state.operator &&  <tr><td className='row_detail_production' colSpan="8">{`Operator: ${this.state.operator}`}</td></tr> }
       </tbody>}
