@@ -780,7 +780,7 @@ class App extends Component {
                 material={this.state.materials} message={this.state.materialMessage} close={this.close} updateMaterial={this.updateMaterial}/> )} 
               />
 
-              <Route path="/machines" exact component={ props => ( <Machines {...props} machines={this.state.machines}/> )}  />
+              <Route path="/machines" exact component={ props => ( <Machines {...props}/> )}  />
               <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
                 message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
               />

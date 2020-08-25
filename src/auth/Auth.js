@@ -7,7 +7,12 @@ import NotSupported from './NotSupported'
 import { loginQuery } from '../actions/queries';
 import { url, opts } from '../actions/config/index';
 import App from '../App.js'
+import reducers from '../reducers'
 
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
+const store = createStore(reducers, applyMiddleware(thunk))
 const w = parseInt(document.documentElement.clientWidth)
 
 // const mob = /Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -100,7 +105,9 @@ class Auth extends Component {
 
     renderHome = () =>{
         if(this.state.isAuth){ return (
-            <App logoutHandler={this.logoutHandler} userId={this.state.userId} name={this.state.name}/>
+            <Provider store={store}>
+                <App logoutHandler={this.logoutHandler} userId={this.state.userId} name={this.state.name}/>
+            </Provider>
         )}
         else{
             if(isMobile){ return <NotSupported></NotSupported> }

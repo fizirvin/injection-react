@@ -1,25 +1,49 @@
-import { url, opts } from '../config/'
-import { initialQuery } from '../querys'
+import { url, opts } from '../../actions/config'
+import machinesQuery from './queries'
 
 const fetchMachines = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(initialQuery)
+    opts.body = JSON.stringify(machinesQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
 
     dispatch({
-        type: 'FETCH_PROFILES',
-        payload: data.data.profiles
+        type: 'FETCH_MACHINES',
+        payload: data.data.machines
     })
 }
 
-const selectProfile = player =>{
+const addMachine = () => async ( dispatch ) => {
+    opts.body = JSON.stringify(machinesQuery)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+
+    dispatch({
+        type: 'ADD_MACHINE',
+        payload: data.data.newMachine
+    })
+}
+
+const updateMachine = () => async ( dispatch ) => {
+    opts.body = JSON.stringify(machinesQuery)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+
+    dispatch({
+        type: 'UPDATE_MACHINE',
+        payload: data.data.updateMachine
+    })
+}
+
+const selectMachine = machine =>{
     return{
-        type: 'PROFILE_SELECTED',
-        payload: player
+        type: 'SELECT_MACHINE',
+        payload: machine
     }
 }
 
 export {
     fetchMachines,
-    selectProfile
+    addMachine,
+    updateMachine,
+    selectMachine
 }

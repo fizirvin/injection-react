@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect}  from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { fetchMachines } from './actions'
 
+import { Link } from 'react-router-dom'
 import TableData from '../components/TableData'
 import TableHeader from '../components/TableHeader'
 import RenderItems from '../components/RenderItems'
@@ -18,16 +19,21 @@ const header = [
 
 const Machines = ({machines, fetchMachines}) =>{
 
-    const renderList = () =>{
-        return machines.map( ({_id, machineNumber, machineSerial, closingForce, spindleDiameter}) => 
-        <tr key={_id}>
-          <TableData className='table_data' style={{width: '25%'}} >{machineNumber}</TableData>
-          <TableData className='table_data' style={{width: '30%'}} >{machineSerial}</TableData>
-          <TableData className='table_data' style={{width: '15%'}}>{closingForce}</TableData>
-          <TableData className='table_data' style={{width: '15%'}}>{spindleDiameter}</TableData>
-          <TableData className='table_data' style={{width: '15%'}}><Link to={`/machines/update/${_id}`}><button>Update</button></Link></TableData>
-        </tr>)
-    }
+  useEffect(() =>{
+    fetchMachines();
+    return 
+  },[])
+
+  const renderList = () =>{
+      return machines.map( ({_id, machineNumber, machineSerial, closingForce, spindleDiameter}) => 
+      <tr key={_id}>
+        <TableData className='table_data' style={{width: '25%'}} >{machineNumber}</TableData>
+        <TableData className='table_data' style={{width: '30%'}} >{machineSerial}</TableData>
+        <TableData className='table_data' style={{width: '15%'}}>{closingForce}</TableData>
+        <TableData className='table_data' style={{width: '15%'}}>{spindleDiameter}</TableData>
+        <TableData className='table_data' style={{width: '15%'}}><Link to={`/machines/update/${_id}`}><button>Update</button></Link></TableData>
+      </tr>)
+  }
 
     const renderBodyContainer = (array) =>{
         if(array.length === 0){

@@ -1,6 +1,6 @@
 import Home from './Home.js'
 import Moldes from './Moldes.js'
-import Machines from './Machines.js'
+import Machines from './Machines/Machines.jsx'
 import Material from './Material.js'
 import Models from './Models.js'
 import Issues from './Issues.js'
