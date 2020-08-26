@@ -1,8 +1,9 @@
 import React, { useEffect}  from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { fetchMachines, selectMachine } from './actions'
 
-import { Link } from 'react-router-dom'
+
 import TableData from '../components/TableData'
 import TableHeader from '../components/TableHeader'
 import RenderItems from '../components/RenderItems'

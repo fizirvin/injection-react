@@ -18,12 +18,12 @@ class Models extends Component {
   }
 
   renderList() {
-    return this.state.models.map( ({_id, partNumber, partName, family,}) => 
+    return this.state.models.map( ({_id, partNumber, partName, family}) => 
     <tr key={_id}>
       <TableData className='table_data' style={{width: '30%'}}>{partNumber}</TableData>
       <TableData className='table_data' style={{width: '35%'}}>{partName}</TableData>
       <TableData className='table_data' style={{width: '20%'}}>{family}</TableData>
-      <TableData className='table_data' style={{width: '15%'}}><Link to={`/models/update/${_id}`}><button>Update</button></Link></TableData>
+      <TableData className='table_data' style={{width: '15%'}}><Link to={`/models/update/${_id}`} ><button>Update</button></Link></TableData>
     </tr>)
   }
 

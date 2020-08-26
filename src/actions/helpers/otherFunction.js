@@ -50,3 +50,45 @@ updateMachine = async ({ _id, machineNumber, machineSerial, closingForce, spindl
       this.setState({ machines: machines, programs: updatedPrograms, reports: updatedReports, machineMessage: 'sucess'});
     }
 }
+
+addModel = async ({ partNumber, partName, family })=>{
+  const input = { partNumber, partName, family }
+  addModel.variables = { input }
+  opts.body = JSON.stringify(addModel)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({modelMessage: 'error'})
+  } else{
+    const { newPartNumber } = data.data
+    const models = [...this.state.models, newPartNumber ];
+    this.setState({ models, modelMessage: 'sucess'});
+  }
+}
+
+updateModel = async ({ _id, partNumber, partName, family })=>{
+  const input = { partNumber, partName, family }
+  modifyModel.variables = { _id, input }
+  opts.body = JSON.stringify(modifyModel)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({modelMessage: 'error'})
+  } else{
+    let model = data.data.updatePartNumber;
+    let models = [...this.state.models];
+    models[models.findIndex(el => el._id === model._id)] = model;
+    let programs = [...this.state.programs]
+    const updateProgramModel = (programs, model) => {
+      return programs.map(item => {
+          var temp = Object.assign({}, item);
+          if (temp.partNumber._id === model._id) {
+              temp.partNumber = model;
+          }
+          return temp;
+      });
+    }
+    const updatedPrograms = updateProgramModel(programs, model);
+    this.setState({ models, programs: updatedPrograms, modelMessage: 'sucess'});
+  }
+}

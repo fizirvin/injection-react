@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Home, Moldes, Machines, AddMachine, UpdateMachine, Material, Models, Issues, 
+import { Home, Moldes, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, Issues, 
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddMold, UpdateMold, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
+import { AddMold, UpdateMold, AddMaterial, UpdateMaterial, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
 import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
@@ -17,7 +17,6 @@ import './pages/Downtime.css'
 class App extends Component {
   state = {
     moldeMessage: 'new',
-    modelMessage: 'new',
     materialMessage: 'new',
     issueMessage: 'new',
     defectMessage: 'new',
@@ -27,7 +26,6 @@ class App extends Component {
     moldes: [],
     cycles: [],
     materials: [],
-    models: [],
     issues: [],
     defects: [],
     programs: [],
@@ -69,11 +67,9 @@ class App extends Component {
     else {
       console.log('holalalala', hr_data, data)
       return this.setState({ 
-        machines: data.data.machines,
         materials: data.data.materials, 
         moldes: data.data.moldes,
         cycles: data.data.cycles, 
-        models: data.data.parts, 
         issues: data.data.issues,
         defects: data.data.defects,
         programs: data.data.programs,
@@ -260,48 +256,6 @@ class App extends Component {
       let materials = [...this.state.materials];
       materials[materials.findIndex(el => el._id === material._id)] = material;
       this.setState({ materials, materialMessage: 'sucess'});
-    }
-  }
-
-  addModel = async ({ partNumber, partName, family })=>{
-    const input = { partNumber, partName, family }
-    addModel.variables = { input }
-    opts.body = JSON.stringify(addModel)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({modelMessage: 'error'})
-    } else{
-      const { newPartNumber } = data.data
-      const models = [...this.state.models, newPartNumber ];
-      this.setState({ models, modelMessage: 'sucess'});
-    }
-  }
-
-  updateModel = async ({ _id, partNumber, partName, family })=>{
-    const input = { partNumber, partName, family }
-    modifyModel.variables = { _id, input }
-    opts.body = JSON.stringify(modifyModel)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({modelMessage: 'error'})
-    } else{
-      let model = data.data.updatePartNumber;
-      let models = [...this.state.models];
-      models[models.findIndex(el => el._id === model._id)] = model;
-      let programs = [...this.state.programs]
-      const updateProgramModel = (programs, model) => {
-        return programs.map(item => {
-            var temp = Object.assign({}, item);
-            if (temp.partNumber._id === model._id) {
-                temp.partNumber = model;
-            }
-            return temp;
-        });
-      }
-      const updatedPrograms = updateProgramModel(programs, model);
-      this.setState({ models, programs: updatedPrograms, modelMessage: 'sucess'});
     }
   }
 
@@ -729,13 +683,9 @@ class App extends Component {
               <Route path="/machines/add" exact component={ props => ( <AddMachine {...props}/> )}/>
               <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props}/> )}/>
               
-              <Route path="/models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
-              <Route path="/models/add" exact component={ props => ( <AddModel {...props}
-                message={this.state.modelMessage} close={this.close} addModel={this.addModel}/> )} 
-              />
-              <Route path="/models/update/:id" exact component={ props => ( <UpdateModel {...props}
-                models={this.state.models} message={this.state.modelMessage} close={this.close} updateModel={this.updateModel}/> )} 
-              />
+              <Route path="/models" exact component={ props => ( <Models {...props} /> )} /> 
+              <Route path="/models/add" exact component={ props => ( <AddModel {...props}/> )} />
+              <Route path="/models/update/:id" exact component={ props => ( <UpdateModel {...props}/> )} />
               
               <Route path="/issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
               <Route path="/issues/add" exact component={ props => ( <AddIssue {...props} 

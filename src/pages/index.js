@@ -1,10 +1,8 @@
 import Home from './Home.js'
 import Moldes from './Moldes.js'
-import Machines from './Machines/Machines.jsx'
-import AddMachine from './Machines/AddMachine.jsx'
-import UpdateMachine from './Machines/UpdateMachine.jsx'
+import Machines, { AddMachine, UpdateMachine } from './Machines'
 import Material from './Material.js'
-import Models from './Models.js'
+import Models, { AddModel, UpdateModel } from './Parts'
 import Issues from './Issues.js'
 import Defects from './Defects.js'
 import Programs from './Programs.js'
@@ -19,10 +17,11 @@ import Product from './Product'
 
 export { 
     Home, 
-    Moldes, 
-    Machines, 
+    Moldes,  
     Material, 
-    Models, 
+    Models,
+    AddModel,
+    UpdateModel,
     Issues, 
     Defects, 
     Programs, 
@@ -34,6 +33,7 @@ export {
     Record,
     WorkersList,
     Product,
+    Machines,
     AddMachine,
     UpdateMachine
 } 
