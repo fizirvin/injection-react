@@ -1,5 +1,6 @@
 import { url, opts } from '../../actions/config'
 import machinesQuery from './queries'
+import { addMachine as newMachine, modifyMachine } from './mutations'
 
 const fetchMachines = () => async ( dispatch ) => {
     opts.body = JSON.stringify(machinesQuery)
@@ -12,26 +13,47 @@ const fetchMachines = () => async ( dispatch ) => {
     })
 }
 
-const addMachine = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(machinesQuery)
+const addMachine = (input) => async ( dispatch ) => {
+    newMachine.variables = { input }
+    opts.body = JSON.stringify(newMachine)
     const res = await fetch(url, opts);
     const data = await res.json();
 
-    dispatch({
-        type: 'ADD_MACHINE',
-        payload: data.data.newMachine
-    })
+    if(data.errors){
+        return dispatch({type: 'MACHINE_MESSAGE',
+            payload: 'error'
+        })
+    } else{
+        dispatch({
+            type: 'ADD_MACHINE',
+            payload: data.data.newMachine
+        })
+        return dispatch({
+            type: 'MACHINE_MESSAGE',
+            payload: 'sucess'
+        })
+    }
 }
 
-const updateMachine = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(machinesQuery)
+const updateMachine = (_id, input) => async ( dispatch ) => {
+    modifyMachine.variables = { _id, input }
+    opts.body = JSON.stringify(modifyMachine)
     const res = await fetch(url, opts);
     const data = await res.json();
-
-    dispatch({
-        type: 'UPDATE_MACHINE',
-        payload: data.data.updateMachine
-    })
+    if(data.errors){
+        return dispatch({type: 'MACHINE_MESSAGE',
+            payload: 'error'
+        })
+    } else{
+        dispatch({
+            type: 'UPDATE_MACHINE',
+            payload: data.data.updateMachine
+        })
+        return dispatch({
+            type: 'MACHINE_MESSAGE',
+            payload: 'sucess'
+        })
+    }
 }
 
 const selectMachine = machine =>{
@@ -41,9 +63,17 @@ const selectMachine = machine =>{
     }
 }
 
+const closeMachine = () =>{
+    return{
+        type: 'MACHINE_MESSAGE',
+        payload: 'new'
+    }
+}
+
 export {
     fetchMachines,
     addMachine,
     updateMachine,
-    selectMachine
+    selectMachine,
+    closeMachine
 }

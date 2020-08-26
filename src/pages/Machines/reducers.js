@@ -1,11 +1,24 @@
 const machinesReducer = (state = [], action) =>{
-    if(action.type === 'FETCH_MACHINES'){
+    switch (action.type){
+        case 'FETCH_MACHINES':
+            return action.payload
+        case 'ADD_MACHINE':
+            return [ ...state, action.payload ]
+        case 'UPDATE_MACHINE':
+            const machine = action.payload
+            let machines = [...state]
+            machines[machines.findIndex(el => el._id === machine._id)] = machine;
+            return machines
+        default:
+            return state
+    }
+} 
+
+const machineMessage = ( message = 'new', action) =>{
+    if(action.type === 'MACHINE_MESSAGE'){
         return action.payload
     }
-    else if(action.type === 'ADD_MACHINE'){
-        return [...state, action.payload]
-    }
-    return state
+    return message
 }
 
 const machineReducer = (selected = null, action) =>{
@@ -16,5 +29,7 @@ const machineReducer = (selected = null, action) =>{
 }
 
 export {
-    machinesReducer, machineReducer
+    machinesReducer, 
+    machineReducer,
+    machineMessage
 }

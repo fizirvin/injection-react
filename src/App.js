@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Home, Moldes, Machines, Material, Models, Issues, 
+import { Home, Moldes, Machines, AddMachine, UpdateMachine, Material, Models, Issues, 
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddMold, UpdateMold, AddMachine, UpdateMachine, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
+import { AddMold, UpdateMold, AddMaterial, UpdateMaterial, AddModel, UpdateModel, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
 import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
@@ -16,8 +16,6 @@ import './pages/Downtime.css'
 
 class App extends Component {
   state = {
-    machines: [],
-    machineMessage: 'new',
     moldeMessage: 'new',
     modelMessage: 'new',
     materialMessage: 'new',
@@ -188,59 +186,6 @@ class App extends Component {
       let users = [...this.state.users];
       users[users.findIndex(el => el._id === user._id)] = user;
       this.setState({ users, userMessage: 'sucess'});
-    }
-  }
-
-  addMachine = async ({ machineNumber, machineSerial, closingForce, spindleDiameter })=>{
-    const input = { machineNumber, machineSerial, closingForce, spindleDiameter }
-    addMachine.variables = { input }
-    opts.body = JSON.stringify(addMachine)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({machineMessage: 'error'})
-    } else{
-      const { newMachine } = data.data
-      const machines = [...this.state.machines, newMachine ];
-      this.setState({ machines, machineMessage: 'sucess'});
-    }
-  }
-
-  updateMachine = async ({ _id, machineNumber, machineSerial, closingForce, spindleDiameter })=>{
-    const input = { machineNumber, machineSerial, closingForce, spindleDiameter }
-    modifyMachine.variables = { _id, input }
-    opts.body = JSON.stringify(modifyMachine)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({machineMessage: 'error'})
-    } else{
-      let machine = data.data.updateMachine;
-      let machines = [...this.state.machines];
-      machines[machines.findIndex(el => el._id === machine._id)] = machine;
-      let programs = [...this.state.programs]
-      let reports = [...this.state.reports]
-      const updateProgramMachine = (programs, machine) => {
-        return programs.map(item => {
-            var temp = Object.assign({}, item);
-            if (temp.machineNumber._id === machine._id) {
-                temp.machineNumber = machine;
-            }
-            return temp;
-        });
-      }
-      const updateReportMachine = (reports, machine) => {
-        return reports.map(item => {
-            var temp = Object.assign({}, item);
-            if (temp.machine._id === machine._id) {
-                temp.machine = machine;
-            }
-            return temp;
-        });
-      }
-      const updatedPrograms = updateProgramMachine(programs, machine);
-      const updatedReports = updateReportMachine(reports, machine);
-      this.setState({ machines: machines, programs: updatedPrograms, reports: updatedReports, machineMessage: 'sucess'});
     }
   }
 
@@ -780,13 +725,9 @@ class App extends Component {
                 material={this.state.materials} message={this.state.materialMessage} close={this.close} updateMaterial={this.updateMaterial}/> )} 
               />
 
-              <Route path="/machines" exact component={ props => ( <Machines {...props}/> )}  />
-              <Route path="/machines/add" exact component={ props => ( <AddMachine {...props} 
-                message={this.state.machineMessage} close={this.close} addMachine={this.addMachine}/> )} 
-              />
-              <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props} 
-                machines={this.state.machines} message={this.state.machineMessage} close={this.close} updateMachine={this.updateMachine}/> )} 
-              />
+              <Route path="/machines" exact component={ props => ( <Machines {...props}/> )}/>
+              <Route path="/machines/add" exact component={ props => ( <AddMachine {...props}/> )}/>
+              <Route path="/machines/update/:id" exact component={ props => ( <UpdateMachine {...props}/> )}/>
               
               <Route path="/models" exact component={ props => ( <Models {...props} models={this.state.models}/> )} /> 
               <Route path="/models/add" exact component={ props => ( <AddModel {...props}

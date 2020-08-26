@@ -1,13 +1,13 @@
 import React, { useEffect}  from 'react'
 import { connect } from 'react-redux'
-import { fetchMachines } from './actions'
+import { fetchMachines, selectMachine } from './actions'
 
 import { Link } from 'react-router-dom'
 import TableData from '../components/TableData'
 import TableHeader from '../components/TableHeader'
 import RenderItems from '../components/RenderItems'
 import Spinner from '../components/Spinner'
-import '../Machines.css'
+import './Machines.css'
 
 const header = [
     {h: 'Machine Number', w: '25%'},
@@ -17,7 +17,7 @@ const header = [
     {h: <Link to="/machines/add"><button>Add Machine</button></Link>, w: '15%'}
 ]
 
-const Machines = ({machines, fetchMachines}) =>{
+const Machines = ({machines, fetchMachines, selectMachine}) =>{
 
   useEffect(() =>{
     fetchMachines();
@@ -25,14 +25,16 @@ const Machines = ({machines, fetchMachines}) =>{
   },[])
 
   const renderList = () =>{
-      return machines.map( ({_id, machineNumber, machineSerial, closingForce, spindleDiameter}) => 
-      <tr key={_id}>
+      return machines.map( machine => {
+      const {_id, machineNumber, machineSerial, closingForce, spindleDiameter} = machine
+      return <tr key={_id}>
         <TableData className='table_data' style={{width: '25%'}} >{machineNumber}</TableData>
         <TableData className='table_data' style={{width: '30%'}} >{machineSerial}</TableData>
         <TableData className='table_data' style={{width: '15%'}}>{closingForce}</TableData>
         <TableData className='table_data' style={{width: '15%'}}>{spindleDiameter}</TableData>
-        <TableData className='table_data' style={{width: '15%'}}><Link to={`/machines/update/${_id}`}><button>Update</button></Link></TableData>
-      </tr>)
+        <TableData className='table_data' style={{width: '15%'}}><Link to={`/machines/update/${_id}`} onClick={()=>selectMachine(machine)}><button>Update</button></Link></TableData>
+      </tr> }
+    )
   }
 
     const renderBodyContainer = (array) =>{
@@ -66,4 +68,4 @@ const mapStateToProps = state =>({
     machines: state.machines
 })
 
-export default connect(mapStateToProps, {fetchMachines})(Machines)
+export default connect(mapStateToProps, {fetchMachines, selectMachine})(Machines)

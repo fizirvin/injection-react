@@ -1,22 +1,18 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { updateMachine, closeMachine } from './actions'
 
-const AddMachine = ({ message, close, addMachine }) => {
-  const [ machineNumber, setMachineNumber ] = useState('')
-  const [ machineSerial, setMachineSerial ] = useState('')
-  const [ closingForce, setClosingForce ] = useState('')
-  const [ spindleDiameter, setSpindleDiameter ] = useState('')
-
-  // state= {
-  //     machineNumber:'',
-  //     machineSerial: '',
-  //     closingForce: '',
-  //     spindleDiameter: ''
-  // }
+const UpdateMachine = ({ machine, message, closeMachine, updateMachine }) => {
+   
+    const [ machineNumber, setMachineNumber ] = useState(machine.machineNumber)
+    const [ machineSerial, setMachineSerial ] = useState(machine.machineSerial)
+    const [ closingForce, setClosingForce ] = useState(machine.closingForce)
+    const [ spindleDiameter, setSpindleDiameter ] = useState(machine.spindleDiameter)
 
     const onClose = () =>{
-      close('machineMessage')
+        return closeMachine()
     }
 
     const onInputChange = e => {
@@ -46,15 +42,6 @@ const AddMachine = ({ message, close, addMachine }) => {
       }
     };
   
-    // const inputValue = (number) => {
-    //   const value = parseInt(number)
-    //   if( isNaN(value) ){ return '' }
-    //   else if( value === 0 ){ return ''}
-    //   else { 
-    //     return value
-    //   }
-    // };
-
     const onSubmit = e =>{
       e.preventDefault();
       const input = {
@@ -63,7 +50,7 @@ const AddMachine = ({ message, close, addMachine }) => {
         closingForce,
         spindleDiameter,
       }
-      return addMachine(input);
+      return updateMachine(machine._id, input);
     }
 
     const renderSubmit = () =>{
@@ -78,7 +65,7 @@ const AddMachine = ({ message, close, addMachine }) => {
         return ReactDOM.createPortal(
           <div className="Modal">
           <div className="modal-content">
-            <h2>Add New Machine:</h2>
+            <h2>Update Machine:</h2>
             <form onSubmit={onSubmit}>
               <table>
             <tbody> 
@@ -144,7 +131,7 @@ const AddMachine = ({ message, close, addMachine }) => {
         return ReactDOM.createPortal(
           <div className="Modal">
             <div className="modal-content">
-              New Injection Machine added correctly <Link to="/machines"><button onClick={onClose}>Close</button></Link>
+            Machine updated correctly <Link to="/machines"><button onClick={onClose}>Close</button></Link>
             </div>
           </div>,document.querySelector('#modal')
         );
@@ -157,4 +144,9 @@ const AddMachine = ({ message, close, addMachine }) => {
   )
 };
 
-export default AddMachine;
+const mapStateToProps = state =>({
+    message: state.machineMessage,
+    machine: state.machine
+})
+
+export default connect(mapStateToProps, {updateMachine, closeMachine})(UpdateMachine)

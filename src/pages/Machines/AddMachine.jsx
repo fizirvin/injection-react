@@ -1,22 +1,17 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { addMachine, closeMachine } from './actions'
 
-const AddMachine = ({ message, close, addMachine }) => {
-  const [ machineNumber, setMachineNumber ] = useState('')
-  const [ machineSerial, setMachineSerial ] = useState('')
-  const [ closingForce, setClosingForce ] = useState('')
-  const [ spindleDiameter, setSpindleDiameter ] = useState('')
-
-  // state= {
-  //     machineNumber:'',
-  //     machineSerial: '',
-  //     closingForce: '',
-  //     spindleDiameter: ''
-  // }
+const AddMachine = ({ message, closeMachine, addMachine }) => {
+    const [ machineNumber, setMachineNumber ] = useState('')
+    const [ machineSerial, setMachineSerial ] = useState('')
+    const [ closingForce, setClosingForce ] = useState('')
+    const [ spindleDiameter, setSpindleDiameter ] = useState('')
 
     const onClose = () =>{
-      close('machineMessage')
+        return closeMachine()
     }
 
     const onInputChange = e => {
@@ -46,15 +41,6 @@ const AddMachine = ({ message, close, addMachine }) => {
       }
     };
   
-    // const inputValue = (number) => {
-    //   const value = parseInt(number)
-    //   if( isNaN(value) ){ return '' }
-    //   else if( value === 0 ){ return ''}
-    //   else { 
-    //     return value
-    //   }
-    // };
-
     const onSubmit = e =>{
       e.preventDefault();
       const input = {
@@ -157,4 +143,8 @@ const AddMachine = ({ message, close, addMachine }) => {
   )
 };
 
-export default AddMachine;
+const mapStateToProps = state =>({
+    message: state.machineMessage
+})
+
+export default connect(mapStateToProps, {addMachine, closeMachine})(AddMachine)

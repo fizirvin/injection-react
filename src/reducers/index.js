@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
-import { machinesReducer, machineReducer } from '../pages/Machines/reducers'
+import { machinesReducer, machineReducer, machineMessage } from '../pages/Machines/reducers'
 
 export default combineReducers({
     machines: machinesReducer,
-    machine: machineReducer
+    machine: machineReducer,
+    machineMessage: machineMessage
 })
