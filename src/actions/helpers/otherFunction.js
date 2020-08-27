@@ -92,3 +92,45 @@ updateModel = async ({ _id, partNumber, partName, family })=>{
     this.setState({ models, programs: updatedPrograms, modelMessage: 'sucess'});
   }
 }
+
+addMolde = async ({moldeNumber, moldeSerial, cavities, lifecycles})=>{
+  const input = { moldeNumber, moldeSerial, cavities, lifecycles }
+  addMolde.variables = { input }
+  opts.body = JSON.stringify(addMolde)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({moldeMessage: 'error'})
+  } else{
+    const { newMolde } = data.data
+    const moldes = [...this.state.moldes, newMolde ];
+    this.setState({ moldes, moldeMessage: 'sucess'});
+  }
+}
+
+updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles, tcycles })=>{
+  const input = { moldeNumber, moldeSerial, cavities, lifecycles, tcycles }
+  modifyMolde.variables = { _id, input }
+  opts.body = JSON.stringify(modifyMolde)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({moldeMessage: 'error'})
+  } else{
+    let molde = data.data.updateMolde;
+    let moldes = [...this.state.moldes];
+    moldes[moldes.findIndex(el => el._id === molde._id)] = molde;
+    let programs = [...this.state.programs]
+    const updateProgramMolde = (programs, molde) => {
+      return programs.map(item => {
+          var temp = Object.assign({}, item);
+          if (temp.moldeNumber._id === molde._id) {
+              temp.moldeNumber = molde;
+          }
+          return temp;
+      });
+    }
+    const updatedPrograms = updateProgramMolde(programs, molde);
+    this.setState({ moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
+  }
+}

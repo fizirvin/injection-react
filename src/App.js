@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Home, Moldes, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, Issues, 
+import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, Issues, 
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddMold, UpdateMold, AddMaterial, UpdateMaterial, AddIssue,
+import { AddMaterial, UpdateMaterial, AddIssue,
   UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
-import { addMachine, addMolde, addMaterial, addModel, addIssue, addDefect, addProgram, addReport, addUser, 
-  modifyUser, modifyMachine, modifyMolde, modifyMaterial, modifyModel, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
+import { addMaterial, addIssue, addDefect, addProgram, addReport, addUser, 
+  modifyUser, modifyMaterial, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
@@ -16,15 +16,12 @@ import './pages/Downtime.css'
 
 class App extends Component {
   state = {
-    moldeMessage: 'new',
     materialMessage: 'new',
     issueMessage: 'new',
     defectMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
     userMessage: 'new',
-    moldes: [],
-    cycles: [],
     materials: [],
     issues: [],
     defects: [],
@@ -68,8 +65,6 @@ class App extends Component {
       console.log('holalalala', hr_data, data)
       return this.setState({ 
         materials: data.data.materials, 
-        moldes: data.data.moldes,
-        cycles: data.data.cycles, 
         issues: data.data.issues,
         defects: data.data.defects,
         programs: data.data.programs,
@@ -185,48 +180,7 @@ class App extends Component {
     }
   }
 
-  addMolde = async ({moldeNumber, moldeSerial, cavities, lifecycles})=>{
-    const input = { moldeNumber, moldeSerial, cavities, lifecycles }
-    addMolde.variables = { input }
-    opts.body = JSON.stringify(addMolde)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({moldeMessage: 'error'})
-    } else{
-      const { newMolde } = data.data
-      const moldes = [...this.state.moldes, newMolde ];
-      this.setState({ moldes, moldeMessage: 'sucess'});
-    }
-  }
-
-  updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles, tcycles })=>{
-    const input = { moldeNumber, moldeSerial, cavities, lifecycles, tcycles }
-    modifyMolde.variables = { _id, input }
-    opts.body = JSON.stringify(modifyMolde)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({moldeMessage: 'error'})
-    } else{
-      let molde = data.data.updateMolde;
-      let moldes = [...this.state.moldes];
-      moldes[moldes.findIndex(el => el._id === molde._id)] = molde;
-      let programs = [...this.state.programs]
-      const updateProgramMolde = (programs, molde) => {
-        return programs.map(item => {
-            var temp = Object.assign({}, item);
-            if (temp.moldeNumber._id === molde._id) {
-                temp.moldeNumber = molde;
-            }
-            return temp;
-        });
-      }
-      const updatedPrograms = updateProgramMolde(programs, molde);
-      this.setState({ moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
-    }
-  }
-
+  
   addMaterial = async ({ number, manufacturer, description, acronym, identification, type, unit, color })=>{
     const input = { number, manufacturer, description, acronym, identification, type, unit, color }
     addMaterial.variables = { input }
@@ -663,13 +617,9 @@ class App extends Component {
           <div className="Content">
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/molds" exact component={ props => ( <Moldes {...props} cycles={this.state.cycles} moldes={this.state.moldes}/> )} /> 
-              <Route path="/molds/add" exact component={ props => ( <AddMold {...props} 
-                message={this.state.moldeMessage} close={this.close} addMolde={this.addMolde}/> )} 
-              />
-              <Route path="/molds/update/:id" exact component={ props => ( <UpdateMold {...props} 
-                moldes={this.state.moldes} message={this.state.moldeMessage} close={this.close} updateMolde={this.updateMolde}/> )} 
-              />
+              <Route path="/molds" exact component={ props => ( <Moldes {...props}/> )} /> 
+              <Route path="/molds/add" exact component={ props => ( <AddMolde {...props} /> )} />
+              <Route path="/molds/update/:id" exact component={ props => ( <UpdateMolde {...props} /> )} />
 
               <Route path="/material" exact component={ props => ( <Material {...props} material={this.state.materials}/> )} />
               <Route path="/material/add" exact component={ props => ( <AddMaterial {...props} 

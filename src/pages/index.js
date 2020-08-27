@@ -1,5 +1,5 @@
 import Home from './Home.js'
-import Moldes from './Moldes.js'
+import Moldes, { AddMolde, UpdateMolde }from './Moldes/index.js'
 import Machines, { AddMachine, UpdateMachine } from './Machines'
 import Material from './Material.js'
 import Models, { AddModel, UpdateModel } from './Parts'
@@ -17,7 +17,9 @@ import Product from './Product'
 
 export { 
     Home, 
-    Moldes,  
+    Moldes,
+    AddMolde,
+    UpdateMolde,  
     Material, 
     Models,
     AddModel,
