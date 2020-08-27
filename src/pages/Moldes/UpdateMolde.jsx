@@ -65,7 +65,7 @@ const UpdateMolde = ({ molde, message, closeMolde, updateMolde }) => {
         return ReactDOM.createPortal(
         <div className="Modal">
             <div className="modal-content">
-              <h2>Add New Injection Mold:</h2>
+              <h2>Update Injection Mold:</h2>
               <form onSubmit={onSubmit}>
                 <table>
               <tbody> 
@@ -130,7 +130,7 @@ const UpdateMolde = ({ molde, message, closeMolde, updateMolde }) => {
         return ReactDOM.createPortal(
           <div className="Modal">
             <div className="modal-content">
-              New Injection Mold added correctly <Link to="/molds"><button onClick={onClose}>Close</button></Link>
+              Injection Mold updated correctly <Link to="/molds"><button onClick={onClose}>Close</button></Link>
             </div>
           </div>,document.querySelector('#modal')
         );

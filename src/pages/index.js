@@ -3,8 +3,8 @@ import Moldes, { AddMolde, UpdateMolde }from './Moldes/index.js'
 import Machines, { AddMachine, UpdateMachine } from './Machines'
 import Material from './Material.js'
 import Models, { AddModel, UpdateModel } from './Parts'
-import Issues from './Issues.js'
-import Defects from './Defects.js'
+import Issues, { AddIssue, UpdateIssue } from './Issues/index.js'
+import Defects, { AddDefect, UpdateDefect } from './Defects/index.js'
 import Programs from './Programs.js'
 import Reports from './Reports.js'
 import Toolbar from './Toolbar.js'
@@ -24,8 +24,12 @@ export {
     Models,
     AddModel,
     UpdateModel,
-    Issues, 
-    Defects, 
+    Issues,
+    AddIssue,
+    UpdateIssue, 
+    Defects,
+    AddDefect,
+    UpdateDefect,
     Programs, 
     Reports, 
     Toolbar, 

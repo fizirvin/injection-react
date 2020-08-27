@@ -38,6 +38,7 @@ const addMolde = (input) => async ( dispatch ) => {
     const data = await res.json();
 
     if(data.errors){
+        console.log(data)
         return dispatch({type: MESSAGE_MOLDE,
             payload: 'error'
         })

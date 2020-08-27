@@ -134,3 +134,67 @@ updateMolde = async ({ _id, moldeNumber, moldeSerial, cavities, lifecycles, tcyc
     this.setState({ moldes, programs: updatedPrograms, moldeMessage: 'sucess'});
   }
 }
+
+addIssue = async ({ issueName, issueCode })=>{
+  const input = { issueName, issueCode }
+  addIssue.variables = { input }
+  opts.body = JSON.stringify(addIssue)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+  this.setState({issueMessage: 'error'})
+  } else{
+    const { newIssue } = data.data
+    const issues = [...this.state.issues, newIssue ];
+    this.setState({ issues, issueMessage: 'sucess'});
+  }
+}
+
+updateIssue = async ({ _id, issueName, issueCode })=>{
+  const input = { issueName, issueCode }
+  modifyIssue.variables = { _id, input }
+  opts.body = JSON.stringify(modifyIssue)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({issueMessage: 'error'})
+  } else{
+    let issue = data.data.updateIssue;
+    let issues = [...this.state.issues];
+    issues[issues.findIndex(el => el._id === issue._id)] = issue;
+    this.setState({issues: issues, issueMessage: 'sucess'});
+  }
+}
+
+addDefect = async ({ defectName, defectCode, isInjection })=>{
+  const input = { defectName, defectCode, isInjection }
+  addDefect.variables = { input }
+  opts.body = JSON.stringify(addDefect)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    console.log(data.errors)
+    this.setState({defectMessage: 'error'})
+  } else{
+    const { newDefect } = data.data
+    const defects = [...this.state.defects, newDefect ];
+    this.setState({defects, defectMessage: 'sucess'});
+  }
+}
+
+updateDefect = async ({ _id, defectName, defectCode, isInjection })=>{
+  const input = { defectName, defectCode, isInjection }
+  modifyDefect.variables = { _id, input }
+  opts.body = JSON.stringify(modifyDefect)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    console.log(data.errors)
+    this.setState({defectMessage: 'error'})
+  } else{
+    let defect = data.data.updateDefect;
+    let defects = [...this.state.defects];
+    defects[defects.findIndex(el => el._id === defect._id)] = defect;
+    this.setState({defects: defects, defectMessage: 'sucess'});
+  }
+}

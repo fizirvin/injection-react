@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, Issues, 
+import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, 
+  Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddMaterial, UpdateMaterial, AddIssue,
-  UpdateIssue, AddDefect, UpdateDefect, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
+import { AddMaterial, UpdateMaterial, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
-import { addMaterial, addIssue, addDefect, addProgram, addReport, addUser, 
-  modifyUser, modifyMaterial, modifyIssue, modifyDefect, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
+import { addMaterial, addProgram, addReport, addUser, 
+  modifyUser, modifyMaterial, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
@@ -17,14 +17,10 @@ import './pages/Downtime.css'
 class App extends Component {
   state = {
     materialMessage: 'new',
-    issueMessage: 'new',
-    defectMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
     userMessage: 'new',
     materials: [],
-    issues: [],
-    defects: [],
     programs: [],
     reports: [],
     totalReports: 0,
@@ -65,8 +61,6 @@ class App extends Component {
       console.log('holalalala', hr_data, data)
       return this.setState({ 
         materials: data.data.materials, 
-        issues: data.data.issues,
-        defects: data.data.defects,
         programs: data.data.programs,
         reports: data.data.reports.reports,
         totalReports: data.data.reports.totalReports,
@@ -210,70 +204,6 @@ class App extends Component {
       let materials = [...this.state.materials];
       materials[materials.findIndex(el => el._id === material._id)] = material;
       this.setState({ materials, materialMessage: 'sucess'});
-    }
-  }
-
-  addIssue = async ({ issueName, issueCode })=>{
-    const input = { issueName, issueCode }
-    addIssue.variables = { input }
-    opts.body = JSON.stringify(addIssue)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-    this.setState({issueMessage: 'error'})
-    } else{
-      const { newIssue } = data.data
-      const issues = [...this.state.issues, newIssue ];
-      this.setState({ issues, issueMessage: 'sucess'});
-    }
-  }
-
-  updateIssue = async ({ _id, issueName, issueCode })=>{
-    const input = { issueName, issueCode }
-    modifyIssue.variables = { _id, input }
-    opts.body = JSON.stringify(modifyIssue)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({issueMessage: 'error'})
-    } else{
-      let issue = data.data.updateIssue;
-      let issues = [...this.state.issues];
-      issues[issues.findIndex(el => el._id === issue._id)] = issue;
-      this.setState({issues: issues, issueMessage: 'sucess'});
-    }
-  }
-
-  addDefect = async ({ defectName, defectCode, isInjection })=>{
-    const input = { defectName, defectCode, isInjection }
-    addDefect.variables = { input }
-    opts.body = JSON.stringify(addDefect)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      console.log(data.errors)
-      this.setState({defectMessage: 'error'})
-    } else{
-      const { newDefect } = data.data
-      const defects = [...this.state.defects, newDefect ];
-      this.setState({defects, defectMessage: 'sucess'});
-    }
-  }
-
-  updateDefect = async ({ _id, defectName, defectCode, isInjection })=>{
-    const input = { defectName, defectCode, isInjection }
-    modifyDefect.variables = { _id, input }
-    opts.body = JSON.stringify(modifyDefect)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      console.log(data.errors)
-      this.setState({defectMessage: 'error'})
-    } else{
-      let defect = data.data.updateDefect;
-      let defects = [...this.state.defects];
-      defects[defects.findIndex(el => el._id === defect._id)] = defect;
-      this.setState({defects: defects, defectMessage: 'sucess'});
     }
   }
 
@@ -637,21 +567,13 @@ class App extends Component {
               <Route path="/models/add" exact component={ props => ( <AddModel {...props}/> )} />
               <Route path="/models/update/:id" exact component={ props => ( <UpdateModel {...props}/> )} />
               
-              <Route path="/issues" exact component={ props => ( <Issues {...props} issues={this.state.issues}/> )} />
-              <Route path="/issues/add" exact component={ props => ( <AddIssue {...props} 
-                message={this.state.issueMessage} close={this.close} addIssue={this.addIssue}/> )} 
-              />
-              <Route path="/issues/update/:id" exact component={ props => ( <UpdateIssue {...props} 
-                issues={this.state.issues} message={this.state.issueMessage} close={this.close} updateIssue={this.updateIssue}/> )} 
-              />
+              <Route path="/issues" exact component={ props => ( <Issues {...props}/> )} />
+              <Route path="/issues/add" exact component={ props => ( <AddIssue {...props}/> )} />
+              <Route path="/issues/update/:id" exact component={ props => ( <UpdateIssue {...props}/> )} />
               
-              <Route path="/defects" exact component={ props => ( <Defects {...props} defects={this.state.defects}/> )} />    
-              <Route path="/defects/add" exact component={ props => ( <AddDefect {...props} 
-                message={this.state.defectMessage} close={this.close} addDefect={this.addDefect}/> )} 
-              />
-              <Route path="/defects/update/:id" exact component={ props => ( <UpdateDefect {...props} 
-                defects={this.state.defects} message={this.state.defectMessage} close={this.close} updateDefect={this.updateDefect}/> )} 
-              />      
+              <Route path="/defects" exact component={ props => ( <Defects {...props} /> )} />    
+              <Route path="/defects/add" exact component={ props => ( <AddDefect {...props} /> )} />
+              <Route path="/defects/update/:id" exact component={ props => ( <UpdateDefect {...props} /> )} />      
 
               <Route path="/programs" exact component={ props => ( <Programs {...props} programs={this.state.programs}/> )} />
               <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
