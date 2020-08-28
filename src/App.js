@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, Models, AddModel, UpdateModel, 
+import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
   Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddMaterial, UpdateMaterial, AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
+import { AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
 import { addMaterial, addProgram, addReport, addUser, 
   modifyUser, modifyMaterial, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
@@ -16,11 +16,9 @@ import './pages/Downtime.css'
 
 class App extends Component {
   state = {
-    materialMessage: 'new',
     programMessage: 'new',
     reportMessage: 'new',
     userMessage: 'new',
-    materials: [],
     programs: [],
     reports: [],
     totalReports: 0,
@@ -59,8 +57,7 @@ class App extends Component {
     }
     else {
       console.log('holalalala', hr_data, data)
-      return this.setState({ 
-        materials: data.data.materials, 
+      return this.setState({  
         programs: data.data.programs,
         reports: data.data.reports.reports,
         totalReports: data.data.reports.totalReports,
@@ -171,39 +168,6 @@ class App extends Component {
       let users = [...this.state.users];
       users[users.findIndex(el => el._id === user._id)] = user;
       this.setState({ users, userMessage: 'sucess'});
-    }
-  }
-
-  
-  addMaterial = async ({ number, manufacturer, description, acronym, identification, type, unit, color })=>{
-    const input = { number, manufacturer, description, acronym, identification, type, unit, color }
-    addMaterial.variables = { input }
-    opts.body = JSON.stringify(addMaterial)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({materialMessage: 'error'})
-    } else{
-      const { newMaterial } = data.data
-      const materials = [...this.state.materials, newMaterial ];
-      this.setState({ materials, materialMessage: 'sucess'});
-    }
-
-  }
-
-  updateMaterial = async ({ _id, number, manufacturer, description, acronym, identification, type, color, unit })=>{
-    const input = { number, manufacturer, description, acronym, identification, type, color, unit }
-    modifyMaterial.variables = { _id, input }
-    opts.body = JSON.stringify(modifyMaterial)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({materialMessage: 'error'})
-    } else{
-      let material = data.data.updateMaterial;
-      let materials = [...this.state.materials];
-      materials[materials.findIndex(el => el._id === material._id)] = material;
-      this.setState({ materials, materialMessage: 'sucess'});
     }
   }
 
@@ -551,13 +515,9 @@ class App extends Component {
               <Route path="/molds/add" exact component={ props => ( <AddMolde {...props} /> )} />
               <Route path="/molds/update/:id" exact component={ props => ( <UpdateMolde {...props} /> )} />
 
-              <Route path="/material" exact component={ props => ( <Material {...props} material={this.state.materials}/> )} />
-              <Route path="/material/add" exact component={ props => ( <AddMaterial {...props} 
-                message={this.state.materialMessage} close={this.close} addMaterial={this.addMaterial}/> )} 
-              />
-              <Route path="/material/update/:id" exact component={ props => ( <UpdateMaterial {...props} 
-                material={this.state.materials} message={this.state.materialMessage} close={this.close} updateMaterial={this.updateMaterial}/> )} 
-              />
+              <Route path="/material" exact component={ props => ( <Material {...props} /> )} />
+              <Route path="/material/add" exact component={ props => ( <AddMaterial {...props} /> )} />
+              <Route path="/material/update/:id" exact component={ props => ( <UpdateMaterial {...props} /> )} />
 
               <Route path="/machines" exact component={ props => ( <Machines {...props}/> )}/>
               <Route path="/machines/add" exact component={ props => ( <AddMachine {...props}/> )}/>

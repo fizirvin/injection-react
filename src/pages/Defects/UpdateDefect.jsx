@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { updateDefect, closeDefect } from './actions'
 
 const UpdateDefect = ({ defect, message, closeDefect, updateDefect }) => {
-  const [ defectName, setDefectName ] = useState(defect.setDefectName)
+  const [ defectName, setDefectName ] = useState(defect.defectName)
   const [ defectCode, setDefectode ] = useState(defect.defectCode)
   const [ isInjection, setIsInjection ] = useState(defect.isInjection)
   
@@ -32,7 +32,7 @@ const UpdateDefect = ({ defect, message, closeDefect, updateDefect }) => {
         defectCode,
         isInjection
       }
-      return updateDefect(input);
+      return updateDefect(defect._id, input);
     }
 
     const onIsInjection = e =>{

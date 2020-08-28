@@ -1,7 +1,7 @@
 import Home from './Home.js'
 import Moldes, { AddMolde, UpdateMolde }from './Moldes/index.js'
 import Machines, { AddMachine, UpdateMachine } from './Machines'
-import Material from './Material.js'
+import Material, { AddMaterial, UpdateMaterial } from './Materials/index.js'
 import Models, { AddModel, UpdateModel } from './Parts'
 import Issues, { AddIssue, UpdateIssue } from './Issues/index.js'
 import Defects, { AddDefect, UpdateDefect } from './Defects/index.js'
@@ -20,7 +20,9 @@ export {
     Moldes,
     AddMolde,
     UpdateMolde,  
-    Material, 
+    Material,
+    AddMaterial,
+    UpdateMaterial,
     Models,
     AddModel,
     UpdateModel,

@@ -198,3 +198,35 @@ updateDefect = async ({ _id, defectName, defectCode, isInjection })=>{
     this.setState({defects: defects, defectMessage: 'sucess'});
   }
 }
+
+addMaterial = async ({ number, manufacturer, description, acronym, identification, type, unit, color })=>{
+  const input = { number, manufacturer, description, acronym, identification, type, unit, color }
+  addMaterial.variables = { input }
+  opts.body = JSON.stringify(addMaterial)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({materialMessage: 'error'})
+  } else{
+    const { newMaterial } = data.data
+    const materials = [...this.state.materials, newMaterial ];
+    this.setState({ materials, materialMessage: 'sucess'});
+  }
+
+}
+
+updateMaterial = async ({ _id, number, manufacturer, description, acronym, identification, type, color, unit })=>{
+  const input = { number, manufacturer, description, acronym, identification, type, color, unit }
+  modifyMaterial.variables = { _id, input }
+  opts.body = JSON.stringify(modifyMaterial)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({materialMessage: 'error'})
+  } else{
+    let material = data.data.updateMaterial;
+    let materials = [...this.state.materials];
+    materials[materials.findIndex(el => el._id === material._id)] = material;
+    this.setState({ materials, materialMessage: 'sucess'});
+  }
+}
