@@ -5,7 +5,7 @@ import Material, { AddMaterial, UpdateMaterial } from './Materials/index.js'
 import Models, { AddModel, UpdateModel } from './Parts'
 import Issues, { AddIssue, UpdateIssue } from './Issues/index.js'
 import Defects, { AddDefect, UpdateDefect } from './Defects/index.js'
-import Programs from './Programs.js'
+import Programs, { AddProgram, UpdateProgram } from './Programs/index.js'
 import Reports from './Reports.js'
 import Toolbar from './Toolbar.js'
 import Production from './Production.js'
@@ -32,7 +32,9 @@ export {
     Defects,
     AddDefect,
     UpdateDefect,
-    Programs, 
+    Programs,
+    AddProgram, 
+    UpdateProgram, 
     Reports, 
     Toolbar, 
     Production, 

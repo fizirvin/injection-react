@@ -5,6 +5,7 @@ import { reducers as moldes } from '../pages/Moldes/index.js'
 import { reducers as issues } from '../pages/Issues/index.js'
 import { reducers as defects } from '../pages/Defects/index.js'
 import { reducers as materials } from '../pages/Materials/index.js'
+import { reducers as programs } from '../pages/Programs/index.js'
 
 export default combineReducers({
     machines: machines.machinesReducer,
@@ -25,5 +26,8 @@ export default combineReducers({
     defectMessage: defects.defectMessage,
     materials: materials.materialsReducer,
     material: materials.materialReducer,
-    materialMessage: materials.materialMessage
+    materialMessage: materials.materialMessage,
+    programs: programs.programsReducer,
+    program: programs.programReducer,
+    programMessage: programs.programMessage
 })

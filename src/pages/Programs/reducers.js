@@ -1,18 +1,18 @@
 import {
-    FETCH_MATERIALS,
-    ADD_MATERIAL,
-    UPDATE_MATERIAL,
-    SELECT_MATERIAL,
-    MESSAGE_MATERIAL,
+    FETCH_PROGRAMS,
+    ADD_PROGRAM,
+    UPDATE_PROGRAM,
+    SELECT_PROGRAM,
+    MESSAGE_PROGRAM,
 } from './actions'
 
-const materialsReducer = (state = [], action) =>{
+const programsReducer = (state = [], action) =>{
     switch (action.type){
-        case FETCH_MATERIALS:
+        case FETCH_PROGRAMS:
             return action.payload
-        case ADD_MATERIAL:
+        case ADD_PROGRAM:
             return [ ...state, action.payload ]
-        case UPDATE_MATERIAL:
+        case UPDATE_PROGRAM:
             const item = action.payload
             let items = [...state]
             items[items.findIndex(el => el._id === item._id)] = item;
@@ -22,22 +22,22 @@ const materialsReducer = (state = [], action) =>{
     }
 }
 
-const materialMessage = ( message = 'new', action) =>{
-    if(action.type === MESSAGE_MATERIAL){
+const programMessage = ( message = 'new', action) =>{
+    if(action.type === MESSAGE_PROGRAM){
         return action.payload
     }
     return message
 }
 
-const materialReducer = (selected = null, action) =>{
-    if(action.type === SELECT_MATERIAL){
+const programReducer = (selected = null, action) =>{
+    if(action.type === SELECT_PROGRAM){
         return action.payload
     }
     return selected
 }
 
 export {
-    materialsReducer, 
-    materialReducer,
-    materialMessage
+    programsReducer, 
+    programReducer,
+    programMessage
 }

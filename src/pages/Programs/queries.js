@@ -1,17 +1,29 @@
-const materialsQuery = { query: 
+const programsQuery = { query: 
     `query {
-        materials{
+        programs{
             _id
-            number
-            manufacturer
-            description
-            acronym
-            identification
-            type
-            unit
-            color
+            machineNumber{
+                _id
+                machineNumber
+                machineSerial
+            }
+            moldeNumber{
+                _id
+                moldeNumber
+                moldeSerial
+                cavities
+            }
+            partNumber{
+                _id
+                partNumber
+                partName
+                family
+            }
+            cycleTime
+            cycles
+            capacity
         }
     }`
 };
 
-export default materialsQuery
+export default programsQuery

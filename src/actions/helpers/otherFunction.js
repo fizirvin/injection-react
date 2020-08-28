@@ -230,3 +230,34 @@ updateMaterial = async ({ _id, number, manufacturer, description, acronym, ident
     this.setState({ materials, materialMessage: 'sucess'});
   }
 }
+
+addProgram = async ({ machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
+  const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
+  addProgram.variables = { input }
+  opts.body = JSON.stringify(addProgram)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({programMessage: 'error'})
+  } else{
+    const { newProgram } = data.data
+    const programs = [...this.state.programs, newProgram];
+    this.setState({programs, programMessage: 'sucess'});
+  }
+}
+
+updateProgram = async ({ _id, machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
+  const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
+  modifyProgram.variables = { _id, input }
+  opts.body = JSON.stringify(modifyProgram)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({programMessage: 'error'})
+  } else{
+    let program = data.data.updateProgram;
+    let programs = [...this.state.programs];
+    programs[programs.findIndex(el => el._id === program._id)] = program;
+    this.setState({programs: programs, programMessage: 'sucess'});
+  }
+}

@@ -1,36 +1,59 @@
-const addMaterial = { query: `mutation
-    NewMaterial( $input: NewMaterial ){
-        newMaterial(input: $input){
+const addProgram = { query: `mutation
+    NewProgram( $input: NewProgram ){
+        newProgram(input: $input){
             _id
-            number
-            manufacturer
-            description
-            acronym
-            identification
-            type
-            unit
-            color
+            machineNumber {
+                _id
+                machineNumber
+                machineSerial
+            }
+            moldeNumber {
+                _id
+                moldeNumber
+                moldeSerial
+                cavities
+            }
+            partNumber {
+                _id
+                partNumber
+                partName
+            }
+            cycleTime
+            cycles
+            capacity
         }
     }`
 }
 
-const modifyMaterial = { query: `mutation
-    UpdateMaterial($_id: ID, $input: NewMaterial ){
-        updateMaterial(_id: $_id, input: $input){
+const modifyProgram = { query: `mutation
+    UpdateProgram($_id: ID, $input: NewProgram ){
+        updateProgram(_id: $_id, input: $input){
             _id
-            number
-            manufacturer
-            description
-            acronym
-            identification
-            type
-            unit
-            color
+            machineNumber {
+            _id
+            machineNumber
+            machineSerial
+            }
+            moldeNumber {
+            _id
+            moldeNumber
+            moldeSerial
+            cavities
+            }
+            partNumber {
+            _id
+            partNumber
+            partName
+        
+            }
+            cycleTime
+            cycles
+            capacity
         }
     }`
 }
 
 export { 
-    addMaterial,
-    modifyMaterial
+    addProgram,
+    modifyProgram
 }

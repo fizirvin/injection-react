@@ -1,86 +1,86 @@
 import { url, opts } from '../../actions/config'
-import materialsQuery from './queries'
-import { addMaterial as newMaterial, modifyMaterial } from './mutations'
+import programsQuery from './queries'
+import { addProgram as newProgram, modifyProgram } from './mutations'
 
-export const FETCH_MATERIALS = 'FETCH_MATERIALS'
-export const ADD_MATERIAL = 'ADD_MATERIAL'
-export const UPDATE_MATERIAL = 'UPDATE_MATERIAL'
-export const SELECT_MATERIAL = 'SELECT_MATERIAL'
-export const MESSAGE_MATERIAL = 'MESSAGE_MATERIAL'
+export const FETCH_PROGRAMS = 'FETCH_PROGRAMS'
+export const ADD_PROGRAM = 'ADD_PROGRAM'
+export const UPDATE_PROGRAM = 'UPDATE_PROGRAM'
+export const SELECT_PROGRAM = 'SELECT_PROGRAM'
+export const MESSAGE_PROGRAM = 'MESSAGE_PROGRAM'
 
-const fetchMaterials = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(materialsQuery)
+const fetchPrograms = () => async ( dispatch ) => {
+    opts.body = JSON.stringify(programsQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
 
     dispatch({
-        type: FETCH_MATERIALS,
-        payload: data.data.materials
+        type: FETCH_PROGRAMS,
+        payload: data.data.programs
     })
 }
 
-const addMaterial = (input) => async ( dispatch ) => {
-    newMaterial.variables = { input }
-    opts.body = JSON.stringify(newMaterial)
+const addProgram = (input) => async ( dispatch ) => {
+    newProgram.variables = { input }
+    opts.body = JSON.stringify(newProgram)
     const res = await fetch(url, opts);
     const data = await res.json();
 
     if(data.errors){
         console.log(data)
-        return dispatch({type: MESSAGE_MATERIAL,
+        return dispatch({type: MESSAGE_PROGRAM,
             payload: 'error'
         })
     } else{
         dispatch({
-            type: ADD_MATERIAL,
-            payload: data.data.newMaterial
+            type: ADD_PROGRAM,
+            payload: data.data.newProgram
         })
         return dispatch({
-            type: MESSAGE_MATERIAL,
+            type: MESSAGE_PROGRAM,
             payload: 'sucess'
         })
     }
 }
 
-const updateMaterial = (_id, input) => async ( dispatch ) => {
-    modifyMaterial.variables = { _id, input }
-    opts.body = JSON.stringify(modifyMaterial)
+const updateProgram = (_id, input) => async ( dispatch ) => {
+    modifyProgram.variables = { _id, input }
+    opts.body = JSON.stringify(modifyProgram)
     const res = await fetch(url, opts);
     const data = await res.json();
     if(data.errors){
-        return dispatch({type: MESSAGE_MATERIAL,
+        return dispatch({type: MESSAGE_PROGRAM,
             payload: 'error'
         })
     } else{
         dispatch({
-            type: UPDATE_MATERIAL,
-            payload: data.data.updateMaterial
+            type: UPDATE_PROGRAM,
+            payload: data.data.updateProgram
         })
         return dispatch({
-            type: MESSAGE_MATERIAL,
+            type: MESSAGE_PROGRAM,
             payload: 'sucess'
         })
     }
 }
 
-const selectMaterial = material =>{
+const selectProgram = program =>{
     return{
-        type: SELECT_MATERIAL,
-        payload: material
+        type: SELECT_PROGRAM,
+        payload: program
     }
 }
 
-const closeMaterial = () =>{
+const closeProgram = () =>{
     return{
-        type: MESSAGE_MATERIAL,
+        type: MESSAGE_PROGRAM,
         payload: 'new'
     }
 }
 
 export {
-    fetchMaterials,
-    addMaterial,
-    updateMaterial,
-    selectMaterial,
-    closeMaterial
+    fetchPrograms,
+    addProgram,
+    updateProgram,
+    selectProgram,
+    closeProgram
 }

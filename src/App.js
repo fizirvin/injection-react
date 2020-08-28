@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
-  Defects, Programs, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddProgram, UpdateProgram, AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
+  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
+import { AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
 import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
-import { addMaterial, addProgram, addReport, addUser, 
-  modifyUser, modifyMaterial, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
+import { addReport, addUser, 
+  modifyUser, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
@@ -171,37 +171,7 @@ class App extends Component {
     }
   }
 
-  addProgram = async ({ machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
-    const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
-    addProgram.variables = { input }
-    opts.body = JSON.stringify(addProgram)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({programMessage: 'error'})
-    } else{
-      const { newProgram } = data.data
-      const programs = [...this.state.programs, newProgram];
-      this.setState({programs, programMessage: 'sucess'});
-    }
-  }
-
-  updateProgram = async ({ _id, machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity })=>{
-    const input = { machineNumber, moldeNumber, partNumber, cycleTime, cycles, capacity }
-    modifyProgram.variables = { _id, input }
-    opts.body = JSON.stringify(modifyProgram)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({programMessage: 'error'})
-    } else{
-      let program = data.data.updateProgram;
-      let programs = [...this.state.programs];
-      programs[programs.findIndex(el => el._id === program._id)] = program;
-      this.setState({programs: programs, programMessage: 'sucess'});
-    }
-  }
-
+  
   addReport = async ({ workers, comments, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
     const downtimeDetail = downtime
     const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE,
@@ -535,19 +505,10 @@ class App extends Component {
               <Route path="/defects/add" exact component={ props => ( <AddDefect {...props} /> )} />
               <Route path="/defects/update/:id" exact component={ props => ( <UpdateDefect {...props} /> )} />      
 
-              <Route path="/programs" exact component={ props => ( <Programs {...props} programs={this.state.programs}/> )} />
-              <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} 
-                machines={this.state.machines} 
-                moldes={this.state.moldes} 
-                models={this.state.models}
-                message={this.state.programMessage} close={this.close} addProgram={this.addProgram}/> )} 
-              />
-              <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} 
-                programs={this.state.programs}
-                machines={this.state.machines} 
-                moldes={this.state.moldes} 
-                models={this.state.models} message={this.state.programMessage} close={this.close} updateProgram={this.updateProgram}/> )} 
-              />
+              <Route path="/programs" exact component={ props => ( <Programs {...props} /> )} />
+              <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} /> )} />
+              <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} /> )} />
+
               <Route path="/reports" exact component={ props => ( <Reports {...props}
                 loadingPage={this.state.loadingPage}
                 onNext={ () => this.loadReports('next')}
