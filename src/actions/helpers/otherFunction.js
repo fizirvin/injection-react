@@ -261,3 +261,75 @@ updateProgram = async ({ _id, machineNumber, moldeNumber, partNumber, cycleTime,
     this.setState({programs: programs, programMessage: 'sucess'});
   }
 }
+
+newWorker = async (input) =>{
+  addWorker.variables = { input }
+
+  hr_opts.body = JSON.stringify(addWorker)
+  const res = await fetch(hr_server, hr_opts);
+  const data = await res.json();
+  if(data.errors){
+    console.log(data.errors)
+    return this.setState({workerMessage: 'error'})
+
+  } else {
+    const profile = data.data.newProfile
+    const profiles = [...this.state.profiles, profile]
+    console.log(profile)
+    return this.setState({profiles, workerMessage: 'sucess'})
+  }
+}
+
+updateWorker = async (_id, obj) =>{
+  console.log(_id)
+  const input = {...obj}
+  modifyWorker.variables = { _id, input }
+
+  hr_opts.body = JSON.stringify(modifyWorker)
+  const res = await fetch(hr_server, hr_opts);
+  const data = await res.json();
+  if(data.errors){
+    console.log(data.errors)
+    return this.setState({workerMessage: 'error'})
+
+  } else {
+    
+    let profile = data.data.updateProfile;
+    let profiles = [...this.state.profiles];
+    profiles[profiles.findIndex(el => el._id === profile._id)] = profile;
+    this.setState({ profiles, workerMessage: 'sucess'});
+  }
+}
+
+addUser = async ({name, level, password})=>{
+  const input = { name, level, password }
+  addUser.variables = { input }
+  opts.body = JSON.stringify(addUser)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    this.setState({userMessage: 'error'})
+  } else{
+    const { newUser } = data.data
+    const users = [...this.state.users, newUser ];
+    this.setState({ users, userMessage: 'sucess'});
+  }
+}
+
+updateUser = async ({_id, level, active})=>{
+  const input = { level, active}
+  console.log(input)
+  modifyUser.variables = { _id, input }
+  opts.body = JSON.stringify(modifyUser)
+  const res = await fetch(url, opts);
+  const data = await res.json();
+  if(data.errors){
+    console.log(data.errors)
+    this.setState({userMessage: 'error'})
+  } else{
+    let user = data.data.updateUser;
+    let users = [...this.state.users];
+    users[users.findIndex(el => el._id === user._id)] = user;
+    this.setState({ users, userMessage: 'sucess'});
+  }
+}

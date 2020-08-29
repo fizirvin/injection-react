@@ -22,14 +22,17 @@ const header = [
 const Moldes = ({moldes, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
 
   useEffect(() =>{
-    fetchMoldes();
-    return 
-  },[])
+    if(moldes.length === 0){
+      console.log('llamé maquinas moldes')
+      fetchMoldes()
+    } 
+  },[moldes])
 
   useEffect(() =>{
-    fetchCycles();
-    return 
-  },[])
+    if(cycles.length === 0){
+      fetchCycles()
+    } 
+  },[cycles])
 
   const precise_round = (num, dec) =>{
     const num_sign = num >= 0 ? 1 : -1;

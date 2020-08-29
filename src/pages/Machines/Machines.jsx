@@ -21,9 +21,10 @@ const header = [
 const Machines = ({machines, fetchMachines, selectMachine}) =>{
 
   useEffect(() =>{
-    fetchMachines();
-    return 
-  },[])
+    if(machines.length === 0){
+      fetchMachines()
+    } 
+  },[machines])
 
   const renderList = () =>{
       return machines.map( machine => {

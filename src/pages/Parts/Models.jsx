@@ -19,9 +19,11 @@ const header = [
 const Models = ({models, fetchModels, selectModel}) =>{
 
   useEffect(() =>{
-    fetchModels();
-    return 
-  },[])
+    if(models.length === 0){
+      console.log('llamé maquinas models')
+      fetchModels()
+    } 
+  },[models])
 
   const renderList = () =>{
       return models.map( model => {

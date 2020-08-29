@@ -1,0 +1,154 @@
+.workerList_container{
+  background-color: white;
+  height: 86vh;
+  margin-top: 1%;
+  overflow-y: scroll;
+ 
+}
+
+.worker_container {
+
+  margin-bottom: 6px;
+  margin-left: 60px;
+  
+ 
+  
+  height: 55px;
+}
+
+.section_title{
+  margin-left: 60px;
+}
+
+.controls{
+
+  display: flex;
+  width: 50vw;
+  
+  margin-left: 60px;
+  
+  margin-bottom: 4px;
+  justify-content: space-between;
+}
+
+.items_count{
+  font-style: italic;
+  font-size: 90%;
+}
+
+.worker_table{
+  border-collapse: collapse;
+  width: 50vw;
+  border-bottom: solid blue .1px;
+  background-color: white;
+}
+
+.image_profile{
+  border-radius: 100%;
+  padding: 0;
+  margin: 0;
+  vertical-align: middle;
+}
+
+
+
+.name_field h3{
+  padding: 0;
+  margin: 0;
+  margin-top: 0;
+}
+
+
+
+
+
+
+.image_field{
+ 
+  width: 5%;
+  height: 50px;
+}
+
+
+.name_field  {
+  height: 25px;
+  padding-left: 15px;
+  width: 50%;
+ 
+  
+  text-align: center;
+}
+
+.entry_field{
+  height: 25px;
+  
+  width: 20%;
+  padding: 0;
+  margin: 0;
+ 
+  font-size: 90%;
+}
+
+.number_field{
+  height: 25px;
+  width: 15%;
+  
+  padding: 0;
+  margin: 0;
+  font-size: 90%;
+}
+
+.position_field{
+  height: 25px;
+  width: 25%;
+  
+  padding: 0;
+  margin: 0;
+  text-align: right;
+  padding-right: 10px;
+  font-size: 95%;
+  font-style: italic;
+}
+
+.area_field{
+  height: 25px;
+  width: 25%;
+ 
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  font-size: 95%;
+}
+
+.department_field{
+  height: 25px;
+  width: 30%;
+  font-size: 95%;
+  padding: 0;
+  margin: 0;
+}
+
+.update_field{
+  text-align: center;
+  width: 6%;
+}
+
+.index_field{
+  text-align: left;
+  font-size: 90%;
+  width: 4%;
+}
+
+.number_rutas{
+  background-color: rgb(107, 121, 247);
+}
+
+.number_amealco{
+  background-color: rgb(95, 202, 202);
+}
+
+.worker_list{
+  
+  background-color: white;
+  height: 100%;
+}

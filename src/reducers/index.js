@@ -6,6 +6,8 @@ import { reducers as issues } from '../pages/Issues/index.js'
 import { reducers as defects } from '../pages/Defects/index.js'
 import { reducers as materials } from '../pages/Materials/index.js'
 import { reducers as programs } from '../pages/Programs/index.js'
+import { reducers as workers } from '../pages/Workers/index.js'
+import { reducers as users } from '../pages/Users/index.js'
 
 export default combineReducers({
     machines: machines.machinesReducer,
@@ -29,5 +31,11 @@ export default combineReducers({
     materialMessage: materials.materialMessage,
     programs: programs.programsReducer,
     program: programs.programReducer,
-    programMessage: programs.programMessage
+    programMessage: programs.programMessage,
+    profiles: workers.workersReducer,
+    worker: workers.workerReducer,
+    workerMessage: workers.workerMessage,
+    users: users.usersReducer,
+    user: users.userReducer,
+    userMessage: users.userMessage,
 })

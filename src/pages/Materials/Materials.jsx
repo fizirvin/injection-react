@@ -24,11 +24,11 @@ const header = [
 const Materials = ({ materials, fetchMaterials, selectMaterial }) =>{
 
   useEffect(() =>{
-    fetchMaterials();
-    return 
-  },[])
+    if(materials.length === 0){
+      fetchMaterials()
+    } 
+  },[materials])
 
-  
   const renderList = () =>{
       return materials.map( material => {
       const {_id, number, manufacturer, description, acronym, identification, type, unit, color} = material

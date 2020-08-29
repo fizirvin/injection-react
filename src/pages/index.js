@@ -6,14 +6,15 @@ import Models, { AddModel, UpdateModel } from './Parts'
 import Issues, { AddIssue, UpdateIssue } from './Issues/index.js'
 import Defects, { AddDefect, UpdateDefect } from './Defects/index.js'
 import Programs, { AddProgram, UpdateProgram } from './Programs/index.js'
-import Reports from './Reports.js'
+
 import Toolbar from './Toolbar.js'
 import Production from './Production.js'
 import Downtime from './Downtime.js'
-import Users from './Users.js'
+import Users, { AddUser, UpdateUser } from './Users/index.js'
 import Record from './Record.js'
-import WorkersList from './WorkersList'
+import Workers, { AddWorker, UpdateWorker } from './Workers/index.js'
 import Product from './Product'
+import Reports from './Reports.js'
 
 export { 
     Home, 
@@ -40,8 +41,12 @@ export {
     Production, 
     Downtime,
     Users,
+    AddUser,
+    UpdateUser,
     Record,
-    WorkersList,
+    Workers,
+    AddWorker,
+    UpdateWorker,
     Product,
     Machines,
     AddMachine,

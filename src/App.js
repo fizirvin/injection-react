@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
-  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Downtime, Users, Record, WorkersList, Product } from './pages'
-import { AddReport, UpdateReport, AddUser, UpdateUser, NewWorker, UpdateWorker } from './forms';
-import { initialQuery, workerQuery, reportsQuery } from './actions/queries'
-import { addReport, addUser, 
-  modifyUser, modifyProgram, modifyReport, addWorker, modifyWorker } from './actions/mutations'
+  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Downtime, Users, AddUser, 
+  UpdateUser, Record, Workers, AddWorker, UpdateWorker, Product } from './pages'
+import { AddReport, UpdateReport } from './forms';
+import { initialQuery, reportsQuery } from './actions/queries'
+import { addReport, modifyReport  } from './actions/mutations'
 import { getDateofTable, getDateofTable49, formatDate } from './actions/helpers'
 import { url, opts, hr_server, hr_opts } from './actions/config'
 import './App.css';
@@ -16,15 +16,12 @@ import './pages/Downtime.css'
 
 class App extends Component {
   state = {
-    programMessage: 'new',
     reportMessage: 'new',
     userMessage: 'new',
-    programs: [],
     reports: [],
     totalReports: 0,
     reportsPage: 1,
     add: 0,
-    profiles: [],
     downtimeByDate: [],
     defectsByDate: [],
     productionByDate: [],
@@ -48,17 +45,13 @@ class App extends Component {
     const res = await fetch(url, opts);
     const data = await res.json();
     
-
-    hr_opts.body = JSON.stringify(workerQuery)
-    const hr_res = await fetch(hr_server, hr_opts);
-    const hr_data = await hr_res.json();
-    if(data.errors || hr_data.erros ){
+    if(data.errors ){
       return console.log(data.errors)
     }
     else {
-      console.log('holalalala', hr_data, data)
+      console.log('holalalala', data)
       return this.setState({  
-        programs: data.data.programs,
+
         reports: data.data.reports.reports,
         totalReports: data.data.reports.totalReports,
         productionByDate: data.data.productionByDate,
@@ -67,8 +60,7 @@ class App extends Component {
         resinesByDate: data.data.resinesByDate,
         users: data.data.users,
         initial49: initial49,
-        end: end,
-        profiles: hr_data.data.profiles,
+        end: end
       })
 
     }
@@ -99,79 +91,6 @@ class App extends Component {
     }
   }
 
-  newWorker = async (input) =>{
-    addWorker.variables = { input }
-
-    hr_opts.body = JSON.stringify(addWorker)
-    const res = await fetch(hr_server, hr_opts);
-    const data = await res.json();
-    if(data.errors){
-      console.log(data.errors)
-      return this.setState({workerMessage: 'error'})
-
-    } else {
-      const profile = data.data.newProfile
-      const profiles = [...this.state.profiles, profile]
-      console.log(profile)
-      return this.setState({profiles, workerMessage: 'sucess'})
-    }
-  }
-
-  updateWorker = async (_id, obj) =>{
-    console.log(_id)
-    const input = {...obj}
-    modifyWorker.variables = { _id, input }
-
-    hr_opts.body = JSON.stringify(modifyWorker)
-    const res = await fetch(hr_server, hr_opts);
-    const data = await res.json();
-    if(data.errors){
-      console.log(data.errors)
-      return this.setState({workerMessage: 'error'})
-
-    } else {
-      
-      let profile = data.data.updateProfile;
-      let profiles = [...this.state.profiles];
-      profiles[profiles.findIndex(el => el._id === profile._id)] = profile;
-      this.setState({ profiles, workerMessage: 'sucess'});
-    }
-  }
-
-  addUser = async ({name, level, password})=>{
-    const input = { name, level, password }
-    addUser.variables = { input }
-    opts.body = JSON.stringify(addUser)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      this.setState({userMessage: 'error'})
-    } else{
-      const { newUser } = data.data
-      const users = [...this.state.users, newUser ];
-      this.setState({ users, userMessage: 'sucess'});
-    }
-  }
-
-  updateUser = async ({_id, level, active})=>{
-    const input = { level, active}
-    console.log(input)
-    modifyUser.variables = { _id, input }
-    opts.body = JSON.stringify(modifyUser)
-    const res = await fetch(url, opts);
-    const data = await res.json();
-    if(data.errors){
-      console.log(data.errors)
-      this.setState({userMessage: 'error'})
-    } else{
-      let user = data.data.updateUser;
-      let users = [...this.state.users];
-      users[users.findIndex(el => el._id === user._id)] = user;
-      this.setState({ users, userMessage: 'sucess'});
-    }
-  }
-
-  
   addReport = async ({ workers, comments, reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE, production, userId, defects, resines, downtime })=>{
     const downtimeDetail = downtime
     const input = { reportDate, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, TAvailability, TPerformance, TQuality, TOEE,
@@ -555,36 +474,14 @@ class App extends Component {
               production={this.state.productionByDate}
               purge={this.state.resinesByDate}
               /> )} />
-              <Route path="/users" exact component={ props => ( <Users {...props}
-              users={this.state.users}
-              /> )} />
+              <Route path="/users" exact component={ props => ( <Users {...props}/> )} />
+              <Route path="/users/add" exact component={ props => ( <AddUser {...props} /> )} />
+              <Route path="/users/update/:id" exact component={ props => ( <UpdateUser {...props} /> )} />
 
-              <Route path="/users/add" exact component={ props => ( <AddUser {...props} 
-                message={this.state.userMessage} close={this.close} addUser={this.addUser}/> )} 
-              />
-              <Route path="/users/update/:id" exact component={ props => ( <UpdateUser {...props} 
-                users={this.state.users} message={this.state.userMessage} close={this.close} updateUser={this.updateUser}/> )} 
-              />
-
-              <Route path="/record" exact component={ props => ( <Record {...props} 
-                /> )} 
-              />
-              <Route path="/employees" exact component={ props => ( <WorkersList {...props}
-              profiles={this.state.profiles}
-              /> )} />
-              <Route path="/employees/new" exact component={ props => ( <NewWorker {...props}
-              message={this.state.workerMessage}
-              close={this.close} 
-              newWorker={this.newWorker}
-              /> )} 
-              />
-              <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props}
-              profiles={this.state.profiles}
-              message={this.state.workerMessage}
-              close={this.close} 
-              updateWorker={this.updateWorker}
-              /> )} 
-              />
+              <Route path="/record" exact component={ props => ( <Record {...props} /> )} />
+              <Route path="/employees" exact component={ props => ( <Workers {...props} /> )} />
+              <Route path="/employees/new" exact component={ props => ( <AddWorker {...props} /> )} />
+              <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props} /> )} />
               <Route path="/production" exact component={ props => ( <Product {...props}
                 production={this.state.productionByDate}
                 purge={this.state.resinesByDate}

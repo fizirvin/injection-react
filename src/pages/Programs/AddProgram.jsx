@@ -16,28 +16,25 @@ const AddProgram = ({ machines, models, moldes, message, closeProgram, addProgra
   const [ capacity, setCapacity ] = useState(0)
     
   useEffect(() =>{
-    if(machines.length === 0 ){
-      return fetchMachines();
-    } else {
-      return
-    } 
+    if(machines.length === 0){
+      console.log('llamé maquinas')
+      fetchMachines()
+    }
   },[machines])
 
   useEffect(() =>{
-    if(moldes.length === 0 ){
-      return fetchMoldes();
-    } else {
-      return
-    } 
-  },[moldes])
+    if(models.length === 0){
+      console.log('llamé models')
+      fetchModels()
+    }
+  },[models])
 
   useEffect(() =>{
-    if(models.length === 0 ){
-      return fetchModels();
-    } else {
-      return
-    } 
-  },[models])
+    if(moldes.length === 0){
+      console.log('llamé moldes')
+      fetchMoldes()
+    }
+  },[moldes])
 
   const onClose = () =>{
     return closeProgram()

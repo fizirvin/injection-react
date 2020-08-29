@@ -20,9 +20,10 @@ const header = [
 const Defects = ({ defects, fetchDefects, selectDefect }) =>{
 
   useEffect(() =>{
-    fetchDefects();
-    return 
-  },[])
+    if(defects.length === 0){
+      fetchDefects()
+    } 
+  },[defects])
 
   // const sortDefects = () =>{
   //   const sort = defects.sort((a, b) => (a.defectCode > b.defectCode ) ? 1 : -1 )

@@ -22,9 +22,10 @@ const header = [
 const Programs = ({ programs, fetchPrograms, selectProgram }) =>{
 
   useEffect(() =>{
-    fetchPrograms();
-    return 
-  },[])
+    if(programs.length === 0){
+      fetchPrograms()
+    } 
+  },[programs])
 
   
   const renderList = () =>{

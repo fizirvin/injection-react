@@ -18,9 +18,10 @@ const header = [
 const Issues = ({ issues, fetchIssues, selectIssue}) =>{
 
   useEffect(() =>{
-    fetchIssues();
-    return 
-  },[])
+    if(issues.length === 0){
+      fetchIssues()
+    } 
+  },[issues])
 
   
   const renderList = () =>{
