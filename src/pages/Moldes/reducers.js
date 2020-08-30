@@ -1,6 +1,8 @@
 import {
     FETCH_MOLDES,
     FETCH_CYCLES_MOLDES,
+    ADD_CYCLES_MOLDES,
+    UPDATE_CYCLES_MOLDES,
     ADD_MOLDE,
     UPDATE_MOLDE,
     SELECT_MOLDE,
@@ -27,6 +29,11 @@ const cyclesReducer = (state = [], action) =>{
     switch (action.type){
         case FETCH_CYCLES_MOLDES:
             return action.payload
+        case ADD_CYCLES_MOLDES:
+            return [ ...state, ...action.payload ]
+        case UPDATE_CYCLES_MOLDES:
+            const oldCycles = state.filter( reportDate => reportDate.report !== action._id)
+            return [ ...oldCycles, ...action.payload ]
         default:
             return state
     }

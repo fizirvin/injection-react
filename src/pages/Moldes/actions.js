@@ -4,6 +4,10 @@ import { addMolde as newMolde, modifyMolde } from './mutations'
 
 export const FETCH_MOLDES = 'FETCH_MOLDES'
 export const FETCH_CYCLES_MOLDES = 'FETCH_CYCLES_MOLDES'
+
+export const  ADD_CYCLES_MOLDES = ' ADD_CYCLES_MOLDES'
+export const  UPDATE_CYCLES_MOLDES = ' UPDATE_CYCLES_MOLDES'
+
 export const ADD_MOLDE = 'ADD_MOLDE'
 export const UPDATE_MOLDE = 'UPDATE_MOLDE'
 export const SELECT_MOLDE = 'SELECT_MOLDE'
