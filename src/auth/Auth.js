@@ -1,12 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import {BrowserRouter, Switch, Route, withRouter } from 'react-router-dom';
+
 import detect from 'detect.js'
+
 import Login from './Login'
 import NotFound from './NotFound'
 import NotSupported from './NotSupported'
-import { loginQuery } from '../actions/queries';
-import { url, opts } from '../actions/config/index';
+
+import loginQuery from './queries';
+
+import { url, opts } from '../config/index';
+
 import App from '../App.js'
+
 import reducers from '../reducers'
 
 import { Provider } from 'react-redux'

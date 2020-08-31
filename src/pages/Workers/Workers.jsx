@@ -4,7 +4,7 @@ import Worker from './worker'
 import { fetchWorkers } from './actions'
 
 import { Link } from 'react-router-dom'
-import Spinner from '../components/Spinner'
+import Spinner from '../../components/Spinner'
 import './Workers.css'
 
 const Workers = ({ profiles, fetchWorkers }) =>{

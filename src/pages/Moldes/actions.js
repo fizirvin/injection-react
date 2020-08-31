@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import { moldesQuery, cyclesQuery } from './queries'
 import { addMolde as newMolde, modifyMolde } from './mutations'
 

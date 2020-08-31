@@ -8,14 +8,15 @@ import {
     PAGE_REPORT,
     ADDED_REPORTS,
     TOTAL_REPORTS,
-    ADD_TOTAL_REPORTS
+    ADD_TOTAL_REPORTS,
+    LOADING_PAGE
 } from './actions'
 
 
 const reportsReducer = (state = [], action) =>{
     switch (action.type){
         case FETCH_REPORTS:
-            return action.payload
+            return [ ...state, ...action.payload ]
         case FETCH_INITIAL_REPORTS:
             return action.payload
         case ADD_REPORT:
@@ -58,6 +59,13 @@ const addReducer = (add = 0, action) =>{
     return add
 }
 
+const loadingPage = (loading = false, action) =>{
+    if(action.type === LOADING_PAGE ){
+        return !loading
+    }
+    return loading
+}
+
 const totalReportsReducer = ( totalReports = 0, action) =>{
     switch (action.type){
         case TOTAL_REPORTS:
@@ -75,5 +83,6 @@ export {
     reportMessage,
     pageReducer,
     addReducer,
-    totalReportsReducer
+    totalReportsReducer,
+    loadingPage
 }

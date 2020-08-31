@@ -1,5 +1,5 @@
 import React from 'react'
-import '../../styles/header.css'
+import '../header.css'
 import { formatDate } from '../../../actions/helpers'
 const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay, detail, setDetail }) =>{
  

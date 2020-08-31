@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import TableData from './components/TableData'
-import TableHeader from './components/TableHeader'
-import Pagination from './components/Pagination'
-import Spinner from './components/Spinner'
+
+import TableData from '../components/TableData'
+import TableHeader from '../components/TableHeader'
+import Pagination from './Reports/Pagination'
+import Spinner from '../components/Spinner'
 import './Reports.css'
 import { workersQuery } from '../actions/queries'
-import { hr_server, hr_opts } from '../actions/config'
+import { hr_server, hr_opts } from '../config'
 
 class Reports extends Component {
   state ={

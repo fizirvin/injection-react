@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-import './styles/toolbar.css'
+import '../styles/toolbar.css'
 
 class Toolbar extends Component {
   state={

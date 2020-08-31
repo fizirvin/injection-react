@@ -2,13 +2,13 @@ import React from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
-  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Downtime, Users, AddUser, 
-  UpdateUser, Record, Workers, AddWorker, UpdateWorker, Product } from './pages'
+  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Users, AddUser, 
+  UpdateUser, Record, Workers, AddWorker, UpdateWorker } from './pages'
 import { AddReport, UpdateReport } from './forms';
 
 import './App.css';
-import './pages/styles/layout.css'
-import './pages/Production.css'
+import './styles/layout.css'
+import './pages/Production/Production.css'
 import './pages/Downtime.css'
 
 const App = ({name, logoutHandler}) =>{
@@ -48,14 +48,8 @@ const App = ({name, logoutHandler}) =>{
             <Route path="/programs" exact component={ props => ( <Programs {...props} /> )} />
             <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} /> )} />
             <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} /> )} />
-
-            <Route path="/reports" exact component={ props => ( <Reports {...props}
-              loadingPage={this.state.loadingPage}
-              onNext={ () => this.loadReports('next')}
-              reportsPage={this.state.reportsPage} 
-              totalReports={this.state.totalReports} 
-              reports={this.state.reports}/> )} 
-            />
+            <Route path="/reports" exact component={ props => ( <Reports {...props}/> )} />
+            {/* 
             <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
               profiles={this.state.profiles}
               defects={this.state.defects}
@@ -75,26 +69,8 @@ const App = ({name, logoutHandler}) =>{
               material={this.state.materials}  
               issues={this.state.issues}
               message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
-            />
-            <Route path="/downtime" exact component={ props => ( <Downtime {...props}
-            issues={this.state.issues}
-            machines={this.state.machines}
-            reports={this.state.downtimeByDate}
-            /> )} />
-
-            <Route path="/product" exact component={ props => ( <Production {...props}
-            issues={this.state.issues}
-            machines={this.state.machines}
-            models={this.state.models}
-            materials={this.state.materials}
-            defects={this.state.defects}
-            moldes={this.state.moldes}
-            reports={this.state.reports}
-            ng={this.state.defectsByDate}  
-            downtime={this.state.downtimeByDate}
-            production={this.state.productionByDate}
-            purge={this.state.resinesByDate}
-            /> )} />
+            /> */}
+            
             <Route path="/users" exact component={ props => ( <Users {...props}/> )} />
             <Route path="/users/add" exact component={ props => ( <AddUser {...props} /> )} />
             <Route path="/users/update/:id" exact component={ props => ( <UpdateUser {...props} /> )} />
@@ -103,13 +79,7 @@ const App = ({name, logoutHandler}) =>{
             <Route path="/employees" exact component={ props => ( <Workers {...props} /> )} />
             <Route path="/employees/new" exact component={ props => ( <AddWorker {...props} /> )} />
             <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props} /> )} />
-            <Route path="/production" exact component={ props => ( <Product {...props}
-              production={this.state.productionByDate}
-              purge={this.state.resinesByDate}
-              defects={this.state.defectsByDate}
-              downtime={this.state.downtimeByDate}
-              machines={this.state.machines}
-            /> )} />
+            <Route path="/production" exact component={ props => ( <Production {...props} /> )} />
           </Switch> 
         </div>
       </div>

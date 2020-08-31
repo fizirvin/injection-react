@@ -3,13 +3,13 @@ import DayTotalChart from './charts/DayTotalChart'
 import DayPurgeChart from './charts/DayPurgeChart'
 import WeekTotalChart from './charts/WeekTotalChart'
 import WeekPurgeChart from './charts/WeekPurgeChart'
-import Spinner from './components/Spinner'
-import { url, opts } from '../actions/config'
+import Spinner from '../components/Spinner'
+import { url, opts } from '../config'
 import { daytotalQuery } from '../actions/queries'
 import { weektotalQuery } from '../actions/queries'
 import { daypurgeQuery } from '../actions/queries'
 import { weekpurgeQuery } from '../actions/queries'
-import './styles/record.css'
+import '../styles/record.css'
 
 class Record extends Component {
   state ={

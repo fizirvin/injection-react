@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 import { fetchMachines, selectMachine } from './actions'
 
 
-import TableData from '../components/TableData'
-import TableHeader from '../components/TableHeader'
-import RenderItems from '../components/RenderItems'
-import Spinner from '../components/Spinner'
+import TableData from '../../components/TableData'
+import TableHeader from '../../components/TableHeader'
+import RenderItems from '../../components/RenderItems'
+import Spinner from '../../components/Spinner'
 import './Machines.css'
 
 const header = [

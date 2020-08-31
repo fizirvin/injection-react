@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import machinesQuery from './queries'
 import { addMachine as newMachine, modifyMachine } from './mutations'
 

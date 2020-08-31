@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import issuesQuery from './queries'
 import { addIssue as newIssue, modifyIssue } from './mutations'
 

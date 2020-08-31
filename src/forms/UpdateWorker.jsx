@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
-import { url_image, opts_image } from '../actions/config'
+import { url_image, opts_image } from '../config'
 
 
 class UpdateWorker extends Component {

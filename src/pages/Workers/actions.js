@@ -1,4 +1,4 @@
-import { hr_server, hr_opts, url_image, opts_image } from '../../actions/config'
+import { hr_server, hr_opts, url_image, opts_image } from '../../config'
 import workersQuery from './queries'
 import { addWorker as newWorker, modifyWorker } from './mutations'
 

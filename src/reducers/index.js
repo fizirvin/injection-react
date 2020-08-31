@@ -8,6 +8,8 @@ import { reducers as materials } from '../pages/Materials/index.js'
 import { reducers as programs } from '../pages/Programs/index.js'
 import { reducers as workers } from '../pages/Workers/index.js'
 import { reducers as users } from '../pages/Users/index.js'
+import { reducers as production } from '../pages/Production/index.js'
+import { reducers as reports } from '../pages/Reports/index.js'
 
 export default combineReducers({
     machines: machines.machinesReducer,
@@ -38,4 +40,15 @@ export default combineReducers({
     users: users.usersReducer,
     user: users.userReducer,
     userMessage: users.userMessage,
+    production: production.productionReducer,
+    downtime: production.downtimeReducer,
+    defectPoduction: production.defectPoductionReducer,
+    resines: production.resinesReducer,
+    reports: reports.reportsReducer,
+    report: reports.reportReducer,
+    reportMessage: reports.reportMessage,
+    page: reports.pageReducer,
+    add: reports.addReducer,
+    loadingPage: reports.loadingPage,
+    totalReports: reports.totalReportsReducer
 })

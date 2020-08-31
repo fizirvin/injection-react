@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import Header from './components/production/Header'
-import HeaderTable from './components/production/HeaderTable'
-import BodyTable from './components/production/BodyTable'
+import { connect } from 'react-redux'
+import { fetchProduction, fetchDowntime, fetchResines, fetchDefectProduction } from './actions'
+import { fetchMachines } from '../Machines/actions.js'
+import Header from './production/Header'
+import HeaderTable from './production/HeaderTable'
+import BodyTable from './production/BodyTable'
 import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail, modelDetail, 
     moldeDetail, modelTrimesterDetail, moldeTrimesterDetail, downtimeWeekDetail, downtimeTrimesterDetail , purgeTrimesterDetail, purgeWeekDetail,
     defectWeekIndicator, defectWeekDetailMachine, defectWeekDetailModel, defectWeekDetailMolde, defectTrimesterDetailMachine, 
-    defectTrimesterDetailModel, defectTrimesterDetailMolde} from '../actions/helpers'
+    defectTrimesterDetailModel, defectTrimesterDetailMolde} from '../../actions/helpers'
 
-const Product = ({production, purge, defects, downtime, machines}) =>{
+const Production = ({production, purge, defects, downtime, machines, fetchMachines, fetchProduction, fetchDowntime, fetchResines, fetchDefectProduction}) =>{
     const [ period, setPeriod ] = useState('day')
     const [ shift, setShift ] = useState('both')
     const [ filter, setFilter ] = useState('machine')
@@ -47,8 +50,37 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
     const [ trimesterDowntimeDetail, setTrimesterDowntimeDetail ] = useState({})
     const [ weekPurgeDetail, setWeekPurgeDetail ] = useState({})
     const [ trimesterPurgeDetail, setTrimesterPurgeDetail ] = useState({})
-    
-    
+
+    useEffect(() =>{
+        if(machines.length === 0){
+            fetchMachines()
+        } 
+    },[machines])
+
+    useEffect(() =>{
+        if(production.length === 0){
+            fetchProduction()
+        } 
+    },[production])
+
+    useEffect(() =>{
+        if(downtime.length === 0){
+            fetchDowntime()
+        } 
+    },[downtime])
+
+    useEffect(() =>{
+        if(purge.length === 0){
+            fetchResines()
+        } 
+    },[purge])
+
+      useEffect(() =>{
+        if(defects.length === 0){
+            fetchDefectProduction()
+        } 
+      },[defects])
+
     useEffect(() =>{
         const date = new Date();
         const today = formatDate(date)+'T01:00:00.000-06:00'
@@ -429,4 +461,12 @@ const Product = ({production, purge, defects, downtime, machines}) =>{
       )
 }
 
-export default Product
+const mapStateToProps = state =>({
+  production: state.production, 
+  purge: state.resines, 
+  defects: state.defectPoduction, 
+  downtime: state.downtime,
+  machines: state.machines
+})
+
+export default connect(mapStateToProps, {fetchMachines, fetchProduction, fetchDowntime, fetchResines, fetchDefectProduction})(Production)

@@ -1,26 +1,12 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import { reportsQuery, initialReportsQuery } from './queries'
 import { addReport as newReport, modifyReport } from './mutations'
 import { formatDate } from '../../actions/helpers'
-
-
-export const FETCH_REPORTS = 'FETCH_REPORTS'
-export const FETCH_INITIAL_REPORTS = 'FETCH_INITIAL_REPORTS'
-export const ADD_REPORT = 'ADD_REPORT'
-export const UPDATE_REPORT = 'UPDATE_REPORT'
-export const SELECT_REPORT = 'SELECT_REPORT'
-export const MESSAGE_REPORT = 'MESSAGE_REPORT'
-export const PAGE_REPORT = 'PAGE_REPORT'
-export const ADDED_REPORTS = 'PAGE_REPORT'
-export const TOTAL_REPORTS = 'TOTAL_REPORTS'
-export const  ADD_TOTAL_REPORTS = 'ADD_TOTAL_REPORTS'
 
 import {
     ADD_CYCLES_MOLDES,
     UPDATE_CYCLES_MOLDES
 } from '../Moldes/actions.js'
-
-
 
 import { 
     ADD_PRODUCTION_BY_DATE,
@@ -32,6 +18,22 @@ import {
     ADD_DEFECTS_BY_DATE,
     UPDATE_DEFECTS_BY_DATE 
 } from '../Production/actions.js'
+
+export const FETCH_REPORTS = 'FETCH_REPORTS'
+export const FETCH_INITIAL_REPORTS = 'FETCH_INITIAL_REPORTS'
+export const ADD_REPORT = 'ADD_REPORT'
+export const UPDATE_REPORT = 'UPDATE_REPORT'
+export const SELECT_REPORT = 'SELECT_REPORT'
+export const MESSAGE_REPORT = 'MESSAGE_REPORT'
+export const PAGE_REPORT = 'PAGE_REPORT'
+export const LOADING_PAGE = 'LOADING_PAGE'
+export const ADDED_REPORTS = 'ADDED_REPORT'
+export const TOTAL_REPORTS = 'TOTAL_REPORTS'
+export const ADD_TOTAL_REPORTS = 'ADD_TOTAL_REPORTS'
+
+
+
+
 
 const fetchInitialReports = () => async ( dispatch ) => {
     opts.body = JSON.stringify(initialReportsQuery)
@@ -49,12 +51,18 @@ const fetchInitialReports = () => async ( dispatch ) => {
 
 const fetchReports = (page, add) => async ( dispatch ) => {
     page++
+    dispatch({
+        type: LOADING_PAGE
+    })
     reportsQuery.variables = { page, add }
     opts.body = JSON.stringify(reportsQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
 
     if(data.errors){
+        dispatch({
+            type: LOADING_PAGE
+        })
         return console.log(data)
     } else{
         dispatch({
@@ -68,6 +76,9 @@ const fetchReports = (page, add) => async ( dispatch ) => {
         dispatch({
             type: TOTAL_REPORTS,
             payload: data.data.reports.totalReports
+        })
+        return dispatch({
+            type: LOADING_PAGE
         })
 
     }
@@ -97,7 +108,7 @@ const addReport = (input) => async ( dispatch ) => {
             payload: 'sucess'
         })
         dispatch({
-            type: ADD_TOTAL_REPORT
+            type: ADD_TOTAL_REPORTS
         })
         const array = [data.data.newInjectionReport]
         const convert = array.map( item => { 
@@ -298,7 +309,7 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: convert[0],
             _id
         })
-        const convertDowntime = testArr.map( item => { 
+        const convertDowntime = array.map( item => { 
             const date = formatDate(item.reportDate);
             const id = item._id
             const shift = item.shift
@@ -321,7 +332,7 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: convertDowntime[0],
             _id
         })
-        const convertDefects = testArr.map( item => { 
+        const convertDefects = array.map( item => { 
             const date = formatDate(item.reportDate);
             const id = item._id
             const machine = item.machine._id
@@ -349,7 +360,7 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: convertDefects[0],
             _id
         })
-        const convertResine = testArr.map( item => { 
+        const convertResine = array.map( item => { 
             const date = formatDate(item.reportDate);
             const id = item._id
             const machine = item.machine._id
@@ -374,7 +385,7 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: convertResine[0],
             _id
         })
-        const convertMolde = testArr.map( item => { 
+        const convertMolde = array.map( item => { 
             const date = formatDate(item.reportDate);
             const id = item._id
             const shift = item.shift

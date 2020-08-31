@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import usersQuery from './queries'
 import { addUser as newUser, modifyUser } from './mutations'
 

@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import materialsQuery from './queries'
 import { addMaterial as newMaterial, modifyMaterial } from './mutations'
 

@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import { getDateofTable, getDateofTable49, formatDate } from '../../actions/helpers'
 import { productionQuery, resinesQuery, downtimeQuery, defectProductionQuery } from './queries'
 
@@ -34,8 +34,8 @@ const fetchProduction = () => async ( dispatch ) => {
     const data = await res.json();
 
     dispatch({
-        type: FETCH_ISSUES,
-        payload: data.data.issues
+        type: FETCH_PRODUCTION_BY_DATE,
+        payload: data.data.productionByDate
     })
 }
 
@@ -49,8 +49,8 @@ const fetchDowntime = () => async ( dispatch ) => {
     const data = await res.json();
 
     dispatch({
-        type: FETCH_ISSUES,
-        payload: data.data.issues
+        type: FETCH_DOWNTIME_BY_DATE,
+        payload: data.data.downtimeByDate
     })
 }
 
@@ -64,8 +64,8 @@ const fetchResines = () => async ( dispatch ) => {
     const data = await res.json();
 
     dispatch({
-        type: FETCH_ISSUES,
-        payload: data.data.issues
+        type: FETCH_RESINES_BY_DATE,
+        payload: data.data.resinesByDate
     })
 }
 
@@ -79,8 +79,8 @@ const fetchDefectProduction = () => async ( dispatch ) => {
     const data = await res.json();
 
     dispatch({
-        type: FETCH_ISSUES,
-        payload: data.data.issues
+        type: FETCH_DEFECTS_BY_DATE,
+        payload: data.data.defectsByDate
     })
 }
 

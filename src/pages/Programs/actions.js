@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import programsQuery from './queries'
 import { addProgram as newProgram, modifyProgram } from './mutations'
 

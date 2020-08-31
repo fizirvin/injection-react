@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import Detail from './Detail'
 import DetailMachine from './DetailMachine'
-import '../../styles/bodyTable.css'
+import '../bodyTable.css'
 
 const BodyTable = ({
   weekColumns,

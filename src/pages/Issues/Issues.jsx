@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { fetchIssues, selectIssue } from './actions'
 
 import { Link } from 'react-router-dom'
-import TableData from '../components/TableData'
-import TableHeader from '../components/TableHeader'
-import RenderItems from '../components/RenderItems'
-import Spinner from '../components/Spinner'
+import TableData from '../../components/TableData'
+import TableHeader from '../../components/TableHeader'
+import RenderItems from '../../components/RenderItems'
+import Spinner from '../../components/Spinner'
 import './Issues.css'
 
 const header = [

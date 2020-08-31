@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Spinner from '../pages/components/Spinner'
-import '../pages/styles/login.css'
+import Spinner from '../components/Spinner'
+import '../styles/login.css'
 
 
 class Login extends Component {

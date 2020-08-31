@@ -1,4 +1,4 @@
-import { url, opts } from '../../actions/config'
+import { url, opts } from '../../config'
 import modelsQuery from './queries'
 import { addModel as newModel, modifyModel } from './mutations'
 
