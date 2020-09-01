@@ -13,7 +13,7 @@ import Workers, { AddWorker, UpdateWorker } from './Workers/index.js'
 
 import Record from './Record.js'
 import Production from './Production/index.js'
-import Reports from './Reports/Reports.jsx'
+import Reports, { AddReport } from './Reports/index.js'
 
 export { 
     Home, 
@@ -36,7 +36,8 @@ export {
     AddProgram, 
     UpdateProgram,
      
-    Reports, 
+    Reports,
+    AddReport, 
     Toolbar, 
     
     

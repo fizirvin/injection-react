@@ -2,16 +2,16 @@ import React from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
-  Defects, Programs, AddProgram, UpdateProgram, Reports, Toolbar, Production, Users, AddUser, 
+  Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, Toolbar, Production, Users, AddUser, 
   UpdateUser, Record, Workers, AddWorker, UpdateWorker } from './pages'
-import { AddReport, UpdateReport } from './forms';
+import { UpdateReport } from './forms';
 
 import './App.css';
 import './styles/layout.css'
 import './pages/Production/Production.css'
 import './pages/Downtime.css'
 
-const App = ({name, logoutHandler}) =>{
+const App = ({name, logoutHandler, userId}) =>{
   return (
     <BrowserRouter>
       <div className="App">
@@ -49,17 +49,9 @@ const App = ({name, logoutHandler}) =>{
             <Route path="/programs/add" exact component={ props => ( <AddProgram {...props} /> )} />
             <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} /> )} />
             <Route path="/reports" exact component={ props => ( <Reports {...props}/> )} />
+            <Route path="/reports/add" exact component={ props => ( <AddReport {...props} userId={userId}/> )} />
             {/* 
-            <Route path="/reports/add" exact component={ props => ( <AddReport {...props}
-              profiles={this.state.profiles}
-              defects={this.state.defects}
-              programs={this.state.programs} 
-              machines={this.state.machines}
-              material={this.state.materials} 
-              issues={this.state.issues}
-              userId={this.props.userId}
-              message={this.state.reportMessage} close={this.close} addReport={this.addReport}/> )} 
-            />
+            
             <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}
               profiles={this.state.profiles}
               defects={this.state.defects}

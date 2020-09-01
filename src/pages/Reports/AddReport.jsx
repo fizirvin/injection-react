@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { addReport, closeReport } from './actions'
+import { fetchIssues } from '../Issues/actions'
+import { fetchMaterials } from '../Materials/actions'
+import { fetchMachines } from '../Machines/actions'
+import { fetchPrograms } from '../Programs/actions'
+import { fetchWorkers } from '../Workers/actions'
+import { fetchDefects } from '../Defects/actions'
 
-const AddReport = ({message, profiles, programsList, defectList, machines, issues, userId, materials, addReport, closeReport}) => {
+const AddReport = ({fetchDefects, fetchWorkers, fetchPrograms, fetchMachines, fetchMaterials, fetchIssues, message, profilesList, programsList, defectsList, machinesList, issuesList, userId, materialsList, addReport, closeReport}) => {
   const [ date, setDate ] = useState('')
   const [ shift, setShift ] = useState('')
   const [ machine, setMachine ] = useState('')
@@ -30,7 +36,44 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   const [ comments, setComments ] = useState('')
   const [ inspector, setInspector ] = useState('')
   const [ operator, setOperator ] = useState('')
-  const [ workers, setWorkers ] = useState([])
+  const [ profiles, setProfiles ] = useState([])
+
+  useEffect(() =>{
+    if(issuesList.length === 0){
+      fetchIssues()
+    } 
+  },[issuesList])
+
+  useEffect(() =>{
+    if(materialsList.length === 0){
+      fetchMaterials()
+    } 
+  },[materialsList])
+
+  useEffect(() =>{
+    if(machinesList.length === 0){
+      fetchMachines()
+    } 
+  },[machinesList])
+
+  useEffect(() =>{
+    if(programsList.length === 0){
+      fetchPrograms()
+    } 
+  },[programsList])
+
+  useEffect(() =>{
+    if(profilesList.length === 0){
+      fetchWorkers()
+    } 
+  },[profilesList])
+
+  useEffect(() =>{
+    if(defectsList.length === 0){
+      fetchDefects()
+    } 
+  },[defectsList])
+
 
   const onMins = async (e) =>{
     const id = e.target.name
@@ -38,10 +81,16 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
+    
+
+    // const downtime = this.state.downtime;
     const items = downtime.filter( item => item.issueId !== id);
     const getDowntime = downtime.find( item => item.issueId === id);
+
     const item = {...getDowntime, mins: value}
+
     const newItems = [...items, item]
+    // return this.setState({downtime: newItems});
     return setDowntime(newItems)
   }
 
@@ -52,9 +101,9 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     if( isNaN(value) ){ value = '' }
     else if( value === 0 ){ value = 0 }
 
-    
+    let select = [...selected];
     const items = selected.filter( item => item.program !== id);
-    const getProduction = selected.find( item => item.program === id);
+    const getProduction = select.find( item => item.program === id);
 
     const { production, capacity } = await getProduction
     const { real, quality } = production
@@ -70,8 +119,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
     const prod = Math.round(wtime * capacity)
 
-    const time = wtime + dtime
-    const preav = (wtime / time)*100
+    const alltime = wtime + dtime
+    const preav = (wtime / alltime)*100
     const availability = precise_round( preav, 2)
 
     const preperf = (real/prod)*100
@@ -87,8 +136,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const newArray = newSelected.map( item => {
       const { production, capacity } = item
       const { wtime, quality, performance  } = production
-      const time = wtime + dtime
-      const preav = (wtime / time)*100
+      const alltime = wtime + dtime
+      const preav = (wtime / alltime)*100
       const preplan = time * capacity
       const plan = precise_round(preplan, 0)
       const availability = precise_round( preav, 2)
@@ -101,17 +150,17 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     // const TReal = this.state.TReal
     const TPlan = totalPlan(newArray)
     const TProd = totalProd(newArray)
-    const totalWTime = precise_round(totalWTime(newArray), 2)
+    const totWTime = precise_round(totalWTime(newArray), 2)
     const TDTime = precise_round(totalDTime(newArray), 2)
-    const TAvailability = precise_round((totalWTime/(totalWTime + TDTime)*100),2)
+    const TAvailability = precise_round((totWTime/(totWTime + TDTime)*100),2)
     const TPerformance = precise_round(((TReal/TProd)*100),2)
     const TQuality = precise_round(((TOK/TReal)*100),2)
     const TOEE = precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
     
+    setSelected(newArray)
     setTPlan(TPlan)
     setTProd(TProd)
-    setTWTime(totalWTime)
-    setSelected(newArray)
+    setTWTime(totWTime)
     setTDTime(TDTime)
     setTAvailability(TAvailability)
     setTPerformance(TPerformance)
@@ -129,9 +178,9 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     else if( value === 0 ){ value = 0 }
     
       
-    
+    let select = [...selected];
     const items = selected.filter( item => item.program !== id);
-    const getProduction = selected.find( item => item.program === id);
+    const getProduction = select.find( item => item.program === id);
 
     const { production, capacity, moldeNumber } = await getProduction
     const { ng } = production
@@ -178,24 +227,25 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const TReal = totalReal(newArray)
     const TPlan = totalPlan(newArray)
     const TProd = totalProd(newArray)
-    const totalWTime = precise_round(totalWTime(newArray), 2)
+    const totWTime = precise_round(totalWTime(newArray), 2)
     const TDTime = precise_round(totalDTime(newArray), 2)
-    const TAvailability = precise_round((totalWTime/(totalWTime + TDTime)*100),2)
+    const TAvailability = precise_round((totWTime/(totWTime + TDTime)*100),2)
     const TPerformance = precise_round(((TReal/TProd)*100),2)
     const TQuality = precise_round(((TOK/TReal)*100),2)
     const TOEE = precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
-    
+
+    setSelected(newArray)
     setTOK(TOK)
     setTReal(TReal)
     setTPlan(TPlan)
     setTProd(TProd)
-    setTWTime(totalWTime)
-    setSelected(newArray)
+    setTWTime(totWTime)
     setTDTime(TDTime)
     setTAvailability(TAvailability)
     setTPerformance(TPerformance)
     setTQuality(TQuality)
     setTOEE(TOEE)
+    
     // return this.setState({selected: newArray, TOK, TReal, TPlan, TProd, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE});
   }
 
@@ -215,7 +265,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const item = {...getDefect, defectPcs: value}
     const newItems = [...items, item]
     
-    setDefects(newItems)
+    return setDefects(newItems)
     // return this.setState({defects: newItems});
   }
 
@@ -258,11 +308,11 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     }
     const newSelected = [...items, item]
 
-    const TNG = TNG(newSelected)
+    const TNG = onTNG(newSelected)
     const TOK = totalOK(newSelected)
     
-    const TQuality = precise_round(((TOK/this.state.TReal)*100),2)
-    const TOEE = precise_round(((this.state.TAvailability*this.state.TPerformance*TQuality)/10000), 2)
+    const TQuality = precise_round(((TOK/TReal)*100),2)
+    const TOEE = precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
     
     setSelected(newSelected)
     setTOK(TOK)
@@ -288,8 +338,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const preoee = (production/expected)*100
     const oee = precise_round(preoee, 1)
     select[select.findIndex(el => el.program === e.target.name)].production.oee = oee;
-    
-    setSelected(select)
+    return setSelected(select)
     // return this.setState({selected});
 
   }
@@ -338,7 +387,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     }
   }
 
-  const TNGvalue = (array) =>{
+  const onTNG = (array) =>{
     const value = array.reduce( (a, b) =>{
       return a + b.production.ng
     },0)
@@ -349,8 +398,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     }
   }
 
-  const totalWTime = (array) =>{
-    const value = array.reduce( (a, b) =>{
+  const totalWTime = (arr) =>{
+    const value = arr.reduce( (a, b) =>{
       return parseFloat(a + b.production.wtime)
     },0)
     if( isNaN(value) ){ return 0 }
@@ -599,8 +648,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const totalMins = () =>{
-    // let downtime = [...this.state.downtime];
-    const mins = downtime.reduce( (a, b) =>{
+    let downt = [...downtime];
+    const mins = downt.reduce( (a, b) =>{
       return a + b.mins || 0
     },0)
     
@@ -617,8 +666,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const totalDefectPcs = () =>{
-    // let defects = [...this.state.defects];
-    const pcs = defects.reduce( (a, b) =>{
+    let defect = [...defects];
+    const pcs = defect.reduce( (a, b) =>{
       return a + b.defectPcs || 0
     },0)
 
@@ -658,13 +707,12 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   const onInputChange = e => {
     const value = e.target.value
     const name = e.target.name
-    if( name === 'shift'){
+    if(name === 'shift'){
       return setShift(value)
     }
-    else if( name === 'date'){
+    else if(name === 'date'){
       return setDate(value)
     }
-
     // this.setState({ [e.target.name]: e.target.value });
     
   };
@@ -686,21 +734,21 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const TPerformance = 0
     const TQuality = 0
     const TOEE = 0
-    setTime(value)
-    setSelected([])
-    setDefects([])
-    setTReal(0)
-    setTNG(0)
-    setTOK(0)
-    setTProd(0)
-    setTPlan(0)
-    setTWTime(0)
-    setTDTime(TDTime)
-    setTAvailability(0)
-    setTPerformance(0)
-    setTQuality(0)
-    setTOEE(0)
 
+    setTime(value)
+    setSelected(selected)
+    setDefects(defects)
+    setTOK(TOK)
+    setTNG(TNG)
+    setTReal(TReal)
+    setTPlan(TPlan)
+    setTProd(TProd)
+    setTWTime(TWTime)
+    setTDTime(TDTime)
+    setTAvailability(TAvailability)
+    setTPerformance(TPerformance)
+    setTQuality(TQuality)
+    setTOEE(TOEE)
     // this.setState({ [e.target.name]: value, selected, defects, TReal, TNG, TOK, TProd, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   };
@@ -721,24 +769,22 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const TQuality = 0
     const TOEE = 0
     const programs = filterPrograms(e.target.value)
-
     setMachine(e.target.value)
     setPrograms(programs)
-    setSelected([])
-    setDefects([])
-    setTReal(0)
-    setTNG(0)
-    setTOK(0)
-    setTProd(0)
-    setTPlan(0)
-    setTWTime(0)
+    setSelected(selected)
+    setDefects(defects)
+    setTOK(TOK)
+    setTReal(TReal)
+    setTNG(TNG)
+    setTPlan(TPlan)
+    setTProd(TProd)
+    setTWTime(TWTime)
     setTDTime(TDTime)
-    setTAvailability(0)
-    setTPerformance(0)
-    setTQuality(0)
-    setTOEE(0)
-
-    this.setState({ [e.target.name]: e.target.value, programs, selected, defects, TReal, TNG, TOK, TProd, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
+    setTAvailability(TAvailability)
+    setTPerformance(TPerformance)
+    setTQuality(TQuality)
+    setTOEE(TOEE)
+    // this.setState({ [e.target.name]: e.target.value, programs, selected, defects, TReal, TNG, TOK, TProd, TPlan, TWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE });
     
   }
 
@@ -787,18 +833,18 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const id = e.target.name 
     const select = downtime.find( downtime => downtime.issueId === id);
     if(!select){
-      const getIssue = issues.find( issue => issue._id === id);
+      const getIssue = issuesList.find( issue => issue._id === id);
       const { _id  } = getIssue
       const item ={
         issueId: _id,
         mins: 0
       }
       const downt = [...downtime, item]
-      setDowntime(downt)
       // this.setState({downtime});
+      setDowntime(downt)
     } else{
       const items = downtime.filter(downtime => downtime.issueId !== id);
-      setDowntime(downtime)
+      setDowntime(items)
       // this.setState({ downtime: items });
     }
   }
@@ -807,8 +853,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     const id = e.target.value
     const programId = e.target.name 
     
-    const selected = defects.find( defect => defect.program === programId && defect.defect === id);
-    if(!selected){
+    const select = defects.find( defect => defect.program === programId && defect.defect === id);
+    if(!select){
       const getProgram = programs.find( program => program._id === programId);
       const { _id, partNumber, moldeNumber } = {...getProgram}
       const item ={
@@ -819,9 +865,9 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
           defectPcs: 0
       }
 
-      const items = [...this.state.defects];
+      const items = [...defects];
       const newItems = [...items, item]
-      setDefects(newItems)
+      return setDefects(newItems)
       // return this.setState({defects: newItems});
       
     } else{
@@ -829,7 +875,6 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
       const defect = defects.find( defect => defect.program === programId && defect.defect === id);
       // defects[defects.findIndex(defect => defect.program === programId && defect.defect === id)]
       const items = defects.filter(item => item !== defect);
-      
       setDefects(items)
     // this.setState({ defects: items });
       
@@ -837,34 +882,32 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const onSelectResine = e =>{
-    // let resines = [...this.state.resines];
+    let resin = [...resines];
     const id = e.target.name
     
-    const selected = resines.find( resine => resine.resine === id);
-    if(!selected){
-      const getResine = materials.find( material => material._id === id);
+    const select = resines.find( resine => resine.resine === id);
+    if(!select){
+      const getResine = materialsList.find( material => material._id === id);
       const { _id } = {...getResine}
       const item ={
         resine: _id,
         purge: 0
       }
       
-      // resines.push(item);
-      const resin = [...resines, item]
-      setResines(resin)
+      resin.push(item);
       // this.setState({resines: resines});
-      
+      setResines(resin)
     } else{
 
       const items = resines.filter( resine => resine.resine !== id);
-      setResines(items)
-    // this.setState({ resines: items });
       
+    // this.setState({ resines: items });
+     setResines(items) 
     }
   }
 
   const onSelect = e =>{
-    let programs = [...selected];
+    let prog = [...selected];
     const id = e.target.name 
     //   machines.push(data.data.newMachine);
     const select = selected.find( program => program.program === id);
@@ -896,14 +939,13 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
         }
       }
 
-
-      programs.push(item);
-      setSelected(programs)
+      prog.push(item);
+      return setSelected(prog)
       // return this.setState({selected: programs});
       
     } else{
       const items = selected.filter(program => program.program !== id);
-      const defects = defects.filter(defect => defect.program !== id);
+      const defect = defects.filter(defect => defect.program !== id);
 
       const newSelected = [...items]
       const newArray = newSelected.map( item => {
@@ -913,51 +955,49 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
         const TWTime = items.reduce( (a, b) =>{
           return a + parseFloat(b.production.wtime)
         },0)
-        const predtime = (this.state.time - TWTime )/items.length
+        const predtime = (time - TWTime )/items.length
         const dtime = precise_round(predtime, 2)
 
-        const time = wtime + dtime
-        const preav = (wtime / time)*100
-        const preplan = time * capacity
+        const allTime = wtime + dtime
+        const preav = (wtime / allTime)*100
+        const preplan = allTime * capacity
         const plan = precise_round(preplan, 0)
         const preperf = (real/prod)*100
         const performance = precise_round( preperf, 2) 
         const availability = precise_round( preav, 2)
         const preoee = (availability*performance*quality)/10000
-        const oee = this.precise_round(preoee, 2)
+        const oee = precise_round(preoee, 2)
         return { ...item, production: {...item.production, dtime, plan, availability, performance, quality, oee}}
       })
 
       const TOK = totalOK(newArray)
       const TReal = totalReal(newArray)
-      const TNG = TNG(newArray)
+      const TNG = onTNG(newArray)
       const TPlan = totalPlan(newArray)
       const TProd = totalProd(newArray)
-      const totalWTime = precise_round(totalWTime(newArray), 2)
+      const totWTime = precise_round(totalWTime(newArray), 2)
       let TDTime = precise_round(totalDTime(newArray), 2)
-      const TAvailability = precise_round((totalWTime/(totalWTime + TDTime)*100),2)
+      const TAvailability = precise_round((totWTime/(totWTime + TDTime)*100),2)
       const TPerformance = precise_round(((TReal/TProd)*100),2)
       const TQuality = precise_round(((TOK/TReal)*100),2)
       const TOEE = precise_round(((TAvailability*TPerformance*TQuality)/10000), 2)
 
       let resin = resines
       if(newArray.length === 0 ){ resin = []; TDTime = time }
-    
-   
-    setSelected(newArray)
-    setDefects(defects)
-    setTReal(TReal)
-    setTNG(TNG)
-    setTOK(TOK)
-    setTProd(TProd)
-    setTPlan(TPlan)
-    setTWTime(totalWTime)
-    setTDTime(TDTime)
-    setTAvailability(TAvailability)
-    setTPerformance(TPerformance)
-    setTQuality(TQuality)
-    setTOEE(TOEE)
-    setResines(resin)
+      setSelected(newArray)
+      setDefects(defect)
+      setTOK(TOK)
+      setTNG(TNG)
+      setTReal(TReal)
+      setTPlan(TPlan)
+      setTProd(TProd)
+      setTWTime(totWTime)
+      setTDTime(TDTime)
+      setTAvailability(TAvailability)
+      setTPerformance(TPerformance)
+      setTQuality(TQuality)
+      setTOEE(TOEE)
+      setResines(resin)
       // return this.setState({ selected: newArray, defects: defects, TNG, TProd, TOK, TReal, TPlan, TWTime: totalWTime, TDTime, TAvailability, TPerformance, TQuality, TOEE, resines });
     }
   }
@@ -968,7 +1008,6 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     // const { date, shift, machine, TReal, TNG, TOK, TPlan, TWTime, TProd, TDTime, 
     //   TAvailability, TPerformance, TQuality, TOEE, selected, defects, resines, 
     //   downtime, comments, team, inspector, operator  } = this.state;
-
     const production = selected.map( item => item.production )
     const workers = {team, operator, inspector }
     const report = {
@@ -987,7 +1026,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
       TQuality,
       TOEE,
       production,
-      downtime,
+      downtimeDetail: downtime,
       defects,
       resines,
       userId: userId,
@@ -1000,17 +1039,17 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
 
   const renderMachines = ()=>{
-    return machines.map(( machine ) => 
+    return machinesList.map(( machine ) => 
     <option key={machine._id} value={machine._id}>{machine.machineNumber}</option>);
   }
 
  
 
   const filterPrograms = (value) =>{
-     const programs =  programsList.filter(program => {
+     const progrs =  programsList.filter(program => {
        return program.machineNumber._id === value;
     });
-    return programs
+    return progrs
   }
 
   const renderContainer = () =>{
@@ -1035,8 +1074,8 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const renderResinesTable = () =>{
-    // const selected = this.state.selected
-    if(selected.length === 0){ return <div>choose Molde</div>}
+    const select = selected
+    if(select.length === 0){ return <div>choose Molde</div>}
     else{
       return(<table className='defect-table'>
           <thead>
@@ -1054,7 +1093,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
 
   const renderResineRows = () =>{
-    const material = materials.filter( item => item.type === 'resine')
+    const material = materialsList.filter( item => item.type === 'resine')
     return (material.map(( material ) => 
         <tr key={material._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
@@ -1070,7 +1109,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
 
   const renderDefectsRows = (program) =>{
-    const defects = defectList.filter( item => item.isInjection === true)
+    const defects = defectsList.filter( item => item.isInjection === true)
      return (defects.map(( defect ) => 
         <tr key={defect._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
@@ -1085,10 +1124,10 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const renderDefectsTable = () =>{
-    // const selected = this.state.selected
-    if(selected.length === 0){ return <div>choose Molde</div>}
+    const select = selected
+    if(select.length === 0){ return <div>choose Molde</div>}
     else{
-      return (selected.map( item =>{ 
+      return (select.map( item =>{ 
         return(<table key={item.program} className='defect-table'>
           <thead>
             <tr>
@@ -1108,15 +1147,15 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
   }
 
   const renderTableDownTime = () =>{
-    const downtime = issues;
-    if(!downtime){ 
+    const downt = issuesList;
+    if(!downt){ 
       return null 
     }
     else{ 
-      return downtime.map(( downtime ) =>
+      return downt.map(( downtime ) =>
         <tr key={downtime._id} className='checkboxes-defects defectboxes'>
           <td className='input-defect-body'>
-          <input type='checkbox' className='checkbox-defect-input' checked={findDowntime(downtime._id)} onChange={this.onSelectIssue} value={downtime._id} name={downtime._id}></input>
+          <input type='checkbox' className='checkbox-defect-input' checked={findDowntime(downtime._id)} onChange={onSelectIssue} value={downtime._id} name={downtime._id}></input>
           <label className='label-defect-body'>{downtime.issueCode} {downtime.issueName}</label>
           </td>
           <td className='input-defect-body-pcs'>
@@ -1135,7 +1174,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
       return programs.map(( program ) =>
         <tr key={program._id}>
           <td className='production_row'>
-            <input type='checkbox' className='checkbox-input' checked={findMolde(program._id)} onChange={this.onSelect} value={program._id} name={program._id}></input>
+            <input type='checkbox' className='checkbox-input' checked={findMolde(program._id)} onChange={onSelect} value={program._id} name={program._id}></input>
             <label>{program.moldeNumber.moldeNumber}</label>
           </td>
           <td className='production_row'>
@@ -1199,7 +1238,7 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
     // return this.setState({show: 'purge'})
   }
 
-  // showstate = () =>{
+  // const showstate = () =>{
   //   return console.log(this.state)
   // }
 
@@ -1220,48 +1259,48 @@ const AddReport = ({message, profiles, programsList, defectList, machines, issue
 
 const validateNegative = () =>{
   const production = selected.find( item => item.production.real <= 0 | item.production.ng < 0 | item.production.ng === '' | item.production.ok < 0 | item.production.wtime <= 0 | item.production.real % item.moldeNumber.cavities !== 0)
-  const defects = defects.find( item => item.defectPcs <= 0 )
-  const downtime = downtime.find( item => item.mins <= 0 )
+  const defect = defects.find( item => item.defectPcs <= 0 )
+  const downt = downtime.find( item => item.mins <= 0 )
   const purge = resines.find( item => item.purge <= 0 )
-  return !production && !defects && !downtime && !purge ? true : false
+  return !production && !defect && !downt && !purge ? true : false
 }
 
 const validateNG = () =>{
   const production = selected.map(item => {
     return { program: item.production.program, ng: item.production.ng }
   }).sort((a, b) => (a.program > b.program ) ? 1 : -1 )
-  const defects = production.map( item => {
+  const defect = production.map( item => {
     const reduceDefects = defects.filter( defect => defect.program === item.program)
     .reduce( (a, b) =>{
       return a + b.defectPcs
     },0)
     return { program: item.program, ng: reduceDefects }
   }).sort((a, b) => (a.program > b.program ) ? 1 : -1 )
-  return JSON.stringify(production) === JSON.stringify(defects) ? true : false
+  return JSON.stringify(production) === JSON.stringify(defect) ? true : false
 }
 
 const validateSubmit = () =>{
   // const timeToReport = this.getDowntimeToReport();
-  // const TWTime = this.state.TWTime
+  // const TWTimes = TWTime
 
-  const validateNG = validateNG()
-  const validateNegative = validateNegative()
+  const validNG = validateNG()
+  const validNegative = validateNegative()
   // const TReal = this.state.TReal
   // const TOK = this.state.TOK
   // const TNG = this.state.TNG
-  const defects = totalDefectPcs()
+  const defect = totalDefectPcs()
   // if( timeToReport !== 0){ return false }
-  if(defects !== TNG){ return false }
+  if(defect !== TNG){ return false }
   else if(TWTime !== 0 && TReal <= 0){ return false }
   else if(TOK < 0 ){ return false }
-  else if(!validateNG){ return false }
-  else if(!validateNegative){ return false }
+  else if(!validNG){ return false }
+  else if(!validNegative){ return false }
   else{ return true }
 }
 
   const renderButton= ()=>{
-    const validateSubmit = validateSubmit()
-    if(!validateSubmit){ return <input type="submit" onSubmit={onSubmit} value="Submit" disabled></input> }
+    const validSubmit = validateSubmit()
+    if(!validSubmit){ return <input type="submit" onSubmit={onSubmit} value="Submit" disabled></input> }
     else{ return <input type="submit" onSubmit={onSubmit} value="Submit"></input> }
   }
 
@@ -1351,7 +1390,7 @@ const validateSubmit = () =>{
 
 
   const renderTable = () => {
-    if(!machines){ return null}else{
+    if(!machinesList){ return null}else{
       return (<table className='header_table_report'>
       <tbody>
       <tr>
@@ -1377,7 +1416,7 @@ const validateSubmit = () =>{
             <input type="number" 
             className='time_input' 
             name='time'
-            value={this.state.time}  min="0" max="14" onChange={onInputTimeChange} required/>
+            value={time}  min="0" max="14" onChange={onInputTimeChange} required/>
         </th>
       </tr>
       </tbody>
@@ -1387,15 +1426,15 @@ const validateSubmit = () =>{
 
   const onChangeTeam = (e)=>{
     const team = e.target.value
-    const prof = profiles.filter( profile => profile.team === team)
+    const profs = profilesList.filter( profile => profile.team === team)
+    setProfiles(profs)
     setTeam(team)
-    setWorkers(prof)
     // return this.setState({profiles, team})
   }
 
   const onComments = (e) =>{
     const comments = e.target.value
-    setComments(comments)
+    return setComments(comments)
     // return this.setState({comments})
   }
 
@@ -1412,7 +1451,7 @@ const validateSubmit = () =>{
   }
 
   const renderInspectorOption = () =>{
-    return workers
+    return profiles
     .sort( (a,b) => {
       if (a.position < b.position) return -1;
       
@@ -1425,7 +1464,7 @@ const validateSubmit = () =>{
   }
 
   const renderOperatorOption = () =>{
-    return workers
+    return profiles
     .sort( (a,b) => {
       if (a.position > b.position) return -1;
       
@@ -1541,17 +1580,26 @@ const validateSubmit = () =>{
       </div>,document.querySelector('#modal')
     );
   }
+}
   
-};
+
 
 const mapStateToProps = state =>({
-  profiles: state.profiles,
-  issues: state.issues,
-  machines: state.machines,
-  materials: state.materials,
+  profilesList: state.profiles,
+  issuesList: state.issues,
+  machinesList: state.machines,
+  materialsList: state.materials,
   programsList: state.programs,
-  defectList: state.defects,
-  message: state.reportMesage
+  defectsList: state.defects,
+  message: state.reportMessage
 })
 
-export default connect(mapStateToProps, {addReport, closeReport})(AddReport)
+export default connect(mapStateToProps, {
+  fetchDefects, 
+  fetchWorkers, 
+  fetchPrograms, 
+  fetchMachines, 
+  fetchMaterials, 
+  fetchIssues,
+  addReport, closeReport
+})(AddReport)
