@@ -1,4 +1,4 @@
-import Home from './Home.js'
+import Home from './Home/Home.js'
 import Toolbar from './Toolbar.js'
 
 import Moldes, { AddMolde, UpdateMolde }from './Moldes/index.js'
@@ -11,9 +11,9 @@ import Programs, { AddProgram, UpdateProgram } from './Programs/index.js'
 import Users, { AddUser, UpdateUser } from './Users/index.js'
 import Workers, { AddWorker, UpdateWorker } from './Workers/index.js'
 
-import Record from './Record.js'
+import Record from './Record/Record.js'
 import Production from './Production/index.js'
-import Reports, { AddReport } from './Reports/index.js'
+import Reports, { AddReport, UpdateReport } from './Reports/index.js'
 
 export { 
     Home, 
@@ -37,7 +37,8 @@ export {
     UpdateProgram,
      
     Reports,
-    AddReport, 
+    AddReport,
+    UpdateReport, 
     Toolbar, 
     
     

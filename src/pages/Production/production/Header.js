@@ -1,6 +1,6 @@
 import React from 'react'
 import '../header.css'
-import { formatDate } from '../../../actions/helpers'
+import { formatDate } from '../../../helpers'
 const Header = ({ period, setPeriod, shift, setShift, filter, setFilter, setToday, today, day, setDay, detail, setDetail }) =>{
  
   const onPeriod = (e) =>{

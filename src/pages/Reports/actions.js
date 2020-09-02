@@ -1,7 +1,7 @@
 import { url, opts } from '../../config'
 import { reportsQuery, initialReportsQuery } from './queries'
 import { addReport as newReport, modifyReport } from './mutations'
-import { formatDate } from '../../actions/helpers'
+import { formatDate } from '../../helpers'
 
 import {
     ADD_CYCLES_MOLDES,

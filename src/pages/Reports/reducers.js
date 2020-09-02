@@ -20,7 +20,7 @@ const reportsReducer = (state = [], action) =>{
         case FETCH_INITIAL_REPORTS:
             return action.payload
         case ADD_REPORT:
-            return [ ...state, action.payload ]
+            return [ action.payload, ...state ]
         case UPDATE_REPORT:
             const item = action.payload
             const oldReports = state.filter( reports => reports._id !== action._id)

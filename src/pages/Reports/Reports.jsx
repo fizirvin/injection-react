@@ -28,7 +28,7 @@ const header = [
   {h: <Link to="/reports/add"><button>Add Report</button></Link>, w: '8%'}
 ]
 
-const Reports = ({ reports, loadingPage, fetchInitialReports}) =>{
+const Reports = ({ reports, loadingPage, fetchInitialReports, selectReport}) =>{
   const [_id, setId ] = useState('')
   const [ report, setReport ] =useState('')
   // const [production, setProduction ] = useState([])
@@ -152,7 +152,7 @@ const Reports = ({ reports, loadingPage, fetchInitialReports}) =>{
     </Link></TableData> }
     else{ return <TableData className={formatRow(id)} style={{width: '8%'}}>
       <button name={id} className='button_report_list_tomato' onClick={()=>openDetail(id, report)}></button>
-      <Link className='link-reports' to={`/reports/update/${id}`}>
+      <Link className='link-reports' to={`/reports/update/${id}`} onClick={()=>selectReport(report)}>
         <button className='button_report_list_gold'></button>
     </Link></TableData> }
   }

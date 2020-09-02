@@ -2,9 +2,8 @@ import React from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
-  Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, Toolbar, Production, Users, AddUser, 
+  Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, UpdateReport, Toolbar, Production, Users, AddUser, 
   UpdateUser, Record, Workers, AddWorker, UpdateWorker } from './pages'
-import { UpdateReport } from './forms';
 
 import './App.css';
 import './styles/layout.css'

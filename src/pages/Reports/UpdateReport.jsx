@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { addReport, closeReport } from './actions'
+import { updateReport, closeReport } from './actions'
 import { fetchIssues } from '../Issues/actions'
 import { fetchMaterials } from '../Materials/actions'
 import { fetchMachines } from '../Machines/actions'
@@ -10,33 +10,37 @@ import { fetchPrograms } from '../Programs/actions'
 import { fetchWorkers } from '../Workers/actions'
 import { fetchDefects } from '../Defects/actions'
 
-const AddReport = ({fetchDefects, fetchWorkers, fetchPrograms, fetchMachines, fetchMaterials, fetchIssues, message, profilesList, programsList, defectsList, machinesList, issuesList, userId, materialsList, addReport, closeReport}) => {
+const UpdateReport = ({report, fetchDefects, fetchWorkers, fetchPrograms, fetchMachines, fetchMaterials, fetchIssues, message, profilesList, programsList, defectsList, machinesList, issuesList, userId, materialsList, updateReport, closeReport}) => {
   const [ date, setDate ] = useState('')
-  const [ shift, setShift ] = useState('')
-  const [ machine, setMachine ] = useState('')
-  const [ time, setTime ] = useState(10)
-  const [ TReal, setTReal ] = useState(0)
-  const [ TNG, setTNG ] = useState(0)
-  const [ TOK, setTOK ] = useState(0)
-  const [ TPlan, setTPlan ] = useState(0)
-  const [ TWTime, setTWTime ] = useState(0)
-  const [ TProd, setTProd ] = useState(0)
-  const [ TDTime, setTDTime ] = useState(0)
-  const [ TAvailability, setTAvailability ] = useState(0)
-  const [ TPerformance, setTPerformance ] = useState(0)
-  const [ TQuality, setTQuality ] = useState(0)
-  const [ TOEE, setTOEE ] = useState(0)
+  const [ shift, setShift ] = useState(report.shift)
+  const [ machine, setMachine ] = useState(report.machine._id)
+  const [ time, setTime ] = useState(parseInt(parseFloat(report.TWTime.$numberDecimal) + parseFloat(report.TDTime.$numberDecimal)))
+  const [ TReal, setTReal ] = useState(report.TReal)
+  const [ TNG, setTNG ] = useState(report.TNG)
+  const [ TOK, setTOK ] = useState(report.TOK)
+  const [ TPlan, setTPlan ] = useState(report.TPlan)
+  const [ TWTime, setTWTime ] = useState(parseFloat(report.TWTime.$numberDecimal))
+  const [ TProd, setTProd ] = useState(report.TProd || 0)
+  const [ TDTime, setTDTime ] = useState(parseFloat(report.TDTime.$numberDecimal))
+  const [ TAvailability, setTAvailability ] = useState(parseFloat(report.TAvailability.$numberDecimal))
+  const [ TPerformance, setTPerformance ] = useState(report.TPerformance.$numberDecimal)
+  const [ TQuality, setTQuality ] = useState(report.TQuality.$numberDecimal)
+  const [ TOEE, setTOEE ] = useState(report.TOEE.$numberDecimal)
   const [ programs, setPrograms ] = useState([])
   const [ selected, setSelected ] = useState([])
   const [ show, setShow ] = useState('molds')
   const [ downtime, setDowntime ] = useState([])
   const [ defects, setDefects ] = useState([])
   const [ resines, setResines ] = useState([])
-  const [ team, setTeam ] = useState('')
-  const [ comments, setComments ] = useState('')
-  const [ inspector, setInspector ] = useState('')
-  const [ operator, setOperator ] = useState('')
-  const [ profiles, setProfiles ] = useState([])
+  const [ team, setTeam ] = useState(report.workers.team ||'')
+  const [ comments, setComments ] = useState(report.comments ||'')
+  const [ inspector, setInspector ] = useState(report.workers.inspector||'')
+  const [ operator, setOperator ] = useState(report.workers.operator||'')
+  const [ profiles, setProfiles ] = useState(profilesList.filter( profile => profile.team === report.workers.team || profilesList))
+
+  useEffect(() =>{
+    console.log(report) 
+  },[report])
 
   useEffect(() =>{
     if(issuesList.length === 0){
@@ -74,6 +78,114 @@ const AddReport = ({fetchDefects, fetchWorkers, fetchPrograms, fetchMachines, fe
     } 
   },[defectsList])
 
+  useEffect(() =>{
+    const downtime = report.downtimeDetail.map( item => {
+      const { _id } = item.issueId
+      const selection = {
+        issueId: _id,
+        mins: item.mins
+      }
+      return selection
+    })
+  
+  return setDowntime(downtime)
+  },[report])
+
+  useEffect(() =>{
+    const programs = filterPrograms(report.machine._id)
+    return setPrograms(programs)
+  },[report])
+
+  useEffect(() =>{
+    const date = formatDate(report.reportDate)
+    return setDate(date)
+  },[report])
+
+  useEffect( () =>{
+    const progs = filterPrograms(report.machine._id)
+    const selected = report.production.map( item => {
+      
+      const getProgram = async () => await progs.find( program => program._id === item.program._id)
+      
+      const selection = {
+        program: getProgram._id,
+        moldeNumber: item.molde,
+        partNumber: item.partNumber,
+        cycleTime: getProgram.cycleTime,
+        capacity: getProgram.capacity,
+        production: {
+          program: getProgram._id, 
+          partNumber: item.partNumber._id,
+          molde: item.molde._id,
+          real: item.real,
+          ok: item.ok,
+          prod: item.prod || 0, 
+          ng: item.ng,
+          plan: item.plan,
+          wtime: parseFloat(item.wtime.$numberDecimal),
+          dtime: parseFloat(item.dtime.$numberDecimal),
+          availability: parseFloat(item.availability.$numberDecimal),
+          performance: parseFloat(item.performance.$numberDecimal),
+          quality: parseFloat(item.quality.$numberDecimal),
+          oee: parseFloat(item.oee.$numberDecimal),
+          cycles: item.cycles
+        }
+      }
+      return selection
+    })
+    return setSelected(selected)
+  },[report])
+
+  useEffect(() =>{
+    const selectedDefects = report.defects.map( item =>{
+      const defect ={
+        defect: item.defect._id,
+        defectPcs: item.defectPcs,
+        molde: item.molde._id,
+        partNumber: item.partNumber._id,
+        program: item.program._id
+      }
+      return defect
+    })
+    return setDefects(selectedDefects)
+  },[report])
+
+  useEffect(() =>{
+    const selectedResines = report.resines.map( item =>{
+      const resine ={
+        resine: item.resine._id,
+        purge: item.purge
+      }
+      return resine
+    })
+    return setResines(selectedResines)
+  },[report])
+
+  const formatDate = (format)=>{
+    let formatDate
+    const date = new Date(format);
+    const y = date.getFullYear()
+    const d = date.getDate()
+    const m = date.getMonth()+1
+
+    function M(){
+      if(m < 10){
+      return '0'+ m
+    } else { return m}
+  }
+  function D(){
+    if(d < 10){
+      return '0'+ d
+    } else { return d}
+  }
+
+
+
+  const formatD = D();
+  const formatM = M();
+    formatDate = y + '-'+ formatM + '-'+ formatD
+    return formatDate
+  }
 
   const onMins = async (e) =>{
     const id = e.target.name
@@ -1034,7 +1146,7 @@ const AddReport = ({fetchDefects, fetchWorkers, fetchPrograms, fetchMachines, fe
       workers
     }
     
-    return addReport(report)
+    return updateReport(report)
   }
 
 
@@ -1591,7 +1703,8 @@ const mapStateToProps = state =>({
   materialsList: state.materials,
   programsList: state.programs,
   defectsList: state.defects,
-  message: state.reportMessage
+  message: state.reportMessage,
+  report: state.report
 })
 
 export default connect(mapStateToProps, {
@@ -1601,5 +1714,6 @@ export default connect(mapStateToProps, {
   fetchMachines, 
   fetchMaterials, 
   fetchIssues,
-  addReport, closeReport
-})(AddReport)
+  updateReport, 
+  closeReport
+})(UpdateReport)

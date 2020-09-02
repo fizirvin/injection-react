@@ -1,5 +1,5 @@
 import { url, opts } from '../../config'
-import { getDateofTable, getDateofTable49, formatDate } from '../../actions/helpers'
+import { getDateofTable, getDateofTable49, formatDate } from '../../helpers'
 import { productionQuery, resinesQuery, downtimeQuery, defectProductionQuery } from './queries'
 
 export const  FETCH_PRODUCTION_BY_DATE = 'FETCH_PRODUCTION_BY_DATE'

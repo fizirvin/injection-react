@@ -8,7 +8,7 @@ import BodyTable from './production/BodyTable'
 import { formatDate, getDateofTable, dayColumn, weekColumn, monthColumn, machineDetail, machineTrimesterDetail, modelDetail, 
     moldeDetail, modelTrimesterDetail, moldeTrimesterDetail, downtimeWeekDetail, downtimeTrimesterDetail , purgeTrimesterDetail, purgeWeekDetail,
     defectWeekIndicator, defectWeekDetailMachine, defectWeekDetailModel, defectWeekDetailMolde, defectTrimesterDetailMachine, 
-    defectTrimesterDetailModel, defectTrimesterDetailMolde} from '../../actions/helpers'
+    defectTrimesterDetailModel, defectTrimesterDetailMolde} from '../../helpers'
 
 const Production = ({production, purge, defects, downtime, machines, fetchMachines, fetchProduction, fetchDowntime, fetchResines, fetchDefectProduction}) =>{
     const [ period, setPeriod ] = useState('day')
