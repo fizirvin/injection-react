@@ -8,13 +8,17 @@ import { fetchModels } from '../Parts/actions.js'
 import { fetchMoldes } from '../Moldes/actions.js'
 
 const UpdateProgram = ({ program, machines, models, moldes, message, closeProgram, updateProgram, fetchMachines, fetchMoldes, fetchModels }) => {
-  const [ machineNumber, setMachineNumber ] = useState(program.machineNumber)
-  const [ moldeNumber, setMoldeNumber ] = useState(program.moldeNumber)
-  const [ partNumber, setPartNumber ] = useState(program.partNumber)
+  const [ machineNumber, setMachineNumber ] = useState(program.machineNumber._id)
+  const [ moldeNumber, setMoldeNumber ] = useState(program.moldeNumber._id)
+  const [ partNumber, setPartNumber ] = useState(program.partNumber._id)
   const [ cycleTime, setCycleTime ] = useState(program.cycleTime.$numberDecimal)
   const [ cycles, setCycles ] = useState(program.cycles)
   const [ capacity, setCapacity ] = useState(program.capacity)
     
+  useEffect(() =>{
+    return console.log('yo', program)
+    
+  },[program])
   useEffect(() =>{
     if(machines.length === 0){
       console.log('llamé maquinas')
