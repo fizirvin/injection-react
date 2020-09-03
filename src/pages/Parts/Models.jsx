@@ -20,7 +20,7 @@ const Models = ({models, fetchModels, selectModel}) =>{
 
   useEffect(() =>{
     if(models.length === 0){
-      console.log('llamé maquinas models')
+      
       fetchModels()
     } 
   },[models])

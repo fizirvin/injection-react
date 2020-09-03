@@ -14,11 +14,12 @@ const Workers = ({ profiles, fetchWorkers }) =>{
 
   useEffect(() =>{
     if(profiles.length === 0){
+
+      
       fetchWorkers()
     } 
   },[profiles])
 
-  
   const renderProfiles = () =>{
     if(workers.length === 0){
         return <div className='spinner_div'><Spinner></Spinner></div>

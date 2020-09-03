@@ -23,7 +23,7 @@ const Moldes = ({moldes, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
 
   useEffect(() =>{
     if(moldes.length === 0){
-      console.log('llamé maquinas moldes')
+      
       fetchMoldes()
     } 
   },[moldes])

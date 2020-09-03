@@ -271,7 +271,7 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: 'sucess'
         })
         const report = data.data.updateInjectionReport
-        const { _id } = report
+        // const { _id } = report
         const array = [report]
         const convert = array.map( item => { 
             const date = formatDate(item.reportDate);

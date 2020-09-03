@@ -1,16 +1,108 @@
-import React from 'react';
+import React, {useEffect }from 'react';
+import { connect } from 'react-redux'
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
   Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, UpdateReport, Toolbar, Production, Users, AddUser, 
   UpdateUser, Record, Workers, AddWorker, UpdateWorker } from './pages'
+import { fetchWorkers } from './pages/Workers/actions.js'
+import { fetchDefects } from './pages/Defects/actions.js'
+import { fetchInitialReports, updateReport, closeReport } from './pages/Reports/actions.js'
+import { fetchPrograms } from './pages/Programs/actions.js'
+import { fetchMachines } from './pages/Machines/actions.js'
+import { fetchMaterials } from './pages/Materials/actions.js'
+import { fetchModels } from './pages/Parts/actions.js'
+import { fetchIssues } from './pages/Issues/actions.js'
+import { fetchMoldes, fetchCycles } from './pages/Moldes/actions.js'
 
 import './App.css';
 import './styles/layout.css'
 import './pages/Production/Production.css'
 import './pages/Downtime.css'
 
-const App = ({name, logoutHandler, userId}) =>{
+const App = ({name, logoutHandler, userId, message, report,
+  moldesList,
+  cyclesList,
+  reportsList,
+  programsList,
+  profilesList,
+  defectsList,
+  issuesList,
+  materialsList,
+  machinesList,
+  modelsList,
+  fetchWorkers,
+  fetchDefects,
+  fetchInitialReports,  
+  fetchPrograms, 
+  fetchMachines, 
+  fetchMaterials, 
+  fetchIssues,
+  fetchModels,
+  updateReport, 
+  closeReport}) =>{
+
+    useEffect(() =>{
+      if(moldesList.length === 0){
+        
+        fetchMoldes()
+      } 
+    },[moldesList])
+  
+    useEffect(() =>{
+      if(cyclesList.length === 0){
+        fetchCycles()
+      } 
+    },[cyclesList])
+
+    useEffect(() =>{
+      if(reportsList.length === 0){
+        fetchInitialReports()
+      } 
+    },[issuesList])
+
+    useEffect(() =>{
+      if(modelsList.length === 0){
+       
+        fetchModels()
+      } 
+    },[modelsList])
+
+    useEffect(() =>{
+      if(issuesList.length === 0){
+        fetchIssues()
+      } 
+    },[issuesList])
+  
+    useEffect(() =>{
+      if(materialsList.length === 0){
+        fetchMaterials()
+      } 
+    },[materialsList])
+  
+    useEffect(() =>{
+      if(machinesList.length === 0){
+        fetchMachines()
+      } 
+    },[machinesList])
+  
+    useEffect(() =>{
+      if(programsList.length === 0){
+        fetchPrograms()
+      } 
+    },[programsList])
+  
+    useEffect(() =>{
+      if(profilesList.length === 0){
+        fetchWorkers()
+      } 
+    },[profilesList])
+  
+    useEffect(() =>{
+      if(defectsList.length === 0){
+        fetchDefects()
+      } 
+    },[defectsList])
   return (
     <BrowserRouter>
       <div className="App">
@@ -49,18 +141,20 @@ const App = ({name, logoutHandler, userId}) =>{
             <Route path="/programs/update/:id" exact component={ props => ( <UpdateProgram {...props} /> )} />
             <Route path="/reports" exact component={ props => ( <Reports {...props}/> )} />
             <Route path="/reports/add" exact component={ props => ( <AddReport {...props} userId={userId}/> )} />
-            {/* 
+            
             
             <Route path="/reports/update/:id" exact component={ props => ( <UpdateReport {...props}
-              profiles={this.state.profiles}
-              defects={this.state.defects}
-              reports={this.state.reports} 
-              programs={this.state.programs} 
-              machines={this.state.machines}
-              material={this.state.materials}  
-              issues={this.state.issues}
-              message={this.state.reportMessage} close={this.close} updateReport={this.updateReport}/> )} 
-            /> */}
+            report={report}
+              profiles={profilesList}
+              defects={defectsList}
+              reports={reportsList} 
+              programs={programsList} 
+              machines={machinesList}
+              material={materialsList}  
+              issues={issuesList}
+              message={message} close={closeReport} updateReport={updateReport}
+              /> )} 
+            />
             
             <Route path="/users" exact component={ props => ( <Users {...props}/> )} />
             <Route path="/users/add" exact component={ props => ( <AddUser {...props} /> )} />
@@ -78,4 +172,31 @@ const App = ({name, logoutHandler, userId}) =>{
   )
 }
 
-export default App;
+const mapStateToProps = state =>({
+  profilesList: state.profiles,
+  defectsList: state.defects,
+  reportsList: state.reports,
+  programsList: state.programs,
+  machinesList: state.machines,
+  materialsList: state.materials,
+  modelsList: state.models,
+  moldesList: state.moldes,
+  cyclesList: state.cycles,
+  issuesList: state.issues,
+  message: state.reportMessage,
+  reportsList: state.reports,
+  report: state.report
+})
+
+export default connect(mapStateToProps, {
+  fetchWorkers,
+  fetchDefects,
+  fetchInitialReports,  
+  fetchPrograms, 
+  fetchMachines, 
+  fetchMaterials, 
+  fetchIssues,
+  fetchModels,
+  updateReport, 
+  closeReport
+})(App)
