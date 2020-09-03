@@ -171,11 +171,11 @@ const UpdateWorker = ({ worker, message, closeWorker, updateWorker }) => {
                     </tr>
                     <tr>
                         <td><label htmlFor='firstname'>Firstname: </label></td>
-                        <td><input onChange={onInputChange} name='firstname' type='text' id='firstname' maxLength='30' size='30' required></input></td>
+                        <td><input onChange={onInputChange} name='firstname' value={firstname} type='text' id='firstname' maxLength='30' size='30' required></input></td>
                     </tr>
                     <tr>
                         <td><label htmlFor='lastname'>Lastname: </label></td>
-                        <td><input onChange={onInputChange} name='lastname' type='text' id='lastname' maxLength='30' size='30' required></input></td>
+                        <td><input onChange={onInputChange} name='lastname' value={lastname} type='text' id='lastname' maxLength='30' size='30' required></input></td>
                     </tr>
                     <tr>
                         <td><label htmlFor='gender'>Gender: </label></td>
@@ -189,7 +189,7 @@ const UpdateWorker = ({ worker, message, closeWorker, updateWorker }) => {
                     </tr>
                     <tr>
                         <td><label htmlFor='entry'>Entry Date: </label></td>
-                        <td><input onChange={onInputChange} name='entryNum' vaue={entryNum} type='date' id='entry' size='30' required></input></td>
+                        <td><input onChange={onInputChange} name='entryNum' value={entryNum} type='date' id='entry' size='30' required></input></td>
                     </tr>
                     <tr>
                         <td><label htmlFor='department'>Department: </label></td>

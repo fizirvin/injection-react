@@ -15,10 +15,7 @@ const UpdateProgram = ({ program, machines, models, moldes, message, closeProgra
   const [ cycles, setCycles ] = useState(program.cycles)
   const [ capacity, setCapacity ] = useState(program.capacity)
     
-  useEffect(() =>{
-    return console.log('yo', program)
-    
-  },[program])
+  
   useEffect(() =>{
     if(machines.length === 0){
       console.log('llamé maquinas')

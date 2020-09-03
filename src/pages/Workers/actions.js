@@ -84,8 +84,8 @@ const updateWorker = (_id, input, formData) => async ( dispatch ) => {
             })
         } else{
             dispatch({
-                type: ADD_WORKER,
-                payload: data.data.newProfile
+                type: UPDATE_WORKER,
+                payload: data.data.updateProfile
             })
             return dispatch({
                 type: MESSAGE_WORKER,
@@ -111,7 +111,7 @@ const updateWorker = (_id, input, formData) => async ( dispatch ) => {
         } else{
             dispatch({
                 type: UPDATE_WORKER,
-                payload: data.data.updateWorker
+                payload: data.data.updateProfile
             })
             return dispatch({
                 type: MESSAGE_WORKER,
