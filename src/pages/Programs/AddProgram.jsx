@@ -62,19 +62,12 @@ const AddProgram = ({ machines, models, moldes, message, closeProgram, addProgra
     setCapacity(0)
   };
 
-  const inputValue = ( ) => {
-    const value = parseFloat(cycleTime)
-    if( isNaN(value) ){ return '' }
-    else if( value === 0 ){ return 0}
-    else { 
-      return value
-    }
-  };
+  
 
   const onNumChange = (e) => {
     const value = parseFloat(e.target.value)
-    if( isNaN(value) ){ return setCycles('') }
-    else if( value === 0 ){ return setCycles('') }
+    if( isNaN(value) ){ return setCycleTime('') }
+    else if( value === 0 ){ return setCycleTime('') }
     else {
       const capacity = capacityValue(value)
       const cycles = cyclesValue(capacity)
@@ -199,7 +192,7 @@ const AddProgram = ({ machines, models, moldes, message, closeProgram, addProgra
                 <td><label>Cycle Time: </label></td>
                 <td><input type="number"
                   name='cycleTime' 
-                  value={inputValue()}
+                  value={cycleTime}
                   onChange={onNumChange} required></input></td>
               </tr>
               <tr>
