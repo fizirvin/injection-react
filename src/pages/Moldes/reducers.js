@@ -7,7 +7,15 @@ import {
     UPDATE_MOLDE,
     SELECT_MOLDE,
     MESSAGE_MOLDE,
+    OPEN_CLEANING_FORM
 } from './actions'
+
+const openCleaningForm = (formIsOpen = false, action) =>{
+    if( action.type === OPEN_CLEANING_FORM ){
+        return !formIsOpen    
+    }
+    return formIsOpen
+}
 
 const moldesReducer = (state = [], action) =>{
     switch (action.type){
@@ -57,5 +65,6 @@ export {
     moldesReducer,
     cyclesReducer, 
     moldeReducer,
-    moldeMessage
+    moldeMessage,
+    openCleaningForm
 }

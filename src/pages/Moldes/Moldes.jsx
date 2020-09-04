@@ -1,7 +1,7 @@
 import React, { useEffect}  from 'react'
 import { connect } from 'react-redux'
 import { fetchMoldes, fetchCycles, selectMolde } from './actions'
-
+import MoldeDetail from './MoldeDetail'
 import { Link } from 'react-router-dom'
 import TableData from '../../components/TableData'
 import TableHeader from '../../components/TableHeader'
@@ -19,7 +19,7 @@ const header = [
   {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '12%'}
 ]
 
-const Moldes = ({moldes, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
+const Moldes = ({moldes, molde, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
 
   useEffect(() =>{
     if(moldes.length === 0){
@@ -58,7 +58,9 @@ const Moldes = ({moldes, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
       <TableData className='table_data' style={{width: '12%'}}>{lifecycles}</TableData>
       <TableData className='table_data' style={{width: '12%'}}>{sum}</TableData>
       <TableData className='table_data' style={{width: '12%'}}>{percent}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`} onClick={()=>selectMolde(molde)}><button>Update</button></Link></TableData>
+      <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`} onClick={()=>selectMolde(molde)}><button>Up</button></Link>
+      <button onClick={()=>selectMolde(molde)}>Cl</button>
+      </TableData>
     </tr> }
     )
   }
@@ -86,13 +88,15 @@ const Moldes = ({moldes, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
           {renderBodyContainer(moldes, cycles)}
           <RenderItems items={moldes}/>
         </div>
+        {molde && <MoldeDetail></MoldeDetail>}
       </div>
     )
 }
 
 const mapStateToProps = state =>({
     moldes: state.moldes,
-    cycles: state.cycles
+    cycles: state.cycles,
+    molde: state.molde
 })
 
 export default connect(mapStateToProps, {fetchMoldes, fetchCycles, selectMolde})(Moldes)

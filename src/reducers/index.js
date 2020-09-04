@@ -50,5 +50,6 @@ export default combineReducers({
     page: reports.pageReducer,
     add: reports.addReducer,
     loadingPage: reports.loadingPage,
-    totalReports: reports.totalReportsReducer
+    totalReports: reports.totalReportsReducer,
+    cleanFormIsOpen: moldes.openCleaningForm
 })

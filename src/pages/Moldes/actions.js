@@ -1,6 +1,7 @@
 import { url, opts } from '../../config'
 import { moldesQuery, cyclesQuery } from './queries'
 import { addMolde as newMolde, modifyMolde } from './mutations'
+import { dispatch } from 'd3'
 
 export const FETCH_MOLDES = 'FETCH_MOLDES'
 export const FETCH_CYCLES_MOLDES = 'FETCH_CYCLES_MOLDES'
@@ -12,6 +13,36 @@ export const ADD_MOLDE = 'ADD_MOLDE'
 export const UPDATE_MOLDE = 'UPDATE_MOLDE'
 export const SELECT_MOLDE = 'SELECT_MOLDE'
 export const MESSAGE_MOLDE = 'MESSAGE_MOLDE'
+
+export const ADD_CLEANING = 'ADD_CLEANING'
+export const FETCH_MOLDE_CLEANINGS = 'FETCH_MOLDE_CLEANINGS'
+export const MESSAGE_CLEANING = 'MESSAGE_CLEANING'
+export const OPEN_CLEANING_FORM = 'OPEN_CLEANING_FORM'
+
+const opeanCleaningForm = () =>{
+    return {
+        type: OPEN_CLEANING_FORM,
+    }
+}
+
+const fetchMoldeCleanings = () => async ( dispatch ) => {
+    opts.body = JSON.stringify(moldesQuery)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+
+
+    if(data.errors){
+        console.log(data)
+        return dispatch({type: MESSAGE_CLEANING,
+            payload: 'error'
+        })
+    } else{
+        dispatch({
+            type: FETCH_MOLDE_CLEANINGS,
+            payload: data.data.moldeCleanings
+        })
+    }
+}
 
 const fetchMoldes = () => async ( dispatch ) => {
     opts.body = JSON.stringify(moldesQuery)
@@ -99,5 +130,6 @@ export {
     addMolde,
     updateMolde,
     selectMolde,
-    closeMolde
+    closeMolde,
+    opeanCleaningForm
 }
