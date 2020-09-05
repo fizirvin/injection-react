@@ -18,8 +18,38 @@ export const ADD_CLEANING = 'ADD_CLEANING'
 export const FETCH_MOLDE_CLEANINGS = 'FETCH_MOLDE_CLEANINGS'
 export const MESSAGE_CLEANING = 'MESSAGE_CLEANING'
 export const OPEN_CLEANING_FORM = 'OPEN_CLEANING_FORM'
+export const OPEN_DETAIL_CLEANINGS = 'OPEN_DETAIL_CLEANINGS'
+export const CLOSE_DETAIL_CLEANINGS = 'CLOSE_DETAIL_CLEANINGS'
+export const SELECT_DETAIL_MOLDE = 'SELECT_DETAIL_MOLDE'
+export const UNSELECT_DETAIL_MOLDE = 'UNSELECT_DETAIL_MOLDE'
+export const TOTAL_CYCLES_MOLDE = 'TOTAL_CYCLES_MOLDE'
 
-const opeanCleaningForm = () =>{
+const openDetailCleanings = (molde, sum) => (dispatch) =>{
+    dispatch({
+        type: SELECT_DETAIL_MOLDE,
+        payload: molde
+    })
+    dispatch( {
+        type: OPEN_DETAIL_CLEANINGS,
+    })
+    dispatch( {
+        type: TOTAL_CYCLES_MOLDE,
+        payload: sum
+    })
+
+}
+
+const closeDetailCleanings = () => (dispatch) =>{
+    dispatch({
+        type: UNSELECT_DETAIL_MOLDE
+    })
+    dispatch( {
+        type: CLOSE_DETAIL_CLEANINGS,
+    })
+
+}
+
+const openCleaningForm = () =>{
     return {
         type: OPEN_CLEANING_FORM,
     }
@@ -48,7 +78,7 @@ const fetchMoldes = () => async ( dispatch ) => {
     opts.body = JSON.stringify(moldesQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
-
+    
     dispatch({
         type: FETCH_MOLDES,
         payload: data.data.moldes
@@ -131,5 +161,8 @@ export {
     updateMolde,
     selectMolde,
     closeMolde,
-    opeanCleaningForm
+    openCleaningForm,
+    openDetailCleanings,
+    closeDetailCleanings
+    
 }

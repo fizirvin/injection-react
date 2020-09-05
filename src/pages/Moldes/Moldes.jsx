@@ -1,6 +1,6 @@
 import React, { useEffect}  from 'react'
 import { connect } from 'react-redux'
-import { fetchMoldes, fetchCycles, selectMolde } from './actions'
+import { fetchMoldes, fetchCycles, selectMolde, openDetailCleanings, closeDetailCleanings } from './actions'
 import MoldeDetail from './MoldeDetail'
 import { Link } from 'react-router-dom'
 import TableData from '../../components/TableData'
@@ -19,8 +19,9 @@ const header = [
   {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '12%'}
 ]
 
-const Moldes = ({moldes, molde, cycles, fetchMoldes, fetchCycles, selectMolde}) =>{
+const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes, fetchCycles, selectMolde, openDetailCleanings}) =>{
 
+  
   useEffect(() =>{
     if(moldes.length === 0){
       
@@ -59,10 +60,15 @@ const Moldes = ({moldes, molde, cycles, fetchMoldes, fetchCycles, selectMolde}) 
       <TableData className='table_data' style={{width: '12%'}}>{sum}</TableData>
       <TableData className='table_data' style={{width: '12%'}}>{percent}</TableData>
       <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`} onClick={()=>selectMolde(molde)}><button>Up</button></Link>
-      <button onClick={()=>selectMolde(molde)}>Cl</button>
+      {renderOpenButton(molde, moldeDetail, sum)}
       </TableData>
     </tr> }
     )
+  }
+
+  const renderOpenButton = (molde, moldeDetail, sum) =>{
+    if(!moldeDetail){ return <button onClick={()=>openDetailCleanings(molde, sum)}>Cl</button> }
+    else {return molde._id === moldeDetail._id ? <button className='closeButton-detail' onClick={closeDetailCleanings}>Cl</button> : <button onClick={()=>openDetailCleanings(molde, sum)}>Cl</button> }
   }
 
     const renderBodyContainer = (array, cycles) =>{
@@ -88,7 +94,7 @@ const Moldes = ({moldes, molde, cycles, fetchMoldes, fetchCycles, selectMolde}) 
           {renderBodyContainer(moldes, cycles)}
           <RenderItems items={moldes}/>
         </div>
-        {molde && <MoldeDetail></MoldeDetail>}
+        {moldeDetail && <MoldeDetail></MoldeDetail>}
       </div>
     )
 }
@@ -96,7 +102,8 @@ const Moldes = ({moldes, molde, cycles, fetchMoldes, fetchCycles, selectMolde}) 
 const mapStateToProps = state =>({
     moldes: state.moldes,
     cycles: state.cycles,
-    molde: state.molde
+    molde: state.molde,
+    moldeDetail: state.moldeDetail,
 })
 
-export default connect(mapStateToProps, {fetchMoldes, fetchCycles, selectMolde})(Moldes)
+export default connect(mapStateToProps, {fetchMoldes, closeDetailCleanings, fetchCycles, openDetailCleanings, selectMolde})(Moldes)

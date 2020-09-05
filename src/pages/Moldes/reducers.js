@@ -7,8 +7,24 @@ import {
     UPDATE_MOLDE,
     SELECT_MOLDE,
     MESSAGE_MOLDE,
-    OPEN_CLEANING_FORM
+    OPEN_CLEANING_FORM,
+    OPEN_DETAIL_CLEANINGS,
+    SELECT_DETAIL_MOLDE,
+    CLOSE_DETAIL_CLEANINGS,
+    UNSELECT_DETAIL_MOLDE,
+    TOTAL_CYCLES_MOLDE
 } from './actions'
+
+const openDetailCleanings = (DetailIsOpen = false, action)=>{
+    switch (action.type){
+        case OPEN_DETAIL_CLEANINGS:
+            return true
+        case CLOSE_DETAIL_CLEANINGS:
+            return false
+        default:
+            return DetailIsOpen
+    }
+}
 
 const openCleaningForm = (formIsOpen = false, action) =>{
     if( action.type === OPEN_CLEANING_FORM ){
@@ -61,10 +77,31 @@ const moldeReducer = (selected = null, action) =>{
     return selected
 }
 
+const moldeDetail = (selected = null, action) =>{
+    switch (action.type){
+        case SELECT_DETAIL_MOLDE:
+            return action.payload
+        case UNSELECT_DETAIL_MOLDE:
+            return null
+        default:
+            return selected
+    }
+}
+
+const totalCyclesReducer = (tcycles = 0, action) =>{
+    if(action.type === TOTAL_CYCLES_MOLDE){
+        return action.payload
+    }
+    return tcycles
+}
+
 export {
     moldesReducer,
     cyclesReducer, 
     moldeReducer,
     moldeMessage,
-    openCleaningForm
+    openCleaningForm,
+    openDetailCleanings,
+    moldeDetail,
+    totalCyclesReducer
 }

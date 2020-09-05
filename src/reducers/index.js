@@ -51,5 +51,8 @@ export default combineReducers({
     add: reports.addReducer,
     loadingPage: reports.loadingPage,
     totalReports: reports.totalReportsReducer,
-    cleanFormIsOpen: moldes.openCleaningForm
+    cleanFormIsOpen: moldes.openCleaningForm,
+    detailIsOpen: moldes.openDetailCleanings,
+    moldeDetail: moldes.moldeDetail,
+    tCycles: moldes.totalCyclesReducer
 })

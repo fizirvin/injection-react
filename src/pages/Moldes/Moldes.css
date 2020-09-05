@@ -38,8 +38,39 @@
 }
 
 .molde-detail-container{
-  background-color: rgb(255, 51, 0);
+  background-color: gold;
   width: 100%; 
   height: fit-content;
   overflow-y: scroll;
 }
+
+.comments-input{
+  width: 84%;
+}
+
+.molde-detail-input{
+  width: fit-content;
+  margin-right: 0;
+}
+
+.molde-detail-date{
+  width: 10%;
+}
+
+.molde-detail-team{
+  width: 10%;
+}
+
+.molde-detail-shift{
+  justify-content: center;
+  width: 10%;
+}
+
+.model-detail-number{
+  width: 94%;
+}
+
+.closeButton-detail{
+  background-color: gold;
+}
+

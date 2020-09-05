@@ -39,6 +39,8 @@ const App = ({name, logoutHandler, userId, message, report,
   fetchMaterials, 
   fetchIssues,
   fetchModels,
+  fetchMoldes, 
+  fetchCycles,
   updateReport, 
   closeReport}) =>{
 
@@ -51,15 +53,17 @@ const App = ({name, logoutHandler, userId, message, report,
   
     useEffect(() =>{
       if(cyclesList.length === 0){
+        
         fetchCycles()
       } 
     },[cyclesList])
 
     useEffect(() =>{
       if(reportsList.length === 0){
+        
         fetchInitialReports()
       } 
-    },[issuesList])
+    },[reportsList])
 
     useEffect(() =>{
       if(modelsList.length === 0){
@@ -197,6 +201,8 @@ export default connect(mapStateToProps, {
   fetchMaterials, 
   fetchIssues,
   fetchModels,
+  fetchMoldes, 
+  fetchCycles,
   updateReport, 
   closeReport
 })(App)
