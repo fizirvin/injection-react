@@ -1,6 +1,6 @@
 import { url, opts } from '../../config'
-import { moldesQuery, cyclesQuery } from './queries'
-import { addMolde as newMolde, modifyMolde } from './mutations'
+import { moldesQuery, cyclesQuery, cleaningsQuery } from './queries'
+import { addMolde as newMolde, addCleaning as newCleaning, modifyMolde } from './mutations'
 import { dispatch } from 'd3'
 
 export const FETCH_MOLDES = 'FETCH_MOLDES'
@@ -23,6 +23,31 @@ export const CLOSE_DETAIL_CLEANINGS = 'CLOSE_DETAIL_CLEANINGS'
 export const SELECT_DETAIL_MOLDE = 'SELECT_DETAIL_MOLDE'
 export const UNSELECT_DETAIL_MOLDE = 'UNSELECT_DETAIL_MOLDE'
 export const TOTAL_CYCLES_MOLDE = 'TOTAL_CYCLES_MOLDE'
+export const  RESET_CLEANINGS = ' RESET_CLEANINGS'
+export const  RESET_CLEANING_FORM = ' RESET_CLEANING_FORM'
+
+const addCleaning = (input) => async ( dispatch ) => {
+    newCleaning.variables = { input }
+    opts.body = JSON.stringify(newCleaning)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    console.log(data)
+    if(data.errors){
+        console.log(data)
+        return dispatch({type: MESSAGE_CLEANING,
+            payload: 'error'
+        })
+    } else{
+        dispatch({
+            type: ADD_CLEANING,
+            payload: data.data.newCleaning
+        })
+        return dispatch({
+            type: MESSAGE_CLEANING,
+            payload: 'sucess'
+        })
+    }
+}
 
 const openDetailCleanings = (molde, sum) => (dispatch) =>{
     dispatch({
@@ -36,6 +61,12 @@ const openDetailCleanings = (molde, sum) => (dispatch) =>{
         type: TOTAL_CYCLES_MOLDE,
         payload: sum
     })
+    dispatch( {
+        type: RESET_CLEANINGS
+    })
+    dispatch( {
+        type: RESET_CLEANING_FORM
+    })
 
 }
 
@@ -44,9 +75,14 @@ const closeDetailCleanings = () => (dispatch) =>{
         type: UNSELECT_DETAIL_MOLDE
     })
     dispatch( {
-        type: CLOSE_DETAIL_CLEANINGS,
+        type: CLOSE_DETAIL_CLEANINGS
     })
-
+    dispatch( {
+        type: RESET_CLEANINGS
+    })
+    dispatch( {
+        type: RESET_CLEANING_FORM
+    })
 }
 
 const openCleaningForm = () =>{
@@ -55,8 +91,9 @@ const openCleaningForm = () =>{
     }
 }
 
-const fetchMoldeCleanings = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(moldesQuery)
+const fetchMoldeCleanings = (molde) => async ( dispatch ) => {
+    cleaningsQuery.variables = {molde}
+    opts.body = JSON.stringify(cleaningsQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
 
@@ -69,7 +106,7 @@ const fetchMoldeCleanings = () => async ( dispatch ) => {
     } else{
         dispatch({
             type: FETCH_MOLDE_CLEANINGS,
-            payload: data.data.moldeCleanings
+            payload: data.data.cleanings
         })
     }
 }
@@ -163,6 +200,8 @@ export {
     closeMolde,
     openCleaningForm,
     openDetailCleanings,
-    closeDetailCleanings
+    closeDetailCleanings,
+    addCleaning,
+    fetchMoldeCleanings
     
 }

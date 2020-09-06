@@ -24,7 +24,22 @@ UpdateMolde($_id: ID, $input: NewMolde ){
     }`
 }
 
+const addCleaning = { query: `mutation
+NewCleaning( $input: NewCleaning ){
+    newCleaning(input: $input){
+        _id
+        date
+        shift
+        team
+        cycles
+        counted
+        comments
+    }
+}`
+}
+
 export { 
     addMolde,
-    modifyMolde
+    modifyMolde,
+    addCleaning
 }

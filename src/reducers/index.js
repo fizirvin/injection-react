@@ -54,5 +54,7 @@ export default combineReducers({
     cleanFormIsOpen: moldes.openCleaningForm,
     detailIsOpen: moldes.openDetailCleanings,
     moldeDetail: moldes.moldeDetail,
-    tCycles: moldes.totalCyclesReducer
+    tCycles: moldes.totalCyclesReducer,
+    cleanings: moldes.cleaningsReducer,
+    cleaningMessage: moldes.cleaningMessage
 })

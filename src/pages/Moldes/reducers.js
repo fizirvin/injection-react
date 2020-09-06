@@ -1,9 +1,12 @@
 import {
     FETCH_MOLDES,
     FETCH_CYCLES_MOLDES,
+    FETCH_MOLDE_CLEANINGS,
     ADD_CYCLES_MOLDES,
     UPDATE_CYCLES_MOLDES,
     ADD_MOLDE,
+    ADD_CLEANING,
+    MESSAGE_CLEANING,
     UPDATE_MOLDE,
     SELECT_MOLDE,
     MESSAGE_MOLDE,
@@ -12,8 +15,23 @@ import {
     SELECT_DETAIL_MOLDE,
     CLOSE_DETAIL_CLEANINGS,
     UNSELECT_DETAIL_MOLDE,
-    TOTAL_CYCLES_MOLDE
+    TOTAL_CYCLES_MOLDE,
+    RESET_CLEANINGS,
+    RESET_CLEANING_FORM
 } from './actions'
+
+const cleaningsReducer = (state = [], action) =>{
+    switch (action.type){
+        case FETCH_MOLDE_CLEANINGS:
+            return action.payload
+        case ADD_CLEANING:
+            return [ ...state, action.payload ]
+        case RESET_CLEANINGS:
+            return [ ]
+        default:
+            return state
+    }
+}
 
 const openDetailCleanings = (DetailIsOpen = false, action)=>{
     switch (action.type){
@@ -27,10 +45,14 @@ const openDetailCleanings = (DetailIsOpen = false, action)=>{
 }
 
 const openCleaningForm = (formIsOpen = false, action) =>{
-    if( action.type === OPEN_CLEANING_FORM ){
-        return !formIsOpen    
+    switch (action.type){
+        case OPEN_CLEANING_FORM:
+            return !formIsOpen 
+        case RESET_CLEANING_FORM:
+            return false
+        default:
+            return formIsOpen
     }
-    return formIsOpen
 }
 
 const moldesReducer = (state = [], action) =>{
@@ -61,6 +83,13 @@ const cyclesReducer = (state = [], action) =>{
         default:
             return state
     }
+}
+
+const cleaningMessage = ( message = 'new', action) =>{
+    if(action.type === MESSAGE_CLEANING){
+        return action.payload
+    }
+    return message
 }
 
 const moldeMessage = ( message = 'new', action) =>{
@@ -103,5 +132,7 @@ export {
     openCleaningForm,
     openDetailCleanings,
     moldeDetail,
-    totalCyclesReducer
+    totalCyclesReducer,
+    cleaningsReducer,
+    cleaningMessage
 }
