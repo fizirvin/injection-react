@@ -31,6 +31,7 @@ export const RESET_CLEANING_FORM = ' RESET_CLEANING_FORM'
 export const UPDATE_CLEANING = 'UPDATE_CLEANING'
 export const SELECT_CLEANING = 'SELECT_CLEANING'
 export const UNSELECT_CLEANING = 'UNSELECT_CLEANING'
+export const LOADING_CLEANINGS = 'LOADING_CLEANINGS'
 
 const selectUpdateCleaning = (cleaning) => async (dispatch) =>{
     dispatch({
@@ -52,21 +53,18 @@ const closeUpdateForm = () => (dispatch) =>{
 }
 
 const updateCleaning = (_id, input) => async ( dispatch ) => {
+    dispatch( {
+        type: RESET_CLEANING_UPDATE_FORM
+    })
     modifyCleaning.variables = { _id, input }
     opts.body = JSON.stringify(modifyCleaning)
     const res = await fetch(url, opts);
     const data = await res.json();
     if(data.errors){
-        dispatch( {
-            type: RESET_CLEANING_UPDATE_FORM
-        })
         return dispatch({type: MESSAGE_CLEANING,
             payload: 'error'
         })
     } else{
-        dispatch( {
-            type: RESET_CLEANING_UPDATE_FORM
-        })
         dispatch({
             type: UPDATE_CLEANING,
             payload: data.data.updateCleaning
@@ -155,6 +153,9 @@ const openCleaningForm = () =>{
 }
 
 const fetchMoldeCleanings = (molde) => async ( dispatch ) => {
+    dispatch({
+        type: LOADING_CLEANINGS,
+    })
     cleaningsQuery.variables = {molde}
     opts.body = JSON.stringify(cleaningsQuery)
     const res = await fetch(url, opts);
@@ -163,10 +164,16 @@ const fetchMoldeCleanings = (molde) => async ( dispatch ) => {
 
     if(data.errors){
         console.log(data)
+        dispatch({
+            type: LOADING_CLEANINGS,
+        })
         return dispatch({type: MESSAGE_CLEANING,
             payload: 'error'
         })
     } else{
+        dispatch({
+            type: LOADING_CLEANINGS,
+        })
         dispatch({
             type: FETCH_MOLDE_CLEANINGS,
             payload: data.data.cleanings

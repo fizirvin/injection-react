@@ -1,11 +1,12 @@
-import React,{useEffect} from 'react'
+import React from 'react'
+import Spinner from '../../components/Spinner'
 import { connect } from 'react-redux'
 import AddCleaningForm from './AddCleaningForm'
 import UpdateCleaningForm from './UpdateCleaningForm'
 import { fetchMoldeCleanings, openCleaningForm, closeUpdateForm, selectUpdateCleaning } from './actions'
 import './Moldes.css'
 
-const MoldeDetail = ({molde, closeUpdateForm, fetchMoldeCleanings, openCleaningForm,selectUpdateCleaning, isOpen, updateIsOpen, cleanings}) =>{
+const MoldeDetail = ({molde, loadingCleanings, closeUpdateForm, fetchMoldeCleanings, openCleaningForm,selectUpdateCleaning, isOpen, updateIsOpen, cleanings}) =>{
 
 
 
@@ -43,6 +44,8 @@ const MoldeDetail = ({molde, closeUpdateForm, fetchMoldeCleanings, openCleaningF
         return !updateIsOpen && <button onClick={openCleaningForm}>add Cleaning</button>
     }
 
+    
+
 
     return(
         <div className='molde-detail-container'>
@@ -51,7 +54,7 @@ const MoldeDetail = ({molde, closeUpdateForm, fetchMoldeCleanings, openCleaningF
                     <tr>
                         <th>{ molde.moldeNumber} { molde.moldeSerial}</th>
                         <th>{renderOpenButton()}</th>
-                        <th><button onClick={()=>onCleanings(molde._id)}>Cleanings</button></th>
+                        <th>{loadingCleanings? <Spinner/> : <button onClick={()=>onCleanings(molde._id)}>Cleanings</button>}</th>
                     </tr>
                 </thead>
             </table>
@@ -79,7 +82,8 @@ const mapStateToProps = state =>({
     isOpen: state.cleanFormIsOpen,
     cleanings: state.cleanings,
     message: state.cleaningMessage,
-    updateIsOpen: state.cleanUpdateFormIsOpen
+    updateIsOpen: state.cleanUpdateFormIsOpen,
+    loadingCleanings: state.loadingCleanings
 })
 
 export default connect(mapStateToProps,{closeUpdateForm, openCleaningForm, fetchMoldeCleanings, selectUpdateCleaning})(MoldeDetail)

@@ -1,4 +1,4 @@
-import React, {useState, useEffect }from 'react'
+import React, {useState }from 'react'
 import { connect } from 'react-redux'
 import { updateCleaning } from './actions'
 
@@ -7,7 +7,7 @@ const UpdateCleaningForm = ({ updateCleaning, molde, cleaning }) =>{
     const [ date, setDate] = useState(cleaning.date)
     const [ shift, setShift ] = useState(cleaning.shift)
     const [ team, setTeam ] = useState(cleaning.team)
-    const [ comments, setComments ] = useState(cleaning.comments)
+    const [ comments, setComments ] = useState(cleaning.comments || '')
     const [ errorMessage, setErrorMessage ] = useState('')
 
     const onSend = () =>{

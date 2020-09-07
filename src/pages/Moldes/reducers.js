@@ -22,7 +22,8 @@ import {
     RESET_CLEANING_UPDATE_FORM,
     SELECT_CLEANING,
     UNSELECT_CLEANING,
-    UPDATE_CLEANING
+    UPDATE_CLEANING,
+    LOADING_CLEANINGS
 } from './actions'
 
 const cleaningsReducer = (state = [], action) =>{
@@ -74,6 +75,13 @@ const openCleaningForm = (formIsOpen = false, action) =>{
         default:
             return formIsOpen
     }
+}
+
+const loadingCleanings = (loading = false, action) =>{
+    if(action.type === LOADING_CLEANINGS){
+        return !loading
+    }
+    return loading
 }
 
 const moldesReducer = (state = [], action) =>{
@@ -168,5 +176,6 @@ export {
     cleaningsReducer,
     cleaningMessage,
     openUpdateCleaningForm,
-    cleaningSelected
+    cleaningSelected,
+    loadingCleanings
 }

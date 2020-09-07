@@ -58,5 +58,6 @@ export default combineReducers({
     tCycles: moldes.totalCyclesReducer,
     cleanings: moldes.cleaningsReducer,
     cleaningMessage: moldes.cleaningMessage,
-    cleaningSelected: moldes.cleaningSelected
+    cleaningSelected: moldes.cleaningSelected,
+    loadingCleanings: moldes.loadingCleanings
 })
