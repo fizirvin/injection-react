@@ -42,6 +42,7 @@
   width: 100%; 
   height: fit-content;
   overflow-y: scroll;
+  max-height: 92vh;
 }
 
 .comments-input{
@@ -52,6 +53,11 @@
   width: fit-content;
   margin-right: 0;
 }
+
+.molde-detail-index{
+  width: 5%;
+}
+
 
 .molde-detail-date{
   width: 20%;
@@ -74,3 +80,7 @@
   background-color: gold;
 }
 
+.div_update{
+  display: flex;
+  justify-content: space-between;
+}

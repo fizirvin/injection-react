@@ -17,7 +17,12 @@ import {
     UNSELECT_DETAIL_MOLDE,
     TOTAL_CYCLES_MOLDE,
     RESET_CLEANINGS,
-    RESET_CLEANING_FORM
+    RESET_CLEANING_FORM,
+    OPEN_CLEANING_UPDATE_FORM,
+    RESET_CLEANING_UPDATE_FORM,
+    SELECT_CLEANING,
+    UNSELECT_CLEANING,
+    UPDATE_CLEANING
 } from './actions'
 
 const cleaningsReducer = (state = [], action) =>{
@@ -26,6 +31,11 @@ const cleaningsReducer = (state = [], action) =>{
             return action.payload
         case ADD_CLEANING:
             return [ ...state, action.payload ]
+        case UPDATE_CLEANING:
+            const item = action.payload
+            let items = [...state]
+            items[items.findIndex(el => el._id === item._id)] = item;
+            return items
         case RESET_CLEANINGS:
             return [ ]
         default:
@@ -41,6 +51,17 @@ const openDetailCleanings = (DetailIsOpen = false, action)=>{
             return false
         default:
             return DetailIsOpen
+    }
+}
+
+const openUpdateCleaningForm = (formIsOpen = false, action) =>{
+    switch (action.type){
+        case OPEN_CLEANING_UPDATE_FORM:
+            return true 
+        case RESET_CLEANING_UPDATE_FORM:
+            return false
+        default:
+            return formIsOpen
     }
 }
 
@@ -117,6 +138,17 @@ const moldeDetail = (selected = null, action) =>{
     }
 }
 
+const cleaningSelected = (selected = null, action) =>{
+    switch (action.type){
+        case SELECT_CLEANING:
+            return action.payload
+        case UNSELECT_CLEANING:
+            return null
+        default:
+            return selected
+    }
+}
+
 const totalCyclesReducer = (tcycles = 0, action) =>{
     if(action.type === TOTAL_CYCLES_MOLDE){
         return action.payload
@@ -134,5 +166,7 @@ export {
     moldeDetail,
     totalCyclesReducer,
     cleaningsReducer,
-    cleaningMessage
+    cleaningMessage,
+    openUpdateCleaningForm,
+    cleaningSelected
 }

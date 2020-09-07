@@ -52,9 +52,11 @@ export default combineReducers({
     loadingPage: reports.loadingPage,
     totalReports: reports.totalReportsReducer,
     cleanFormIsOpen: moldes.openCleaningForm,
+    cleanUpdateFormIsOpen: moldes.openUpdateCleaningForm,
     detailIsOpen: moldes.openDetailCleanings,
     moldeDetail: moldes.moldeDetail,
     tCycles: moldes.totalCyclesReducer,
     cleanings: moldes.cleaningsReducer,
-    cleaningMessage: moldes.cleaningMessage
+    cleaningMessage: moldes.cleaningMessage,
+    cleaningSelected: moldes.cleaningSelected
 })

@@ -1,18 +1,14 @@
 import React, {useState, useEffect }from 'react'
 import { connect } from 'react-redux'
-import { addCleaning  } from './actions'
+import { updateCleaning } from './actions'
 
-const AddCleaningForm = ({tCycles, addCleaning, molde}) =>{
-    const [ cycles, setCycles] = useState('')
-    const [ date, setDate] = useState('')
-    const [ shift, setShift ] = useState('')
-    const [ team, setTeam ] = useState('')
-    const [ comments, setComments ] = useState('')
+const UpdateCleaningForm = ({ updateCleaning, molde, cleaning }) =>{
+    const [ cycles, setCycles] = useState(cleaning.cycles)
+    const [ date, setDate] = useState(cleaning.date)
+    const [ shift, setShift ] = useState(cleaning.shift)
+    const [ team, setTeam ] = useState(cleaning.team)
+    const [ comments, setComments ] = useState(cleaning.comments)
     const [ errorMessage, setErrorMessage ] = useState('')
-
-    useEffect(() =>{
-        setCycles(tCycles)
-    },[tCycles])
 
     const onSend = () =>{
         if(!cycles | !date | !shift | !team ){ return setErrorMessage('check form') }
@@ -24,7 +20,7 @@ const AddCleaningForm = ({tCycles, addCleaning, molde}) =>{
                 team,
                 comments
             }
-        return addCleaning(input)
+        return updateCleaning(cleaning._id, input)
     }   
 
     
@@ -92,6 +88,7 @@ const AddCleaningForm = ({tCycles, addCleaning, molde}) =>{
 const mapStateToProps = state =>({
     tCycles: state.tCycles,
     molde: state.moldeDetail,
+    cleaning: state.cleaningSelected,
 })
 
-export default connect(mapStateToProps, {addCleaning })(AddCleaningForm)
+export default connect(mapStateToProps, {updateCleaning })(UpdateCleaningForm)
