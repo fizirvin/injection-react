@@ -5,7 +5,8 @@ import { formatDate } from '../../helpers'
 
 import {
     ADD_CYCLES_MOLDES,
-    UPDATE_CYCLES_MOLDES
+    UPDATE_CYCLES_MOLDES,
+    RELOAD_CYCLES
 } from '../Moldes/actions.js'
 
 import { 
@@ -385,31 +386,38 @@ const updateReport = (_id, input) => async ( dispatch ) => {
             payload: convertResine[0],
             _id
         })
-        const convertMolde = array.map( item => { 
-            const date = formatDate(item.reportDate);
-            const id = item._id
-            const shift = item.shift
-            const machine = item.machine._id
-            const production = item.production.map( prod =>{
-             
-              return { 
-                report: id, 
-                date: date, 
-                shift: shift, 
-                machine: machine, 
-                part: prod.partNumber._id,
-                molde: prod.molde._id,
-                real: prod.real,
-                cycles: prod.cycles
-                 }
-            })
-              return production
-        })
+
         dispatch({
-            type: UPDATE_CYCLES_MOLDES,
-            payload: convertMolde[0],
-            _id
+            type: RELOAD_CYCLES,
+            payload: true
         })
+        // const convertMolde = array.map( item => { 
+        //     const date = formatDate(item.reportDate);
+        //     const id = item._id
+        //     const shift = item.shift
+        //     const machine = item.machine._id
+        //     const production = item.production.map( prod =>{
+             
+        //       return { 
+        //         report: id, 
+        //         date: date, 
+        //         shift: shift, 
+        //         machine: machine, 
+        //         part: prod.partNumber._id,
+        //         molde: prod.molde._id,
+        //         real: prod.real,
+        //         cycles: prod.cycles
+        //          }
+        //     })
+        //       return production
+        // })
+        // dispatch({
+        //     type: UPDATE_CYCLES_MOLDES,
+        //     payload: convertMolde[0],
+        //     _id
+        // })
+
+
     }
 }
 

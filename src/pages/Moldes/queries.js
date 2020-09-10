@@ -7,6 +7,18 @@ const moldesQuery = { query:
             cavities
             lifecycles
             tcycles
+            shot
+            quantity
+            active
+        }
+    }`
+};
+
+const tcyclesQuery = { query: 
+    `query {
+        tcycles{
+            molde
+            tcycles
         }
     }`
 };
@@ -46,5 +58,6 @@ const cleaningsQuery = { query: `query
 export { 
     moldesQuery,
     cyclesQuery,
-    cleaningsQuery
+    cleaningsQuery,
+    tcyclesQuery
 }

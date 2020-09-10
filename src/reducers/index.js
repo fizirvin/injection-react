@@ -20,6 +20,7 @@ export default combineReducers({
     modelMessage: models.modelMessage,
     moldes: moldes.moldesReducer,
     cycles: moldes.cyclesReducer,
+    reloadCycles: moldes.reloadCycles,
     molde: moldes.moldeReducer,
     moldeMessage: moldes.moldeMessage,
     issues: issues.issuesReducer,

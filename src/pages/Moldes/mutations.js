@@ -7,6 +7,9 @@ const addMolde = { query: `mutation
             cavities
             lifecycles
             tcycles
+            shot
+            quantity
+            active
         }
     }`
 }
@@ -20,6 +23,9 @@ UpdateMolde($_id: ID, $input: NewMolde ){
             cavities
             lifecycles
             tcycles
+            shot
+            quantity
+            active
         }
     }`
 }

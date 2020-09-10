@@ -6,9 +6,9 @@ import UpdateCleaningForm from './UpdateCleaningForm'
 import { fetchMoldeCleanings, openCleaningForm, closeUpdateForm, selectUpdateCleaning } from './actions'
 import './Moldes.css'
 
-const MoldeDetail = ({molde, loadingCleanings, closeUpdateForm, fetchMoldeCleanings, openCleaningForm,selectUpdateCleaning, isOpen, updateIsOpen, cleanings}) =>{
+const MoldeDetail = ({cycles, molde, loadingCleanings, closeUpdateForm, fetchMoldeCleanings, openCleaningForm,selectUpdateCleaning, isOpen, updateIsOpen, cleanings}) =>{
 
-
+    console.log(cycles)
 
     const onCleanings = (molde) =>{
         if(cleanings.length === 0){
@@ -48,6 +48,9 @@ const MoldeDetail = ({molde, loadingCleanings, closeUpdateForm, fetchMoldeCleani
 
 
     return(
+        <tr>
+            <td colSpan='6'></td>
+            <td colSpan='5'>
         <div className='molde-detail-container'>
             <table className='molde-detail-table'>
                 <thead>
@@ -74,6 +77,8 @@ const MoldeDetail = ({molde, loadingCleanings, closeUpdateForm, fetchMoldeCleani
                     {isOpen && <AddCleaningForm/>}
             </table>
         </div>
+        </td>
+        </tr>
     )
 }
 

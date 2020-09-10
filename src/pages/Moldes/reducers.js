@@ -4,6 +4,7 @@ import {
     FETCH_MOLDE_CLEANINGS,
     ADD_CYCLES_MOLDES,
     UPDATE_CYCLES_MOLDES,
+    RELOAD_CYCLES,
     ADD_MOLDE,
     ADD_CLEANING,
     MESSAGE_CLEANING,
@@ -77,6 +78,13 @@ const openCleaningForm = (formIsOpen = false, action) =>{
     }
 }
 
+const reloadCycles = ( reload = false, action) =>{
+    if(action.type === RELOAD_CYCLES){
+        return action.payload
+    }
+    return reload
+}
+
 const loadingCleanings = (loading = false, action) =>{
     if(action.type === LOADING_CLEANINGS){
         return !loading
@@ -105,13 +113,15 @@ const cyclesReducer = (state = [], action) =>{
         case FETCH_CYCLES_MOLDES:
             return action.payload
         case ADD_CYCLES_MOLDES:
-            return [ ...state, ...action.payload ]
-        case UPDATE_CYCLES_MOLDES:
-            const oldCycles = state.filter( reportDate => reportDate.report !== action._id)
-            return [ ...oldCycles, ...action.payload ]
+            const item = action.payload[0]
+            const newCycle = { molde: item.molde, tcycles: item.cycles } 
+            return [ ...state, newCycle ]
+        // case UPDATE_CYCLES_MOLDES:
+        //     const oldCycles = state.filter( reportDate => reportDate.report !== action._id)
+        //     return [ ...oldCycles, ...action.payload ]
         default:
             return state
-    }
+    }   
 }
 
 const cleaningMessage = ( message = 'new', action) =>{
@@ -177,5 +187,6 @@ export {
     cleaningMessage,
     openUpdateCleaningForm,
     cleaningSelected,
-    loadingCleanings
+    loadingCleanings,
+    reloadCycles
 }

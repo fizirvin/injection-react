@@ -1,11 +1,11 @@
 import { url, opts } from '../../config'
-import { moldesQuery, cyclesQuery, cleaningsQuery } from './queries'
+import { moldesQuery, tcyclesQuery, cleaningsQuery } from './queries'
 import { addMolde as newMolde, addCleaning as newCleaning, modifyMolde, modifyCleaning } from './mutations'
 
 
 export const FETCH_MOLDES = 'FETCH_MOLDES'
 export const FETCH_CYCLES_MOLDES = 'FETCH_CYCLES_MOLDES'
-
+export const RELOAD_CYCLES = 'RELOAD_CYCLES'
 export const  ADD_CYCLES_MOLDES = ' ADD_CYCLES_MOLDES'
 export const  UPDATE_CYCLES_MOLDES = ' UPDATE_CYCLES_MOLDES'
 
@@ -193,13 +193,17 @@ const fetchMoldes = () => async ( dispatch ) => {
 }
 
 const fetchCycles = () => async ( dispatch ) => {
-    opts.body = JSON.stringify(cyclesQuery)
+    opts.body = JSON.stringify(tcyclesQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
 
     dispatch({
         type: FETCH_CYCLES_MOLDES,
-        payload: data.data.cycles
+        payload: data.data.tcycles
+    })
+    dispatch({
+        type: RELOAD_CYCLES,
+        payload: false
     })
 }
 

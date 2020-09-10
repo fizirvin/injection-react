@@ -1,25 +1,28 @@
-import React, { useEffect}  from 'react'
+import React, { useEffect }  from 'react'
 import { connect } from 'react-redux'
-import { fetchMoldes, fetchCycles, selectMolde, openDetailCleanings, closeDetailCleanings } from './actions'
-import MoldeDetail from './MoldeDetail'
-import { Link } from 'react-router-dom'
-import TableData from '../../components/TableData'
+import { fetchMoldes, fetchCycles } from './actions'
+import Molde from './Molde'
+import { Link, StaticRouter } from 'react-router-dom'
 import TableHeader from '../../components/TableHeader'
 import RenderItems from '../../components/RenderItems'
 import Spinner from '../../components/Spinner'
 import './Moldes.css'
 
 const header = [
-  {h: 'Mold Number', w: '25%'},
-  {h: 'Serial Number', w: '15%'},
-  {h: 'Cavities', w: '12%'},
-  {h: 'Lifecycles', w: '12%'},
-  {h: 'Tcycles', w: '12%'},
-  {h: '%', w: '12%'},
-  {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '12%'}
+  {h: '#', w: '6%'},
+  {h: 'Mold Number', w: '20%'},
+  {h: 'Serial Number', w: '10%'},
+  {h: 'Cavities', w: '8%'},
+  {h: 'Lifecycles', w: '8%'},
+  {h: 'Tcycles', w: '8%'},
+  {h: '%', w: '8%'},
+  {h: 'Shot', w: '8%'},
+  {h: 'Quantity', w: '8%'},
+  {h: 'Active', w: '8%'},
+  {h: <Link to="/molds/add"><button>Add Mold</button></Link>, w: '8%'}
 ]
 
-const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes, fetchCycles, selectMolde, openDetailCleanings}) =>{
+const Moldes = ({moldes, reloadCycles, moldeDetail, closeDetailCleanings, cycles, fetchMoldes, fetchCycles, selectMolde, openDetailCleanings}) =>{
 
   
   useEffect(() =>{
@@ -35,6 +38,13 @@ const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes,
     } 
   },[cycles])
 
+  useEffect(() =>{
+    if(reloadCycles){
+      fetchCycles()
+      
+    } 
+  },[reloadCycles])
+
   const precise_round = (num, dec) =>{
     const num_sign = num >= 0 ? 1 : -1;
     const value =  (Math.round((num*Math.pow(10,dec))+(num_sign*0.0001))/Math.pow(10,dec)).toFixed(dec);
@@ -43,32 +53,18 @@ const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes,
   }
 
   const renderList = () =>{
-      return moldes.map( molde => {
-      const {_id, moldeNumber, moldeSerial, cavities, lifecycles, tcycles} = molde
+      return moldes.map( (molde, index) => {
+      const {_id, lifecycles, tcycles } = molde
 
-      const array = cycles;
-      const filter = array.filter( item => item.molde === _id).reduce( (a, b) =>{
-        return a + b.cycles || 0
+      const array = cycles.filter( item => item.molde === _id)
+      const filter = array.reduce( (a, b) =>{
+        return a + b.tcycles || 0
       },0)
       const sum = filter + tcycles
       const percent = precise_round((sum/lifecycles)*100, 2) 
-      return <tr key={_id}>
-      <TableData className='table_data' style={{width: '25%'}}>{moldeNumber}</TableData>
-      <TableData className='table_data' style={{width: '15%'}}>{moldeSerial}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}>{cavities}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}>{lifecycles}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}>{sum}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}>{percent}</TableData>
-      <TableData className='table_data' style={{width: '12%'}}><Link to={`/molds/update/${_id}`} onClick={()=>selectMolde(molde)}><button>Up</button></Link>
-      {renderOpenButton(molde, moldeDetail, sum)}
-      </TableData>
-    </tr> }
+      return <Molde key={_id} index={index} sum={sum} percent={percent} molde={molde} cycles={array}/>
+     }
     )
-  }
-
-  const renderOpenButton = (molde, moldeDetail, sum) =>{
-    if(!moldeDetail){ return <button onClick={()=>openDetailCleanings(molde, sum)}>Cl</button> }
-    else {return molde._id === moldeDetail._id ? <button className='closeButton-detail' onClick={closeDetailCleanings}>Cl</button> : <button onClick={()=>openDetailCleanings(molde, sum)}>Cl</button> }
   }
 
     const renderBodyContainer = (array, cycles) =>{
@@ -94,7 +90,6 @@ const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes,
           {renderBodyContainer(moldes, cycles)}
           <RenderItems items={moldes}/>
         </div>
-        {moldeDetail && <MoldeDetail></MoldeDetail>}
       </div>
     )
 }
@@ -102,8 +97,7 @@ const Moldes = ({moldes, moldeDetail, closeDetailCleanings, cycles, fetchMoldes,
 const mapStateToProps = state =>({
     moldes: state.moldes,
     cycles: state.cycles,
-    molde: state.molde,
-    moldeDetail: state.moldeDetail,
+    reloadCycles: state.reloadCycles
 })
 
-export default connect(mapStateToProps, {fetchMoldes, closeDetailCleanings, fetchCycles, openDetailCleanings, selectMolde})(Moldes)
+export default connect(mapStateToProps, {fetchMoldes, fetchCycles })(Moldes)

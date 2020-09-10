@@ -9,6 +9,8 @@ const AddMolde = ({ message, closeMolde, addMolde }) => {
   const [ moldeSerial, setMoldeSerial ] = useState('')
   const [ cavities, setCavities ] = useState('')
   const [ lifecycles, setLifecycles ] = useState('')
+  const [ shot, setShot ] = useState('')
+  const [ quantity, setQuantity ] = useState('')
     
   const onClose = () =>{
     return closeMolde()
@@ -27,6 +29,12 @@ const AddMolde = ({ message, closeMolde, addMolde }) => {
       case 'lifecycles':
         const lifecycles = onNumChange(value)
         return setLifecycles(lifecycles)
+      case 'shot':
+        const shot = onNumChange(value)
+        return setShot(shot)
+      case 'quantity':
+        const quantity = onNumChange(value)
+        return setQuantity(quantity)
       default:  
         return
     }
@@ -47,7 +55,9 @@ const AddMolde = ({ message, closeMolde, addMolde }) => {
       moldeNumber,
       moldeSerial,
       cavities,
-      lifecycles
+      lifecycles,
+      shot,
+      quantity
     }
     return addMolde(input);
   }
@@ -95,6 +105,22 @@ const AddMolde = ({ message, closeMolde, addMolde }) => {
                 <td><input type="number"
                   name='lifecycles' 
                   value={lifecycles}
+                  onChange={onInputChange} min="1" required></input>
+                </td>
+              </tr>
+              <tr>
+                <td><label>Shot: </label></td>
+                <td><input type="number"
+                  name='shot' 
+                  value={shot}
+                  onChange={onInputChange} min="1" required></input>
+                </td>
+              </tr>
+              <tr>
+                <td><label>Quantity: </label></td>
+                <td><input type="number"
+                  name='quantity' 
+                  value={quantity}
                   onChange={onInputChange} min="1" required></input>
                 </td>
               </tr>
