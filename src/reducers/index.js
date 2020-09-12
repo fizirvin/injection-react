@@ -10,6 +10,7 @@ import { reducers as workers } from '../pages/Workers/index.js'
 import { reducers as users } from '../pages/Users/index.js'
 import { reducers as production } from '../pages/Production/index.js'
 import { reducers as reports } from '../pages/Reports/index.js'
+import { reducers as cleanings } from '../pages/Cleanings/index.js'
 
 export default combineReducers({
     machines: machines.machinesReducer,
@@ -52,13 +53,9 @@ export default combineReducers({
     add: reports.addReducer,
     loadingPage: reports.loadingPage,
     totalReports: reports.totalReportsReducer,
-    cleanFormIsOpen: moldes.openCleaningForm,
-    cleanUpdateFormIsOpen: moldes.openUpdateCleaningForm,
-    detailIsOpen: moldes.openDetailCleanings,
-    moldeDetail: moldes.moldeDetail,
     tCycles: moldes.totalCyclesReducer,
-    cleanings: moldes.cleaningsReducer,
-    cleaningMessage: moldes.cleaningMessage,
-    cleaningSelected: moldes.cleaningSelected,
-    loadingCleanings: moldes.loadingCleanings
+    cleanings: cleanings.cleaningsReducer,
+    cleaningMessage: cleanings.cleaningMessage,
+    cleaningSelected: cleanings.cleaningSelected,
+    loadingCleanings: cleanings.loadingCleanings
 })

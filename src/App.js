@@ -4,7 +4,7 @@ import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
   Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, UpdateReport, Toolbar, Production, Users, AddUser, 
-  UpdateUser, Record, Workers, AddWorker, UpdateWorker } from './pages'
+  UpdateUser, Record, Workers, AddWorker, UpdateWorker, Cleanings } from './pages'
 import { fetchWorkers } from './pages/Workers/actions.js'
 import { fetchDefects } from './pages/Defects/actions.js'
 import { fetchInitialReports, updateReport, closeReport } from './pages/Reports/actions.js'
@@ -169,6 +169,8 @@ const App = ({name, logoutHandler, userId, message, report,
             <Route path="/employees/new" exact component={ props => ( <AddWorker {...props} /> )} />
             <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props} /> )} />
             <Route path="/production" exact component={ props => ( <Production {...props} /> )} />
+
+            <Route path="/cleanings" exact component={ props => ( <Cleanings {...props} /> )} />
           </Switch> 
         </div>
       </div>

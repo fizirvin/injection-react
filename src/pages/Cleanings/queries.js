@@ -14,32 +14,24 @@ const moldesQuery = { query:
     }`
 };
 
-const tcyclesQuery = { query: 
+const cleaningsQuery = { query: 
     `query {
-        tcycles{
-            molde
-            tcycles
-        }
-    }`
-};
-
-const cyclesQuery = { query: 
-    `query {
-        cycles{
-            report
+        cleanings{
+            _id
+            molde{
+                _id
+                moldeNumber
+            }
             date
-            shift
-            machine
-            part
-            molde
-            real
             cycles
+            shift
+            team
+            comments
+            counted
         }
-    }`
+    }`,
 };
 
 export { 
-    moldesQuery,
-    cyclesQuery,
-    tcyclesQuery
+    cleaningsQuery
 }

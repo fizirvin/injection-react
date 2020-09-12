@@ -10,6 +10,7 @@ import Defects, { AddDefect, UpdateDefect } from './Defects/index.js'
 import Programs, { AddProgram, UpdateProgram } from './Programs/index.js'
 import Users, { AddUser, UpdateUser } from './Users/index.js'
 import Workers, { AddWorker, UpdateWorker } from './Workers/index.js'
+import Cleanings from './Cleanings'
 
 import Record from './Record/Record.js'
 import Production from './Production/index.js'
@@ -56,5 +57,7 @@ export {
 
     Machines,
     AddMachine,
-    UpdateMachine
+    UpdateMachine,
+
+    Cleanings
 } 

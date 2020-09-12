@@ -1,63 +1,61 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Spinner from '../../components/Spinner'
 import { connect } from 'react-redux'
 import AddCleaningForm from './AddCleaningForm'
 import UpdateCleaningForm from './UpdateCleaningForm'
-import { fetchMoldeCleanings, openCleaningForm, closeUpdateForm, selectUpdateCleaning } from './actions'
-import './Moldes.css'
+import { fetchMoldeCleanings } from './actions'
+import './Cleanings.css'
 
-const MoldeDetail = ({cycles, molde, loadingCleanings, closeUpdateForm, fetchMoldeCleanings, openCleaningForm,selectUpdateCleaning, isOpen, updateIsOpen, cleanings}) =>{
+const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings}) =>{
+    const [updateIsOpen, setUpdateIsOpen ] = useState(false)
+    
+    const [isOpen, setOpenCleaningForm ] = useState(false)
+    const [updateCleaning, setUpdateCleaning ] = useState('')
 
-    console.log(cycles)
-
-    const onCleanings = (molde) =>{
+    useEffect(() =>{
         if(cleanings.length === 0){
-            return fetchMoldeCleanings(molde)
-        } else {
-            return 
-        }
-    }
+            fetchMoldeCleanings()
+        } 
+    },[cleanings])
 
     const renderUpdateButton = (length, num,cleaning ) =>{
-        return length === num ? updateIsOpen? <button onClick={closeUpdateForm}>cancel</button>: <button onClick={()=>selectUpdateCleaning(cleaning)}>Update</button> : null
+        return length === num ? updateIsOpen? <button onClick={()=>setUpdateIsOpen(false)}>cancel</button>: <button onClick={()=>setUpdateCleaning(cleaning)}>Update</button> : null
     }
     
     const renderList = () =>{
         const length = cleanings.length
         return cleanings.map( (cleaning, index) => {
-        const {_id, team, shift, date, cycles, counted, comments } = cleaning
+        const {_id, molde, team, shift, date, cycles, counted, comments } = cleaning
         const num = index+1
+        
         return <tbody key={_id}><tr>
             <td rowSpan='2' className='molde-detail-index'>{num}</td>
+            <td className='molde-detail-molde'>{molde.moldeNumber}</td>
             <td className='molde-detail-date'>{date}</td>
             <td className='molde-detail-team'>{team}</td>
             <td className='molde-detail-shift'>{shift}</td>
             <td className='molde-detail-cycles'>{cycles}</td>
-        <td className='molde-detail-counted'><div className='div_update'>{counted}{renderUpdateButton(length, num, cleaning)}</div></td>
+            <td className='molde-detail-counted'>{counted}</td>
+            <td className='molde-detail-button'>{renderUpdateButton(length, num, cleaning)}</td>
         </tr>
-        {comments && <td colSpan='5'>comments: {comments}</td>}
+        { comments && <tr><td colSpan='8'>{comments}</td></tr>}
         </tbody> }
       )
     }
 
     const renderOpenButton = () =>{
-        return !updateIsOpen && <button onClick={openCleaningForm}>add Cleaning</button>
+        return !updateIsOpen && <button onClick={ ()=>setOpenCleaningForm(!isOpen)}>add Cleaning</button>
     }
 
     
 
 
     return(
-        <tr>
-            <td colSpan='6'></td>
-            <td colSpan='5'>
         <div className='molde-detail-container'>
             <table className='molde-detail-table'>
                 <thead>
                     <tr>
-                        <th>{ molde.moldeNumber} { molde.moldeSerial}</th>
                         <th>{renderOpenButton()}</th>
-                        <th>{loadingCleanings? <Spinner/> : <button onClick={()=>onCleanings(molde._id)}>Cleanings</button>}</th>
                     </tr>
                 </thead>
             </table>
@@ -65,30 +63,27 @@ const MoldeDetail = ({cycles, molde, loadingCleanings, closeUpdateForm, fetchMol
                 <tbody>
                     <tr>
                         <td className='molde-detail-index'>#</td>
+                        <td className='molde-detail-molde'>Molde</td>
                         <td className='molde-detail-date'>Date</td>
                         <td className='molde-detail-team'>Team</td>
                         <td className='molde-detail-shift'>Shift</td>
                         <td className='molde-detail-cycles'>Cyles</td>
                         <td className='molde-detail-counted'>Counted</td>
+                        <td className='molde-detail-button'></td>
                     </tr>
                 </tbody>
-                    {cleanings && renderList()}
+                    { loadingCleanings? <tbody><tr><td colSpan='8'><Spinner/></td></tr></tbody> : cleanings && renderList()}
                     {updateIsOpen && <UpdateCleaningForm/>}
                     {isOpen && <AddCleaningForm/>}
             </table>
         </div>
-        </td>
-        </tr>
     )
 }
 
 const mapStateToProps = state =>({
-    molde: state.moldeDetail,
-    isOpen: state.cleanFormIsOpen,
+    moldes: state.moldes,
     cleanings: state.cleanings,
-    message: state.cleaningMessage,
-    updateIsOpen: state.cleanUpdateFormIsOpen,
     loadingCleanings: state.loadingCleanings
 })
 
-export default connect(mapStateToProps,{closeUpdateForm, openCleaningForm, fetchMoldeCleanings, selectUpdateCleaning})(MoldeDetail)
+export default connect(mapStateToProps,{ fetchMoldeCleanings })(MoldeDetail)
