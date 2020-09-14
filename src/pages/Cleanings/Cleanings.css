@@ -1,6 +1,7 @@
 .cleanings-container{
-    background-color: orangered;
+    
     height: 100%;
+    display: flex;
 }
 
 .molde-detail-table{
@@ -16,10 +17,19 @@
   
 .molde-detail-container{
     background-color: gold;
-    width: 70%; 
+    width: 65%; 
     height: fit-content;
     overflow-y: scroll;
     max-height: 92vh;
+}
+
+.cycles-container{
+    width: 35%;
+    background-color: rgb(218, 112, 112);
+    height: fit-content;
+    overflow-y: scroll;
+    max-height: 92vh;
+    
 }
   
 .comments-input{
@@ -27,9 +37,12 @@
 }
   
 .molde-detail-input{
-    width: fit-content;
+    width: 82%;
     margin-right: 0;
+    padding-right: 0;
 }
+
+
   
 .molde-detail-index{
     width: 5%;
@@ -41,7 +54,7 @@
   
   
 .molde-detail-date{
-    width: 15%;
+    width: 17%;
 }
   
 .molde-detail-team{
@@ -50,7 +63,7 @@
   
 .molde-detail-shift{
     justify-content: center;
-    width: 10%;
+    width: 8%;
 }
 
 .molde-detail-cycles{
@@ -70,9 +83,9 @@
 }
   
   
-  /* .model-detail-number{
-    width: 94%;
-  } */
+  .molde-detail-number{
+    width: 60%;
+  }
   
 .closeButton-detail{
     background-color: gold;
@@ -81,5 +94,9 @@
 .div_update{
     display: flex;
     justify-content: space-between;
+}
+
+.to_updated{
+    color: orangered;
 }
   

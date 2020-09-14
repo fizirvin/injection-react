@@ -1,20 +1,29 @@
 import { url, opts } from '../../config'
-import { cleaningsQuery } from './queries'
+import { cleaningsQuery, cyclesCleaningQuery } from './queries'
 import { addCleaning as newCleaning, modifyCleaning } from './mutations'
+
 
 export const ADD_CLEANING = 'ADD_CLEANING'
 export const FETCH_MOLDE_CLEANINGS = 'FETCH_MOLDE_CLEANINGS'
+export const FETCH_CYCLES_CLEANINGS = 'FETCH_CYCLES_CLEANINGS'
 export const MESSAGE_CLEANING = 'MESSAGE_CLEANING'
 export const UPDATE_CLEANING = 'UPDATE_CLEANING'
 export const SELECT_CLEANING = 'SELECT_CLEANING'
 export const UNSELECT_CLEANING = 'UNSELECT_CLEANING'
 export const LOADING_CLEANINGS = 'LOADING_CLEANINGS'
+export const LOADING_CYCLES_CLEANINGS = 'LOADING_CYCLES_CLEANINGS'
 
-const selectUpdateCleaning = (cleaning) => async (dispatch) =>{
+const selectCleaning = (cleaning) => async (dispatch) =>{
     return dispatch({
         type: SELECT_CLEANING,
         payload: cleaning
     })
+}
+
+const unselectCleaning = () =>{
+    return{
+        type: UNSELECT_CLEANING
+    }
 }
 
 const updateCleaning = (_id, input) => async ( dispatch ) => {
@@ -89,9 +98,43 @@ const fetchMoldeCleanings = ( ) => async ( dispatch ) => {
     }
 }
 
+const fetchCyclesCleanings = (molde, date) => async ( dispatch ) => {
+    dispatch({
+        type: LOADING_CYCLES_CLEANINGS,
+    })
+
+    
+    cyclesCleaningQuery.variables = {molde, initial: date}
+    opts.body = JSON.stringify(cyclesCleaningQuery)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+
+
+    if(data.errors){
+        console.log(data)
+        dispatch({
+            type: LOADING_CYCLES_CLEANINGS,
+        })
+        return dispatch({type: MESSAGE_CLEANING,
+            payload: 'error'
+        })
+    } else{
+        
+        dispatch({
+            type: LOADING_CYCLES_CLEANINGS,
+        })
+        dispatch({
+            type: FETCH_CYCLES_CLEANINGS,
+            payload: data.data.cycles
+        })
+    }
+}
+
 export {
     addCleaning,
     fetchMoldeCleanings,
-    selectUpdateCleaning,
-    updateCleaning
+    selectCleaning,
+    updateCleaning,
+    unselectCleaning,
+    fetchCyclesCleanings
 }

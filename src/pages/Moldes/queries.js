@@ -23,23 +23,7 @@ const tcyclesQuery = { query:
     }`
 };
 
-const cyclesQuery = { query: 
-    `query {
-        cycles{
-            report
-            date
-            shift
-            machine
-            part
-            molde
-            real
-            cycles
-        }
-    }`
-};
-
 export { 
     moldesQuery,
-    cyclesQuery,
     tcyclesQuery
 }

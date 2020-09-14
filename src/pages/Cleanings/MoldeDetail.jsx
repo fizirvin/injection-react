@@ -3,23 +3,41 @@ import Spinner from '../../components/Spinner'
 import { connect } from 'react-redux'
 import AddCleaningForm from './AddCleaningForm'
 import UpdateCleaningForm from './UpdateCleaningForm'
-import { fetchMoldeCleanings } from './actions'
+import { fetchMoldeCleanings, selectCleaning, unselectCleaning } from './actions'
 import './Cleanings.css'
 
-const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings}) =>{
+const MoldeDetail = ({cleanings, cyclesCleaning, loadingCleanings, fetchMoldeCleanings, selectCleaning, unselectCleaning}) =>{
     const [updateIsOpen, setUpdateIsOpen ] = useState(false)
     
     const [isOpen, setOpenCleaningForm ] = useState(false)
     const [updateCleaning, setUpdateCleaning ] = useState('')
 
     useEffect(() =>{
-        if(cleanings.length === 0){
+            unselectCleaning()
             fetchMoldeCleanings()
-        } 
-    },[cleanings])
+        
+    },[unselectCleaning, fetchMoldeCleanings])
+
+    const onUpdate= (cleaning)=>{
+        setUpdateIsOpen(true)
+        setUpdateCleaning(cleaning)
+    }
+
+    const onCancelUpdate= ( )=>{
+        setUpdateIsOpen(false)
+        setUpdateCleaning('')
+    }
 
     const renderUpdateButton = (length, num,cleaning ) =>{
-        return length === num ? updateIsOpen? <button onClick={()=>setUpdateIsOpen(false)}>cancel</button>: <button onClick={()=>setUpdateCleaning(cleaning)}>Update</button> : null
+        return length === num ? updateIsOpen? <button onClick={onCancelUpdate}>cancel</button>: !isOpen && <button onClick={()=>onUpdate(cleaning)}>Update</button> : null
+    }
+
+    const to_updated = (length, num) =>{
+        return length === num && updateIsOpen ? 'to_updated' : null
+    }
+
+    const onCycles = (cleaning) =>{
+        selectCleaning(cleaning)
     }
     
     const renderList = () =>{
@@ -28,7 +46,7 @@ const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings})
         const {_id, molde, team, shift, date, cycles, counted, comments } = cleaning
         const num = index+1
         
-        return <tbody key={_id}><tr>
+        return <tbody key={_id} className={to_updated(length, num)}><tr>
             <td rowSpan='2' className='molde-detail-index'>{num}</td>
             <td className='molde-detail-molde'>{molde.moldeNumber}</td>
             <td className='molde-detail-date'>{date}</td>
@@ -36,7 +54,7 @@ const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings})
             <td className='molde-detail-shift'>{shift}</td>
             <td className='molde-detail-cycles'>{cycles}</td>
             <td className='molde-detail-counted'>{counted}</td>
-            <td className='molde-detail-button'>{renderUpdateButton(length, num, cleaning)}</td>
+        <td className='molde-detail-button'>{renderCycButton(cleaning)}{renderUpdateButton(length, num, cleaning)}</td>
         </tr>
         { comments && <tr><td colSpan='8'>{comments}</td></tr>}
         </tbody> }
@@ -44,10 +62,12 @@ const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings})
     }
 
     const renderOpenButton = () =>{
-        return !updateIsOpen && <button onClick={ ()=>setOpenCleaningForm(!isOpen)}>add Cleaning</button>
+        return <button onClick={ ()=>setOpenCleaningForm(!isOpen)} disabled={updateIsOpen}>add Cleaning</button>
     }
 
-    
+    const renderCycButton = (cleaning) =>{
+        return !cyclesCleaning ? <button onClick={()=>onCycles(cleaning)}>Cyc</button> : cleaning._id === cyclesCleaning._id ? <button onClick={unselectCleaning}>close</button> : <button onClick={()=>onCycles(cleaning)}>Cyc</button> 
+    }
 
 
     return(
@@ -73,8 +93,8 @@ const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings})
                     </tr>
                 </tbody>
                     { loadingCleanings? <tbody><tr><td colSpan='8'><Spinner/></td></tr></tbody> : cleanings && renderList()}
-                    {updateIsOpen && <UpdateCleaningForm/>}
-                    {isOpen && <AddCleaningForm/>}
+                    {updateCleaning && <UpdateCleaningForm closeForm={setUpdateIsOpen} cleaning={updateCleaning}/>}
+                    {isOpen && <AddCleaningForm closeForm={setOpenCleaningForm}/>}
             </table>
         </div>
     )
@@ -83,7 +103,8 @@ const MoldeDetail = ({cleanings, moldes, loadingCleanings, fetchMoldeCleanings})
 const mapStateToProps = state =>({
     moldes: state.moldes,
     cleanings: state.cleanings,
-    loadingCleanings: state.loadingCleanings
+    loadingCleanings: state.loadingCleanings,
+    cyclesCleaning: state.cleaningSelected
 })
 
-export default connect(mapStateToProps,{ fetchMoldeCleanings })(MoldeDetail)
+export default connect(mapStateToProps,{ fetchMoldeCleanings, selectCleaning, unselectCleaning })(MoldeDetail)

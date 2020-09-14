@@ -57,5 +57,7 @@ export default combineReducers({
     cleanings: cleanings.cleaningsReducer,
     cleaningMessage: cleanings.cleaningMessage,
     cleaningSelected: cleanings.cleaningSelected,
-    loadingCleanings: cleanings.loadingCleanings
+    loadingCleanings: cleanings.loadingCleanings,
+    cyclesCleaningsReducer: cleanings.cyclesCleaningsReducer,
+    loadingCyclesCleanings: cleanings.loadingCyclesCleanings
 })

@@ -1,9 +1,9 @@
-import React, {useState, useEffect }from 'react'
+import React, {useState }from 'react'
 import { connect } from 'react-redux'
 import { addCleaning  } from './actions'
 
-const AddCleaningForm = ({tCycles, addCleaning, moldes}) =>{
-    const [ cycles, setCycles] = useState('')
+const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
+    const [ moldCycles, setCycles] = useState(0)
     const [ date, setDate] = useState('')
     const [ shift, setShift ] = useState('')
     const [ team, setTeam ] = useState('')
@@ -11,23 +11,34 @@ const AddCleaningForm = ({tCycles, addCleaning, moldes}) =>{
     const [ errorMessage, setErrorMessage ] = useState('')
     const [ molde, setMolde ] = useState('')
 
-    useEffect(() =>{
-        setCycles(tCycles)
-    },[tCycles])
-
     const onSend = () =>{
-        if(!cycles | !date | !shift | !team ){ return setErrorMessage('check form') }
+        if(!moldCycles | !date | !shift | !team ){ return setErrorMessage('check form') }
         const input = {
-                molde: molde._id,
-                cycles, 
+                molde,
+                cycles: moldCycles, 
                 date, 
                 shift, 
                 team,
                 comments
             }
+        closeForm(false)
         return addCleaning(input)
     }   
 
+    const onMolde = (e)=>{
+        const value = e.target.value
+        
+        const moldeCycles = moldes.find(molde => molde._id === value)
+        const array = cycles.filter( item => item.molde === value )
+
+        const filter = array.reduce( (a, b) =>{
+          return a + b.tcycles || 0
+        },0)
+        
+        const sum = filter + moldeCycles.tcycles
+        setCycles(sum)
+        return setMolde(value)
+    }
     
 
     const onInput = (e) =>{
@@ -45,8 +56,6 @@ const AddCleaningForm = ({tCycles, addCleaning, moldes}) =>{
                 return setTeam(value)
             case 'comments':
                 return setComments(value)
-            case 'molde':
-                return setMolde(value)
             default:
                 return value
         }
@@ -71,35 +80,35 @@ const AddCleaningForm = ({tCycles, addCleaning, moldes}) =>{
     return(
         <tbody>
             <tr>
-                <td>#</td>
-                <td>
-                    <select name='molde' onChange={onInput} value={molde}>
+                <td className='molde-detail-index'>#</td>
+                <td className='molde-detail-molde'>
+                    <select name='molde' onChange={onMolde} value={molde}>
                         <option disabled value=''>select</option>
                         {renderMoldes()}
                     </select>
                 </td>
-                <td><input type='date' onChange={onInput} value={date} name='date' className='molde-detail-input'></input></td>
-                <td>
+                <td className='molde-detail-date'><input type='date' onChange={onInput} value={date} name='date' className='molde-detail-input'></input></td>
+                <td className='molde-detail-team'>
                     <select name='team' onChange={onInput} value={team}>
                         <option disabled value=''>select</option>
                         <option value='varias'>RVarias</option>
                         <option value='amealco'>Amealco</option>
                     </select>
                 </td>
-                <td>
+                <td className='molde-detail-shift'>
                     <select name='shift' onChange={onInput} value={shift}>
                         <option disabled value=''>select</option>
                         <option value='1'>1</option>
                         <option value='2'>2</option>
                     </select>
                 </td>
-                <td><input type='number' name='cycles' onChange={onInput} value={cycles} className='model-detail-number'></input></td>
-                <td></td>
-                <td><button onClick={onSend}>Send</button></td>
+                <td className='molde-detail-cycles'><input type='number' name='cycles' onChange={onInput} value={moldCycles} className='molde-detail-number'></input></td>
+                <td className='molde-detail-counted'></td>
+                <td className='molde-detail-button'><button onClick={onSend}>Send</button></td>
             </tr>
             <tr>
                 <td></td>
-                <td colSpan='7'> Comments: <input type='text' maxLength='54' name='comments' onChange={onInput} value={comments} className='comments-input'></input></td>
+                <td colSpan='7'> Comments: <input type='text' maxLength='60' name='comments' onChange={onInput} value={comments} className='comments-input'></input></td>
             </tr>
                 {errorMessage && <tr><td colSpan='7'>{errorMessage}</td></tr>}
         </tbody>
@@ -107,8 +116,8 @@ const AddCleaningForm = ({tCycles, addCleaning, moldes}) =>{
 }
 
 const mapStateToProps = state =>({
-    tCycles: state.tCycles,
     moldes: state.moldes,
+    cycles: state.cycles
 })
 
 export default connect(mapStateToProps, {addCleaning })(AddCleaningForm)

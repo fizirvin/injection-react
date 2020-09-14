@@ -1,19 +1,3 @@
-const moldesQuery = { query: 
-    `query {
-        moldes{
-            _id
-            moldeNumber
-            moldeSerial
-            cavities
-            lifecycles
-            tcycles
-            shot
-            quantity
-            active
-        }
-    }`
-};
-
 const cleaningsQuery = { query: 
     `query {
         cleanings{
@@ -32,6 +16,22 @@ const cleaningsQuery = { query:
     }`,
 };
 
+const cyclesCleaningQuery = { query: `query 
+    Cycles( $molde: ID, $initial: Date){
+        cycles(molde: $molde, initial:$initial){
+            report
+            date
+            shift
+            machine
+            part
+            molde
+            real
+            cycles
+        }
+    }`,
+};
+
 export { 
-    cleaningsQuery
+    cleaningsQuery,
+    cyclesCleaningQuery
 }

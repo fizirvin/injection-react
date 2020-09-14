@@ -1,11 +1,13 @@
 import {
     FETCH_MOLDE_CLEANINGS,
+    FETCH_CYCLES_CLEANINGS,
     ADD_CLEANING,
     MESSAGE_CLEANING,
     SELECT_CLEANING,
     UNSELECT_CLEANING,
     UPDATE_CLEANING,
-    LOADING_CLEANINGS
+    LOADING_CLEANINGS,
+    LOADING_CYCLES_CLEANINGS
 } from './actions'
 
 const cleaningsReducer = (state = [], action) =>{
@@ -51,9 +53,34 @@ const cleaningSelected = (selected = null, action) =>{
     }
 }
 
+const cyclesCleaningsReducer = (state = [], action) =>{
+    switch (action.type){
+        case FETCH_CYCLES_CLEANINGS:
+            return action.payload
+        // case ADD_CLEANING:
+        //     return [ ...state, action.payload ]
+        // case UPDATE_CLEANING:
+        //     const item = action.payload
+        //     let items = [...state]
+        //     items[items.findIndex(el => el._id === item._id)] = item;
+        //     return items
+        default:
+            return state
+    }
+}
+
+const loadingCyclesCleanings = (loading = false, action) =>{
+    if(action.type === LOADING_CYCLES_CLEANINGS){
+        return !loading
+    }
+    return loading
+}
+
 export {
     cleaningsReducer,
     cleaningMessage,
     cleaningSelected,
     loadingCleanings,
+    cyclesCleaningsReducer,
+    loadingCyclesCleanings
 }

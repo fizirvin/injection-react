@@ -1,6 +1,6 @@
 import { url, opts } from '../../config'
 import { moldesQuery, tcyclesQuery } from './queries'
-import { addMolde as newMolde, addCleaning as newCleaning, modifyMolde, modifyCleaning } from './mutations'
+import { addMolde as newMolde, modifyMolde } from './mutations'
 
 
 export const FETCH_MOLDES = 'FETCH_MOLDES'
