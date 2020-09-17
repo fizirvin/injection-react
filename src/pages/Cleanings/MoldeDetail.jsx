@@ -29,7 +29,7 @@ const MoldeDetail = ({cleanings, cyclesCleaning, loadingCleanings, fetchMoldeCle
     }
 
     const renderUpdateButton = (length, num,cleaning ) =>{
-        return length === num ? updateIsOpen? <button onClick={onCancelUpdate}>cancel</button>: !isOpen && <button onClick={()=>onUpdate(cleaning)}>Update</button> : null
+        return length === num ? updateIsOpen? <button onClick={onCancelUpdate}>cancel</button>: !isOpen && <button onClick={()=>onUpdate(cleaning)}>Up</button> : null
     }
 
     const to_updated = (length, num) =>{

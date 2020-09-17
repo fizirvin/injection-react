@@ -84,7 +84,7 @@
   
   
   .molde-detail-number{
-    width: 60%;
+    width: 80%;
   }
   
 .closeButton-detail{
@@ -99,4 +99,15 @@
 .to_updated{
     color: orangered;
 }
+
+
+
+.red{
   
+    background-color: red;
+}
+
+.green{
+    
+    background-color: green;
+}
