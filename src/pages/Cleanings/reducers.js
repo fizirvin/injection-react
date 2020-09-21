@@ -6,6 +6,7 @@ import {
     SELECT_CLEANING,
     UNSELECT_CLEANING,
     UPDATE_CLEANING,
+    FINISH_CLEANING,
     LOADING_CLEANINGS,
     LOADING_CYCLES_CLEANINGS
 } from './actions'
@@ -21,6 +22,11 @@ const cleaningsReducer = (state = [], action) =>{
             let items = [...state]
             items[items.findIndex(el => el._id === item._id)] = item;
             return items
+        case FINISH_CLEANING:
+            const fitem = action.payload
+            let fitems = [...state]
+            fitems[fitems.findIndex(el => el._id === fitem._id)] = fitem;
+            return fitems
         default:
             return state
     }

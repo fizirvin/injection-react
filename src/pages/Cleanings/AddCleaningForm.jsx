@@ -2,23 +2,19 @@ import React, {useState }from 'react'
 import { connect } from 'react-redux'
 import { addCleaning  } from './actions'
 
-const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
-    const [ moldCycles, setCycles] = useState(0)
+const AddCleaningForm = ({addCleaning, moldes, closeForm}) =>{
     const [ date, setDate] = useState('')
     const [ shift, setShift ] = useState('')
-    const [ team, setTeam ] = useState('')
     const [ comments, setComments ] = useState('')
     const [ errorMessage, setErrorMessage ] = useState('')
     const [ molde, setMolde ] = useState('')
 
     const onSend = () =>{
-        if(!moldCycles | !date | !shift | !team ){ return setErrorMessage('check form') }
+        if(!molde | !date | !shift ){ return setErrorMessage('check form') }
         const input = {
                 molde,
-                cycles: moldCycles, 
                 date, 
                 shift, 
-                team,
                 comments
             }
         closeForm(false)
@@ -27,16 +23,6 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
 
     const onMolde = (e)=>{
         const value = e.target.value
-        
-        const moldeCycles = moldes.find(molde => molde._id === value)
-        const array = cycles.filter( item => item.molde === value )
-
-        const filter = array.reduce( (a, b) =>{
-          return a + b.tcycles || 0
-        },0)
-        
-        const sum = filter + moldeCycles.tcycles
-        setCycles(sum)
         return setMolde(value)
     }
     
@@ -47,13 +33,8 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
         switch (name){
             case 'date':
                 return setDate(value)
-            case 'cycles':
-                const cyc = onNumChange(value)
-                return setCycles(cyc)
             case 'shift':
                 return setShift(value)
-            case 'team':
-                return setTeam(value)
             case 'comments':
                 return setComments(value)
             default:
@@ -61,14 +42,6 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
         }
     }
 
-    const onNumChange = (num) => {
-        const value = parseInt(num)
-        if( isNaN(value) ){ return '' }
-        else if( value === 0 ){ return '' }
-        else { 
-          return value
-        }
-    }; 
 
     const renderMoldes = () =>{
         return moldes.map( ({_id, moldeNumber}) =>{
@@ -88,13 +61,13 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
                     </select>
                 </td>
                 <td className='molde-detail-date'><input type='date' onChange={onInput} value={date} name='date' className='molde-detail-input'></input></td>
-                <td className='molde-detail-team'>
+                {/* <td className='molde-detail-team'>
                     <select name='team' onChange={onInput} value={team}>
                         <option disabled value=''>select</option>
                         <option value='varias'>RVarias</option>
                         <option value='amealco'>Amealco</option>
                     </select>
-                </td>
+                </td> */}
                 <td className='molde-detail-shift'>
                     <select name='shift' onChange={onInput} value={shift}>
                         <option disabled value=''>select</option>
@@ -102,9 +75,10 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
                         <option value='2'>2</option>
                     </select>
                 </td>
-                <td className='molde-detail-cycles'><input type='number' name='cycles' onChange={onInput} value={moldCycles} className='molde-detail-number'></input></td>
-                <td className='molde-detail-counted'></td>
-                <td className='molde-detail-button'><button onClick={onSend}>Send</button></td>
+                {/* <td className='molde-detail-date'></td>
+                <td className='molde-detail-shift'></td>
+                <td className='molde-detail-cycles'></td> */}
+                <td colSpan='4' className='molde-detail-button'><button onClick={onSend}>Send</button><button onClick={()=>closeForm(false)}>Cancel</button></td>
             </tr>
             <tr>
                 <td></td>
@@ -116,8 +90,7 @@ const AddCleaningForm = ({cycles, addCleaning, moldes, closeForm}) =>{
 }
 
 const mapStateToProps = state =>({
-    moldes: state.moldes,
-    cycles: state.cycles
+    moldes: state.moldes
 })
 
 export default connect(mapStateToProps, {addCleaning })(AddCleaningForm)

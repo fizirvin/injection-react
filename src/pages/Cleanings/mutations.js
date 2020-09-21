@@ -8,10 +8,11 @@ NewCleaning( $input: NewCleaning ){
         }
         date
         shift
-        team
-        cycles
-        counted
         comments
+        quantity
+        end
+        shiftEnd
+        active
     }
 }`
 }
@@ -26,15 +27,36 @@ UpdateCleaning($_id: ID, $input: NewCleaning ){
             }
             date
             shift
-            team
-            cycles
-            counted
             comments
+            quantity
+            end
+            shiftEnd
+            active
+        }
+    }`
+}
+
+const finishCleaning = { query: `mutation
+FinishCleaning($_id: ID, $input: FinishCleaning ){
+    finishCleaning(_id: $_id, input: $input){
+            _id
+            molde{
+                _id
+                moldeNumber
+            }
+            date
+            quantity
+            shift
+            comments
+            end
+            shiftEnd
+            active
         }
     }`
 }
 
 export { 
     addCleaning,
-    modifyCleaning
+    modifyCleaning,
+    finishCleaning
 }

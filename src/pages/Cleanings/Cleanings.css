@@ -37,19 +37,21 @@
 }
   
 .molde-detail-input{
-    width: 82%;
+    font-size: 98%;
+    width: 97%;
     margin-right: 0;
     padding-right: 0;
 }
 
 
+
   
 .molde-detail-index{
-    width: 5%;
+    width: 3%;
 }
 
 .molde-detail-molde{
-    width: 30%;
+    width: 28%;
 }
   
   
@@ -57,9 +59,6 @@
     width: 17%;
 }
   
-.molde-detail-team{
-    width: 10%;
-}
   
 .molde-detail-shift{
     justify-content: center;
@@ -70,16 +69,15 @@
     width: 10%;
 }
 
-.molde-detail-counted{
-    width: 10%;
-}
+
 
 .molde-detail-comments{
     width: 100%;
 }
 
 .molde-detail-button{
-    width: 10%;
+    text-align: center;
+    width: 9%;
 }
   
   
@@ -103,11 +101,13 @@
 
 
 .red{
-  
+    display: flex;
     background-color: red;
+    justify-content: space-between;
 }
 
 .green{
-    
+    display: flex;
     background-color: green;
+    justify-content: space-between;
 }

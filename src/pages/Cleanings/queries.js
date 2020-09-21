@@ -7,18 +7,19 @@ const cleaningsQuery = { query:
                 moldeNumber
             }
             date
-            cycles
+            quantity
             shift
-            team
             comments
-            counted
+            end
+            shiftEnd
+            active
         }
     }`,
 };
 
 const cyclesCleaningQuery = { query: `query 
-    Cycles( $molde: ID, $initial: Date){
-        cycles(molde: $molde, initial:$initial){
+    Cycles( $cleaning: ID){
+        cycles(cleaning: $cleaning){
             report
             date
             shift

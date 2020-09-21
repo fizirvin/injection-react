@@ -1,6 +1,6 @@
 import { url, opts } from '../../config'
 import { cleaningsQuery, cyclesCleaningQuery } from './queries'
-import { addCleaning as newCleaning, modifyCleaning } from './mutations'
+import { addCleaning as newCleaning, modifyCleaning, finishCleaning } from './mutations'
 
 
 export const ADD_CLEANING = 'ADD_CLEANING'
@@ -8,6 +8,7 @@ export const FETCH_MOLDE_CLEANINGS = 'FETCH_MOLDE_CLEANINGS'
 export const FETCH_CYCLES_CLEANINGS = 'FETCH_CYCLES_CLEANINGS'
 export const MESSAGE_CLEANING = 'MESSAGE_CLEANING'
 export const UPDATE_CLEANING = 'UPDATE_CLEANING'
+export const FINISH_CLEANING = 'FINISH_CLEANING'
 export const SELECT_CLEANING = 'SELECT_CLEANING'
 export const UNSELECT_CLEANING = 'UNSELECT_CLEANING'
 export const LOADING_CLEANINGS = 'LOADING_CLEANINGS'
@@ -39,6 +40,34 @@ const updateCleaning = (_id, input) => async ( dispatch ) => {
         dispatch({
             type: UPDATE_CLEANING,
             payload: data.data.updateCleaning
+        })
+        return dispatch({
+            type: MESSAGE_CLEANING,
+            payload: 'sucess'
+        })
+    }
+}
+
+const finish = (_id, input) => async ( dispatch ) => {
+    
+    finishCleaning.variables = { _id, input }
+    opts.body = JSON.stringify(finishCleaning)
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if(data.errors){
+        dispatch({
+            type: UNSELECT_CLEANING,
+        })
+        return dispatch({type: MESSAGE_CLEANING,
+            payload: 'error'
+        })
+    } else{
+        dispatch({
+            type: UNSELECT_CLEANING,
+        })
+        dispatch({
+            type: FINISH_CLEANING,
+            payload: data.data.finishCleaning
         })
         return dispatch({
             type: MESSAGE_CLEANING,
@@ -98,13 +127,13 @@ const fetchMoldeCleanings = ( ) => async ( dispatch ) => {
     }
 }
 
-const fetchCyclesCleanings = (molde, date) => async ( dispatch ) => {
+const fetchCyclesCleanings = (cleaning) => async ( dispatch ) => {
     dispatch({
         type: LOADING_CYCLES_CLEANINGS,
     })
 
     
-    cyclesCleaningQuery.variables = {molde, initial: date}
+    cyclesCleaningQuery.variables = {cleaning}
     opts.body = JSON.stringify(cyclesCleaningQuery)
     const res = await fetch(url, opts);
     const data = await res.json();
@@ -135,6 +164,7 @@ export {
     fetchMoldeCleanings,
     selectCleaning,
     updateCleaning,
+    finish,
     unselectCleaning,
     fetchCyclesCleanings
 }
