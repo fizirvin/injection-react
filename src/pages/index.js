@@ -1,6 +1,7 @@
 import Home from './Home/Home.js'
 import Toolbar from './Toolbar.js'
 
+import Calendar from './Calendar'
 import Moldes, { AddMolde, UpdateMolde }from './Moldes/index.js'
 import Machines, { AddMachine, UpdateMachine } from './Machines'
 import Material, { AddMaterial, UpdateMaterial } from './Materials/index.js'
@@ -16,7 +17,8 @@ import Record from './Record/Record.js'
 import Production from './Production/index.js'
 import Reports, { AddReport, UpdateReport } from './Reports/index.js'
 
-export { 
+export {
+    Calendar, 
     Home, 
     Moldes,
     AddMolde,

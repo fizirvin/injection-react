@@ -13,8 +13,8 @@ const MoldeDetail = ({cleanings, cyclesCleaning, loadingCleanings, fetchMoldeCle
     const [updateCleaning, setUpdateCleaning ] = useState('')
 
     useEffect(() =>{
-            unselectCleaning()
-            fetchMoldeCleanings()
+        unselectCleaning()
+        if(cleanings.length === 0 ){ fetchMoldeCleanings()}
         
     },[unselectCleaning, fetchMoldeCleanings])
 

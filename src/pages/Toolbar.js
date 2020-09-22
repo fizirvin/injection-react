@@ -6,9 +6,9 @@ import '../styles/toolbar.css'
 class Toolbar extends Component {
   state={
     items: 
-    ['molds', 'cleanings', 'machines', 'material', 'models', 'issues', 'defects', 'programs', 'reports', 'production', 'record', 
+    ['molds', 'shots', 'calendar','machines', 'material', 'models', 'issues', 'defects', 'programs', 'reports', 'production', 'record', 
     'users', 'employees'],
-    title: ['Molds List:', 'Cleanings', 'Machine List:', 'Raw Material List:', 'Model List:', 
+    title: ['Molds List:', 'Shots', 'Monthly Molds Maintenance', 'Machine List:', 'Raw Material List:', 'Model List:', 
     'Issues List:', 'Defect List:', 'Programs:', 'Production Reports:', 'Production:', 'Record:', 'Users:', 'Employees:' ],
     header:'',
     name: ''

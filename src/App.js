@@ -4,7 +4,7 @@ import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Home, Moldes, AddMolde, UpdateMolde, Machines, AddMachine, UpdateMachine, Material, AddMaterial, UpdateMaterial, Models, AddModel, UpdateModel, 
   Issues, AddIssue, UpdateIssue, AddDefect, UpdateDefect,  
   Defects, Programs, AddProgram, UpdateProgram, Reports, AddReport, UpdateReport, Toolbar, Production, Users, AddUser, 
-  UpdateUser, Record, Workers, AddWorker, UpdateWorker, Cleanings } from './pages'
+  UpdateUser, Record, Workers, AddWorker, UpdateWorker, Cleanings, Calendar } from './pages'
 import { fetchWorkers } from './pages/Workers/actions.js'
 import { fetchDefects } from './pages/Defects/actions.js'
 import { fetchInitialReports, updateReport, closeReport } from './pages/Reports/actions.js'
@@ -120,6 +120,8 @@ const App = ({name, logoutHandler, userId, message, report,
             <Route path="/molds/add" exact component={ props => ( <AddMolde {...props} /> )} />
             <Route path="/molds/update/:id" exact component={ props => ( <UpdateMolde {...props} /> )} />
 
+            <Route path="/calendar" exact component={ props => ( <Calendar {...props}/> )} /> 
+
             <Route path="/material" exact component={ props => ( <Material {...props} /> )} />
             <Route path="/material/add" exact component={ props => ( <AddMaterial {...props} /> )} />
             <Route path="/material/update/:id" exact component={ props => ( <UpdateMaterial {...props} /> )} />
@@ -170,7 +172,7 @@ const App = ({name, logoutHandler, userId, message, report,
             <Route path="/employees/update/:id" exact component={ props => ( <UpdateWorker {...props} /> )} />
             <Route path="/production" exact component={ props => ( <Production {...props} /> )} />
 
-            <Route path="/cleanings" exact component={ props => ( <Cleanings {...props} /> )} />
+            <Route path="/shots" exact component={ props => ( <Cleanings {...props} /> )} />
           </Switch> 
         </div>
       </div>
