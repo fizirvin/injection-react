@@ -1,22 +1,29 @@
-import React,{ useEffect, useState } from 'react'
+import React,{ useEffect } from 'react'
 import { connect } from 'react-redux'
 import { fetchMoldeCleanings } from '../Cleanings/actions'
+import { fetchSelectedCycles } from './actions'
 import Spinner from '../../components/Spinner'
 import './calendar.css'
-import { url, opts } from '../../config'
-import { cyclesCleaningQuery } from '../Cleanings/queries'
+import MoldeCalendar from './MoldeCalendar'
+
 
 const date = new Date()
 const year = date.getFullYear()
 
-const Calendar =  ({fetchMoldeCleanings, cleanings, loadingCleanings}) =>{
-    const [cycles, setCycles ] = useState([])
-
+const Calendar =  ({fetchMoldeCleanings, fetchSelectedCycles, cleanings, loadingCleanings, selectedCycles, loadingSelectedCycles}) =>{
+    
     useEffect(() =>{
         if(cleanings.length === 0 ){ 
             fetchMoldeCleanings()
         }
     },[cleanings, fetchMoldeCleanings])
+
+    useEffect(() =>{
+        if(selectedCycles.length === 0 ){ 
+            
+            fetchSelectedCycles()
+        }
+    },[selectedCycles,fetchSelectedCycles])
 
     
     const getMonth = () =>{
@@ -79,31 +86,16 @@ const Calendar =  ({fetchMoldeCleanings, cleanings, loadingCleanings}) =>{
         let i;
         let array = []
         for (i = 1; i <= getMonth().days; i++) {
-            array = [...array, <th>{i}</th>]
+            array = [...array, <th key={i}>{i}</th>]
         }
         return array
-    }
-
-    const data = async (cleaning) =>{
-        cyclesCleaningQuery.variables = {cleaning}
-        opts.body = JSON.stringify(cyclesCleaningQuery)
-        const res = await fetch(url, opts);
-        const data = await res.json();
-        return data.data.cycles
     }
 
     const renderMoldeCalendar = (arr)=>{
         return arr.map( (cleaning) =>{
             const {_id, molde } = cleaning
-
-            return <tbody>
-                <tr>
-                    <td rowSpan='2' colSpan='1'>{molde.moldeNumber}</td>
-                </tr>
-                <tr> 
-
-                </tr>
-            </tbody>
+            const selected = selectedCycles.filter( cyc => cyc.molde === molde._id )
+            return <MoldeCalendar key={_id} molde={molde} selected={selected} days={getMonth().days}/>
         })
     }
 
@@ -121,7 +113,7 @@ const Calendar =  ({fetchMoldeCleanings, cleanings, loadingCleanings}) =>{
                        {renderDays()} 
                     </tr>                    
                 </thead>
-                {renderMoldeCalendar(cleanings.filter(item => item.active === true && item.date >= `${year}-${getMonth().m}-01` && item.date <= `${year}-${getMonth().m}-31` ))}
+                {!loadingSelectedCycles && renderMoldeCalendar(cleanings.filter(item => item.active === true && item.date >= `${year}-${getMonth().m}-01` && item.date <= `${year}-${getMonth().m}-31` ))}
             </table>
         </div>
     )
@@ -130,7 +122,10 @@ const Calendar =  ({fetchMoldeCleanings, cleanings, loadingCleanings}) =>{
 const mapStateToProps = state =>({
     moldes: state.moldes,
     cleanings: state.cleanings,
-    loadingCleanings: state.loadingCleanings
+    loadingCleanings: state.loadingCleanings,
+    selectedCycles: state.selectedCycles,
+    selectedCyclesMessage: state.selectedCyclesMessage,
+    loadingSelectedCycles: state.loadingSelectedCycles
 })
 
-export default connect(mapStateToProps,{fetchMoldeCleanings })(Calendar)
+export default connect(mapStateToProps,{fetchMoldeCleanings, fetchSelectedCycles })(Calendar)

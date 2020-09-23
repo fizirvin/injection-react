@@ -23,7 +23,7 @@ const CyclesCleaning = ({cyclesCleaning, loading, fetchCyclesCleanings, finish, 
             const moldeQuantity = moldes.find( item => item._id === cycle.molde ).quantity
             const quantity = cycles.slice(0,index+1).reduce( (a, b) =>{
                 return a + b.real || 0
-              },0)
+            },0)
 
             
             const status = moldeQuantity >= quantity ? 'green': 'red' 

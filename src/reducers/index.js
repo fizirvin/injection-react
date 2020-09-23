@@ -11,6 +11,7 @@ import { reducers as users } from '../pages/Users/index.js'
 import { reducers as production } from '../pages/Production/index.js'
 import { reducers as reports } from '../pages/Reports/index.js'
 import { reducers as cleanings } from '../pages/Cleanings/index.js'
+import { reducers as calendar } from '../pages/Calendar/index.js'
 
 export default combineReducers({
     machines: machines.machinesReducer,
@@ -59,5 +60,9 @@ export default combineReducers({
     cleaningSelected: cleanings.cleaningSelected,
     loadingCleanings: cleanings.loadingCleanings,
     cyclesCleaningsReducer: cleanings.cyclesCleaningsReducer,
-    loadingCyclesCleanings: cleanings.loadingCyclesCleanings
+    loadingCyclesCleanings: cleanings.loadingCyclesCleanings,
+    selectedCycles: calendar.selectedCycles,
+    selectedCyclesMessage: calendar.selectedCyclesMessage,
+    loadingSelectedCycles: calendar.loadingSelectedCycles
+    
 })
