@@ -19,7 +19,7 @@ const Calendar =  ({fetchMoldeCleanings, fetchSelectedCycles, cleanings, loading
     },[cleanings, fetchMoldeCleanings])
 
     useEffect(() =>{
-        if(selectedCycles.length === 0 ){ 
+        if(!selectedCycles){ 
             
             fetchSelectedCycles()
         }
@@ -92,11 +92,20 @@ const Calendar =  ({fetchMoldeCleanings, fetchSelectedCycles, cleanings, loading
     }
 
     const renderMoldeCalendar = (arr)=>{
-        return arr.map( (cleaning) =>{
-            const {_id, molde } = cleaning
-            const selected = selectedCycles.filter( cyc => cyc.molde === molde._id )
-            return <MoldeCalendar key={_id} molde={molde} selected={selected} days={getMonth().days}/>
-        })
+        if(arr.length === 0 ){ return null }
+        else {
+            return arr.map( (cleaning) =>{
+                const {_id, molde } = cleaning
+                if(!selectedCycles){
+                    return <MoldeCalendar key={_id} molde={molde} selected={null} days={getMonth().days}/>
+                }
+                else{
+                    const selected = selectedCycles.filter( cyc => cyc.molde === molde._id )
+                    return <MoldeCalendar key={_id} molde={molde} selected={selected} days={getMonth().days}/>
+
+                }
+            })
+        }
     }
 
 

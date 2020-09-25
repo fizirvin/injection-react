@@ -62,7 +62,7 @@ const MoldeDetail = ({cleanings, cyclesCleaning, loadingCleanings, fetchMoldeCle
     }
 
     const renderOpenButton = () =>{
-        return <button onClick={ ()=>setOpenCleaningForm(!isOpen)} disabled={updateIsOpen}>add Cleaning</button>
+        return <button onClick={ ()=>setOpenCleaningForm(!isOpen)} disabled={updateIsOpen}>add Shot</button>
     }
 
     const renderCycButton = (cleaning) =>{

@@ -4,7 +4,7 @@ import {
     LOADING_SELECTED_CYCLES
 } from './actions'
 
-const selectedCycles = (state = [], action) =>{
+const selectedCycles = (state = null, action) =>{
     switch (action.type){
         case FETCH_SELECTED_CYCLES:
             return action.payload
