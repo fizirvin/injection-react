@@ -11,11 +11,9 @@
     height: 100%;
 }
 
-.calendar-table th,td{
-    background-color: whitesmoke;
-}
 
 .day-table{
+    background-color: whitesmoke;
     height: 10px;
 }
 
