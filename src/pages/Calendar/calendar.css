@@ -1,5 +1,5 @@
 .calendar-container{
-    background-color: green;
+    background-color: greenyellow;
     
 }
 
@@ -11,10 +11,18 @@
     height: 100%;
 }
 
-.calendar-table th{
+.calendar-table th,td{
     background-color: whitesmoke;
 }
 
 .day-table{
-    height: 20px;
+    height: 10px;
+}
+
+.green-calendar{
+    background-color: green;
+}
+
+.red-calendar{
+    background-color: red; 
 }

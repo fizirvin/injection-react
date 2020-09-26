@@ -101,7 +101,7 @@ const Calendar =  ({fetchMoldeCleanings, fetchSelectedCycles, cleanings, loading
                 }
                 else{
                     const selected = selectedCycles.filter( cyc => cyc.molde === molde._id )
-                    return <MoldeCalendar key={_id} molde={molde} selected={selected} days={getMonth().days}/>
+                    return <MoldeCalendar key={_id} molde={molde} selected={selected} year={year} month={getMonth().m} days={getMonth().days}/>
 
                 }
             })
