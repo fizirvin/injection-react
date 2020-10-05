@@ -128,7 +128,7 @@ const fetchMoldeCleanings = ( ) => async ( dispatch ) => {
 }
 
 const fetchCyclesCleanings = (cleaning) => async ( dispatch ) => {
-    console.log(cleaning, 'aqui')
+    
     dispatch({
         type: LOADING_CYCLES_CLEANINGS,
     })
@@ -149,7 +149,6 @@ const fetchCyclesCleanings = (cleaning) => async ( dispatch ) => {
             payload: 'error'
         })
     } else{
-        
         dispatch({
             type: LOADING_CYCLES_CLEANINGS,
         })

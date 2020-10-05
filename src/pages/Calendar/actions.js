@@ -15,7 +15,7 @@ const fetchSelectedCycles = ( ) => async ( dispatch ) => {
 
 
     if(data.errors){
-        console.log(data)
+        
         dispatch({
             type: LOADING_SELECTED_CYCLES,
         })
@@ -23,6 +23,7 @@ const fetchSelectedCycles = ( ) => async ( dispatch ) => {
             payload: 'error'
         })
     } else{
+        console.log(data)
         dispatch({
             type: LOADING_SELECTED_CYCLES,
         })
